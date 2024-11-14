@@ -4,7 +4,9 @@ import com.example.AcmePlex.moviesystem.model.Genre;
 import com.example.AcmePlex.moviesystem.model.Theatre;
 import com.example.AcmePlex.moviesystem.model.vo.MovieDetailedView;
 import com.example.AcmePlex.moviesystem.model.vo.MovieSimpleView;
+import com.example.AcmePlex.moviesystem.model.vo.Showtime;
 import com.example.AcmePlex.moviesystem.service.MovieService;
+import com.example.AcmePlex.moviesystem.service.ShowtimeService;
 import com.example.AcmePlex.moviesystem.service.TheatreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +23,13 @@ public class MovieSystemController {
 
     private final MovieService movieService;
     private final TheatreService theatreService;
+    private final ShowtimeService showtimeService;
 
     @Autowired
-    public MovieSystemController(MovieService movieService, TheatreService theatreService) {
+    public MovieSystemController(MovieService movieService, TheatreService theatreService, ShowtimeService showtimeService) {
         this.movieService = movieService;
         this.theatreService = theatreService;
+        this.showtimeService = showtimeService;
     }
 
     @GetMapping("/genres")
@@ -58,5 +62,10 @@ public class MovieSystemController {
     @GetMapping("/theatres/movie/{movie_id}")
     public ResponseEntity<List<Theatre>> getTheatresNyMovie(@PathVariable int movie_id) {
         return ResponseEntity.ok(theatreService.getTheatresByMovie(movie_id));
+    }
+
+    @GetMapping("/showtime/movie/{movie_id}/theatre/{theatre_id}")
+    public ResponseEntity<List<Showtime>> getTheatresNyMovie(@PathVariable int movie_id, @PathVariable int theatre_id) {
+        return ResponseEntity.ok(showtimeService.getShowtimeList(movie_id, theatre_id));
     }
 }
