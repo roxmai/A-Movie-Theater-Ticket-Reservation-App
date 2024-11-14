@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -38,21 +39,22 @@ public class MovieSystemController {
     }
 
     @GetMapping("/movies")
-    public ResponseEntity<List<MovieSimpleView>> getMovies(@RequestParam("page")int page, @RequestParam("page_size") int pageSize) {
+    public ResponseEntity<Map<String, Object>> getMovies(@RequestParam(value = "page", defaultValue = "1")int page,
+                                                         @RequestParam(value = "pageSize", defaultValue = "20")int pageSize) {
         return ResponseEntity.ok(movieService.getAllMovies(page, pageSize));
     }
 
     @GetMapping("/movies/genre/{genre_id}")
-    public ResponseEntity<List<MovieSimpleView>> getMoviesByCategory(@PathVariable int genre_id,
+    public ResponseEntity<Map<String, Object>> getMoviesByCategory(@PathVariable int genre_id,
                                                                      @RequestParam("page")int page,
-                                                                     @RequestParam("page_size")int pageSize) {
+                                                                     @RequestParam("pageSize")int pageSize) {
         return ResponseEntity.ok(movieService.getMoviesByGenre(genre_id, page, pageSize));
     }
 
     @GetMapping("/movies/search")
-    public ResponseEntity<List<MovieSimpleView>> searchMoviesByTitle(@RequestParam("q") String searchQuery,
+    public ResponseEntity<Map<String, Object>> searchMoviesByTitle(@RequestParam("q") String searchQuery,
                                                                      @RequestParam("page") int page,
-                                                                     @RequestParam("page_size") int pageSize) {
+                                                                     @RequestParam("pageSize") int pageSize) {
         System.out.println("search query: " + searchQuery);
         return ResponseEntity.ok(movieService.getMoviesBySearch(searchQuery, page, pageSize));
     }

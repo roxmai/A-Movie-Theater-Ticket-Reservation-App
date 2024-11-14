@@ -6,13 +6,16 @@ import com.example.AcmePlex.moviesystem.model.Movie;
 import com.example.AcmePlex.moviesystem.model.dto.MovieGenreDTO;
 import com.example.AcmePlex.moviesystem.model.vo.MovieDetailedView;
 import com.example.AcmePlex.moviesystem.model.vo.MovieSimpleView;
+import com.example.AcmePlex.moviesystem.model.vo.Pagination;
 import com.example.AcmePlex.moviesystem.model.vo.Showtime;
 import com.example.AcmePlex.moviesystem.repository.MovieGenreRepository;
 import com.example.AcmePlex.moviesystem.repository.TheatreShowtimeSeatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -34,29 +37,41 @@ public class MovieService {
         return movieSimpleView;
     }
 
-    public List<MovieSimpleView> getAllMovies(int page, int pageSize)
+    public Map<String, Object> getAllMovies(int page, int pageSize)
     {
+        Map<String, Object> moviesWithPagination= new HashMap<>();
         List<Movie> movies = movieGenreRepository.findAllMovies(page, pageSize);
-        return movies.stream().map(this::convertToSimple).toList();
+        moviesWithPagination.put("movies", movies.stream().map(this::convertToSimple).toList());
+        Pagination pagination = new Pagination(page, pageSize, movies.size());
+        moviesWithPagination.put("pagination", pagination);
+        return moviesWithPagination;
     }
 
-    public List<MovieSimpleView> getMoviesByGenre(int genreId, int page, int pageSize)
+    public Map<String, Object> getMoviesByGenre(int genreId, int page, int pageSize)
     {
+        Map<String, Object> moviesWithPagination= new HashMap<>();
         List<Movie> movies =  movieGenreRepository.findMoviesByGenre(genreId, page, pageSize);
-        return movies.stream().map(this::convertToSimple).toList();
+        moviesWithPagination.put("movies", movies.stream().map(this::convertToSimple).toList());
+        Pagination pagination = new Pagination(page, pageSize, movies.size());
+        moviesWithPagination.put("pagination", pagination);
+        return moviesWithPagination;
     }
 
     public List<Genre> getAllGenres() {
         return movieGenreRepository.findAllGenres();
     }
 
-    public List<MovieSimpleView> getMoviesBySearch(String searchQuery, int page, int pageSize) {
+    public Map<String, Object> getMoviesBySearch(String searchQuery, int page, int pageSize) {
         if(searchQuery.isEmpty())
         {
             return getAllMovies(page, pageSize);
         }
+        Map<String, Object> moviesWithPagination = new HashMap<>();
         List<Movie> movies = movieGenreRepository.findMovieBySearch(searchQuery, page, pageSize);
-        return movies.stream().map(this::convertToSimple).toList();
+        Pagination pagination = new Pagination(page, pageSize, movies.size());
+        moviesWithPagination.put("movies", movies.stream().map(this::convertToSimple).toList());
+        moviesWithPagination.put("pagination", pagination);
+        return moviesWithPagination;
     }
 
     public Optional<MovieDetailedView> getMovieById(int id) {
