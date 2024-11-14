@@ -1,5 +1,6 @@
 package com.example.acmeplex.controller;
 
+import com.example.acmeplex.controller.RegisteredUserController;
 import com.example.acmeplex.dto.RegisteredUserDTO;
 import com.example.acmeplex.service.RegisteredUserService;
 import org.junit.jupiter.api.BeforeEach;
