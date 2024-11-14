@@ -34,15 +34,15 @@ public class MovieService {
         return movieSimpleView;
     }
 
-    public List<MovieSimpleView> getAllMovies()
+    public List<MovieSimpleView> getAllMovies(int page, int pageSize)
     {
-        List<Movie> movies = movieGenreRepository.findAllMovies();
+        List<Movie> movies = movieGenreRepository.findAllMovies(page, pageSize);
         return movies.stream().map(this::convertToSimple).toList();
     }
 
-    public List<MovieSimpleView> getMoviesByGenre(int categoryId)
+    public List<MovieSimpleView> getMoviesByGenre(int genreId, int page, int pageSize)
     {
-        List<Movie> movies =  movieGenreRepository.findMoviesByGenre(categoryId);
+        List<Movie> movies =  movieGenreRepository.findMoviesByGenre(genreId, page, pageSize);
         return movies.stream().map(this::convertToSimple).toList();
     }
 
@@ -50,12 +50,12 @@ public class MovieService {
         return movieGenreRepository.findAllGenres();
     }
 
-    public List<MovieSimpleView> getMoviesBySearch(String searchQuery) {
+    public List<MovieSimpleView> getMoviesBySearch(String searchQuery, int page, int pageSize) {
         if(searchQuery.isEmpty())
         {
-            return getAllMovies();
+            return getAllMovies(page, pageSize);
         }
-        List<Movie> movies = movieGenreRepository.findMovieBySearch(searchQuery);
+        List<Movie> movies = movieGenreRepository.findMovieBySearch(searchQuery, page, pageSize);
         return movies.stream().map(this::convertToSimple).toList();
     }
 
@@ -71,5 +71,9 @@ public class MovieService {
             return Optional.of(movieDetailedView);
         }
         return Optional.empty();
+    }
+
+    public List<String> getMovieSuggestionByInput(String searchQuery) {
+        return movieGenreRepository.findMovieSuggestions(searchQuery);
     }
 }

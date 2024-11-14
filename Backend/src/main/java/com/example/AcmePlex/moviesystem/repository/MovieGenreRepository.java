@@ -59,14 +59,17 @@ public class MovieGenreRepository {
         }
     };
 
-    public List<Movie> findAllMovies() {
-        String sql = "SELECT * FROM movie";
-        return jdbcTemplate.query(sql, movieRowMapper);
+    public List<Movie> findAllMovies(int page, int pageSize) {
+        int offset = (page - 1) * pageSize;
+        String sql = "SELECT * FROM movie ORDER BY title LIMIT ? OFFSET ?";
+
+        return jdbcTemplate.query(sql, movieRowMapper, pageSize, offset);
     }
 
-    public List<Movie> findMoviesByGenre(int genreId) {
-        String sql = "SELECT * FROM movie where genre_id = ?";
-        return jdbcTemplate.query(sql, movieRowMapper, genreId);
+    public List<Movie> findMoviesByGenre(int genreId, int page, int pageSize) {
+        int offset = (page - 1) * pageSize;
+        String sql = "SELECT * FROM movie where genre_id = ?  LIMIT ? OFFSET ?";
+        return jdbcTemplate.query(sql, movieRowMapper, genreId, pageSize, offset);
     }
 
     public Optional<Movie> findMovieById(int id) {
@@ -75,10 +78,17 @@ public class MovieGenreRepository {
         return movies.isEmpty() ? Optional.empty() : Optional.of(movies.get(0));
     }
 
-    public List<Movie> findMovieBySearch(String searchQuery) {
-        String sql = "SELECT * FROM movie where LOWER(title)  LIKE ?";
-        String formattedSql = "%" + searchQuery.toLowerCase() + "%";
-        return jdbcTemplate.query(sql, movieRowMapper, formattedSql);
+    public List<Movie> findMovieBySearch(String searchQuery, int page, int pageSize) {
+        int offset = (page - 1) * pageSize;
+        String sql = "SELECT * FROM movie where LOWER(title)  LIKE ? LIMIT ? OFFSET ?";
+        String formattedQuery = "%" + searchQuery.toLowerCase() + "%";
+        return jdbcTemplate.query(sql, movieRowMapper, formattedQuery, pageSize, offset);
+    }
+
+    public List<String> findMovieSuggestions(String searchQuery) {
+        String sql = "SELECT title FROM movie WHERE LOWER(title) LIKE ? LIMIT 10";
+        String formattedQuery = "%" + searchQuery.toLowerCase() + "%";
+        return jdbcTemplate.queryForList(sql, String.class, formattedQuery);
     }
 
     public List<Genre> findAllGenres() {

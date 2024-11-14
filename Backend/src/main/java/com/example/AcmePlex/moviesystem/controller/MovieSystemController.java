@@ -38,19 +38,28 @@ public class MovieSystemController {
     }
 
     @GetMapping("/movies")
-    public ResponseEntity<List<MovieSimpleView>> getMovies() {
-        return ResponseEntity.ok(movieService.getAllMovies());
+    public ResponseEntity<List<MovieSimpleView>> getMovies(@RequestParam("page")int page, @RequestParam("page_size") int pageSize) {
+        return ResponseEntity.ok(movieService.getAllMovies(page, pageSize));
     }
 
     @GetMapping("/movies/genre/{genre_id}")
-    public ResponseEntity<List<MovieSimpleView>> getMoviesByCategory(@PathVariable int genre_id) {
-        return ResponseEntity.ok(movieService.getMoviesByGenre(genre_id));
+    public ResponseEntity<List<MovieSimpleView>> getMoviesByCategory(@PathVariable int genre_id,
+                                                                     @RequestParam("page")int page,
+                                                                     @RequestParam("page_size")int pageSize) {
+        return ResponseEntity.ok(movieService.getMoviesByGenre(genre_id, page, pageSize));
     }
 
     @GetMapping("/movies/search")
-    public ResponseEntity<List<MovieSimpleView>> searchMoviesByTitle(@RequestParam("q") String searchQuery) {
+    public ResponseEntity<List<MovieSimpleView>> searchMoviesByTitle(@RequestParam("q") String searchQuery,
+                                                                     @RequestParam("page") int page,
+                                                                     @RequestParam("page_size") int pageSize) {
         System.out.println("search query: " + searchQuery);
-        return ResponseEntity.ok(movieService.getMoviesBySearch(searchQuery));
+        return ResponseEntity.ok(movieService.getMoviesBySearch(searchQuery, page, pageSize));
+    }
+
+    @GetMapping("/movies/autocompletion/{searchQuery}")
+    public ResponseEntity<List<String>> getSearchAutocompletion(@PathVariable String searchQuery) {
+        return ResponseEntity.ok(movieService.getMovieSuggestionByInput(searchQuery));
     }
 
     @GetMapping("/movies/{id}")
