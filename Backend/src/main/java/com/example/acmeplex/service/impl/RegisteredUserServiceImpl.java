@@ -7,6 +7,7 @@ import com.example.acmeplex.service.RegisteredUserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,7 +72,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     public RegisteredUserDTO getRegisteredUserById(Long id) {
         // Fetch the user or throw an exception if not found
         RegisteredUser registeredUser = registeredUserRepository.findById(id)
-                                  .orElseThrow(() -> new ResourceNotFoundException("Registered User not found with id: " + id));
+                                  .orElseThrow(() -> new ResourceAccessException("Registered User not found with id: " + id));
         
         // Convert the entity to DTO
         return convertToDTO(registeredUser);
@@ -103,7 +104,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     public RegisteredUserDTO updateRegisteredUser(Long id, RegisteredUserDTO registeredUserDTO) {
         // Fetch the existing user or throw an exception if not found
         RegisteredUser existingRegisteredUser = registeredUserRepository.findById(id)
-                                 .orElseThrow(() -> new ResourceNotFoundException("Registered User not found with id: " + id));
+                                 .orElseThrow(() -> new ResourceAccessException("Registered User not found with id: " + id));
         
         // Update the user's details
         existingRegisteredUser.setName(registeredUserDTO.getName());
@@ -129,7 +130,7 @@ public class RegisteredUserServiceImpl implements RegisteredUserService {
     public void deleteRegisteredUser(Long id) {
         // Check if the user exists before attempting deletion
         if (!registeredUserRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Registered User not found with id: " + id);
+            throw new ResourceAccessException("Registered User not found with id: " + id);
         }
         
         // Delete the user by ID

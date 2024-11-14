@@ -8,8 +8,10 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.ResourceAccessException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,7 +65,7 @@ public class UserServiceImpl implements UserService {
         // Check if a user with the given email already exists to prevent duplicates
         if (userRepository.existsByEmail(userDTO.getEmail())) {
             logger.error("User creation failed: Email {} is already in use.", userDTO.getEmail());
-            throw new DuplicateResourceException("Email already in use: " + userDTO.getEmail());
+            throw new DuplicateKeyException("Email already in use: " + userDTO.getEmail());
         }
 
         // Convert DTO to entity
@@ -93,7 +95,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                           .orElseThrow(() -> {
                               logger.error("User not found with ID: {}", id);
-                              return new ResourceNotFoundException("User not found with id: " + id);
+                              return new ResourceAccessException("User not found with id: " + id);
                           });
         
         logger.info("User fetched successfully with ID: {}", id);
@@ -140,13 +142,13 @@ public class UserServiceImpl implements UserService {
         User existingUser = userRepository.findById(id)
                                  .orElseThrow(() -> {
                                      logger.error("User not found with ID: {}", id);
-                                     return new ResourceNotFoundException("User not found with id: " + id);
+                                     return new ResourceAccessException("User not found with id: " + id);
                                  });
         
         // If email is being updated, check for duplicates
         if (!existingUser.getEmail().equals(userDTO.getEmail()) && userRepository.existsByEmail(userDTO.getEmail())) {
             logger.error("User update failed: Email {} is already in use.", userDTO.getEmail());
-            throw new DuplicateResourceException("Email already in use: " + userDTO.getEmail());
+            throw new DuplicateKeyException("Email already in use: " + userDTO.getEmail());
         }
 
         // Update the user's details
@@ -177,7 +179,7 @@ public class UserServiceImpl implements UserService {
         // Check if the user exists before attempting deletion
         if (!userRepository.existsById(id)) {
             logger.error("User deletion failed: User not found with ID: {}", id);
-            throw new ResourceNotFoundException("User not found with id: " + id);
+            throw new ResourceAccessException("User not found with id: " + id);
         }
         
         // Delete the user by ID
