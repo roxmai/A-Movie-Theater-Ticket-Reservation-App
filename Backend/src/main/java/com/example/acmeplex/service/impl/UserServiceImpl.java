@@ -1,8 +1,6 @@
 package com.example.acmeplex.service.impl;
 
 import com.example.acmeplex.dto.UserDTO;
-import com.example.acmeplex.exception.DuplicateResourceException;
-import com.example.acmeplex.exception.ResourceNotFoundException;
 import com.example.acmeplex.model.User;
 import com.example.acmeplex.repository.UserRepository;
 import com.example.acmeplex.service.UserService;

@@ -1,6 +1,6 @@
 package com.example.acmeplex.dto;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 public class RegisteredUserDTO extends UserDTO {
     

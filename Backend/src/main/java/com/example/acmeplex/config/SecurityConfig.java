@@ -9,7 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig extends WebSecurityConfiguration {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -17,25 +17,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-            .withUser("admin")
-            .password(bCryptPasswordEncoder.encode("adminpass"))
-            .roles("ADMIN");
-    }
+    // @Override
+    // protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    //     auth.inMemoryAuthentication()
+    //         .withUser("admin")
+    //         .password(bCryptPasswordEncoder.encode("adminpass"))
+    //         .roles("ADMIN");
+    // }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-            .csrf().disable()
-            .authorizeRequests()
-                .antMatchers("/api/admin/**").hasRole("ADMIN")
-                .antMatchers("/api/users/**", "/api/registered-users/**").permitAll()
-                .anyRequest().authenticated()
-            .and()
-            .httpBasic();
-    }
+    // @Override
+    // protected void configure(HttpSecurity http) throws Exception {
+    //     http
+    //         .csrf().disable()
+    //         .authorizeRequests()
+    //             .antMatchers("/api/admin/**").hasRole("ADMIN")
+    //             .antMatchers("/api/users/**", "/api/registered-users/**").permitAll()
+    //             .anyRequest().authenticated()
+    //         .and()
+    //         .httpBasic();
+    // }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
