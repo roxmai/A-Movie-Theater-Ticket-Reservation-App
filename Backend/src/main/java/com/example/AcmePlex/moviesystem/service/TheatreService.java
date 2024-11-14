@@ -4,7 +4,6 @@ import com.example.AcmePlex.moviesystem.model.Theatre;
 import com.example.AcmePlex.moviesystem.repository.TheatreShowtimeSeatRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

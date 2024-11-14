@@ -2,8 +2,6 @@ package com.example.AcmePlex.moviesystem.model.vo;
 
 import com.example.AcmePlex.moviesystem.model.Movie;
 
-import java.sql.Date;
-
 public class MovieSimpleView {
     private int id;
     private String title;
