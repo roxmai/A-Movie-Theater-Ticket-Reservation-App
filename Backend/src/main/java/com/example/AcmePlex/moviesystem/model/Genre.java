@@ -1,13 +1,13 @@
 package com.example.AcmePlex.moviesystem.model;
 
-public class Category {
+public class Genre {
     private int id;
     private String title;
 
-    public Category() {
+    public Genre() {
     }
 
-    public Category(int id, String title) {
+    public Genre(int id, String title) {
         this.id = id;
         this.title = title;
     }
