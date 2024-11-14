@@ -2,6 +2,7 @@ package com.example.AcmePlex.moviesystem.repository;
 
 import com.example.AcmePlex.moviesystem.model.Theatre;
 import com.example.AcmePlex.moviesystem.model.vo.Showtime;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -15,6 +16,7 @@ public class TheatreShowtimeSeatRepository {
     private final JdbcTemplate jdbcTemplate;
 
 
+    @Autowired
     public TheatreShowtimeSeatRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -57,6 +59,12 @@ public class TheatreShowtimeSeatRepository {
     public List<Theatre> findTheatresByMovie(int movie_id) {
         String sql = "SELECT * FROM  theatre WHERE id IN (SELECT DISTINCT theatre_id FROM showtime where movie_id = ?)";
         return jdbcTemplate.query(sql, theatreRowMapper, movie_id);
+    }
+
+    public List<Showtime> findShowtimesByMovieAndTheatre(int movie_id, int theatre_id)
+    {
+        String sql = "SELECT * from showtime where movie_id = ? AND theatre_id = ?";
+        return jdbcTemplate.query(sql, showtimeRowMapper, movie_id, theatre_id);
     }
 
 }
