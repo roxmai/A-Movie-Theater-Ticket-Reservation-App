@@ -54,18 +54,18 @@ public class MovieSystemController {
     }
 
     @GetMapping("/movies/{id}")
-    public ResponseEntity<MovieDetailedView> getMovieDetails(@PathVariable int id) {
+    public ResponseEntity<MovieDetailedView> getMovieDetailsById(@PathVariable int id) {
         Optional<MovieDetailedView> movieDetailedView = movieService.getMovieById(id);
         return ResponseEntity.of(movieDetailedView);
     }
 
     @GetMapping("/theatres/movie/{movie_id}")
-    public ResponseEntity<List<Theatre>> getTheatresNyMovie(@PathVariable int movie_id) {
+    public ResponseEntity<List<Theatre>> getTheatresByMovie(@PathVariable int movie_id) {
         return ResponseEntity.ok(theatreService.getTheatresByMovie(movie_id));
     }
 
     @GetMapping("/showtime/movie/{movie_id}/theatre/{theatre_id}")
-    public ResponseEntity<List<Showtime>> getTheatresNyMovie(@PathVariable int movie_id, @PathVariable int theatre_id) {
+    public ResponseEntity<List<Showtime>> getShowtimesByMovieAndTheatre(@PathVariable int movie_id, @PathVariable int theatre_id) {
         return ResponseEntity.ok(showtimeService.getShowtimeList(movie_id, theatre_id));
     }
 }
