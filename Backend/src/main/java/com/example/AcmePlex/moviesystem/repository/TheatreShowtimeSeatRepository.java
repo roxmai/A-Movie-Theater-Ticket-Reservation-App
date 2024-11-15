@@ -1,7 +1,10 @@
 package com.example.AcmePlex.moviesystem.repository;
 
+import com.example.AcmePlex.moviesystem.model.Movie;
+import com.example.AcmePlex.moviesystem.model.Seat;
 import com.example.AcmePlex.moviesystem.model.Theatre;
-import com.example.AcmePlex.moviesystem.model.vo.Showtime;
+import com.example.AcmePlex.moviesystem.model.Showtime;
+import com.example.AcmePlex.moviesystem.model.dto.ShowtimeSeatDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class TheatreShowtimeSeatRepository {
@@ -50,6 +54,20 @@ public class TheatreShowtimeSeatRepository {
         }
     };
 
+    private final RowMapper<ShowtimeSeatDTO> showtimeSeatDTORowMapper = new RowMapper<ShowtimeSeatDTO>() {
+        @Override
+        public ShowtimeSeatDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new ShowtimeSeatDTO(
+                    rs.getInt("ss.id"),
+                    rs.getInt("row"),
+                    rs.getInt("column"),
+                    rs.getInt("theatre_row"),
+                    rs.getInt("theatre_column"),
+                    rs.getBoolean("ss.available")
+            );
+        }
+    };
+
     public List<Showtime> findShowtimesByMovie(int movie_id)
     {
         String sql = "SELECT * from showtime where movie_id = ?";
@@ -67,4 +85,15 @@ public class TheatreShowtimeSeatRepository {
         return jdbcTemplate.query(sql, showtimeRowMapper, movie_id, theatre_id);
     }
 
+    public Optional<Theatre> findTheatreById(int movieId) {
+        String sql = "SELECT * FROM theatre where id=?";
+        List<Theatre> theatres = jdbcTemplate.query(sql, theatreRowMapper, movieId);
+        return theatres.isEmpty() ? Optional.empty() : Optional.of(theatres.get(0));
+    }
+
+    public List<ShowtimeSeatDTO> findSeatsByShowtime(int showtimeId) {
+        String sql = "SELECT ss.id, s.row, s.`column`, s.theatre_row, s.theatre_column, ss.available "
+                + "FROM seat AS s INNER JOIN showtime_seat AS ss ON s.id=ss.seat_id WHERE ss.showtime_id = ? ";
+        return jdbcTemplate.query(sql, showtimeSeatDTORowMapper, showtimeId);
+    }
 }

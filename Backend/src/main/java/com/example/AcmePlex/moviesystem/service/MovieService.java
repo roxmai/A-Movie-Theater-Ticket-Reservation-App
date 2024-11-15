@@ -7,7 +7,7 @@ import com.example.AcmePlex.moviesystem.model.dto.MovieGenreDTO;
 import com.example.AcmePlex.moviesystem.model.vo.MovieDetailedView;
 import com.example.AcmePlex.moviesystem.model.vo.MovieSimpleView;
 import com.example.AcmePlex.moviesystem.model.vo.Pagination;
-import com.example.AcmePlex.moviesystem.model.vo.Showtime;
+import com.example.AcmePlex.moviesystem.model.Showtime;
 import com.example.AcmePlex.moviesystem.repository.MovieGenreRepository;
 import com.example.AcmePlex.moviesystem.repository.TheatreShowtimeSeatRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -3,12 +3,12 @@ package com.example.AcmePlex.moviesystem.controller;
 import com.example.AcmePlex.moviesystem.model.Genre;
 import com.example.AcmePlex.moviesystem.model.Theatre;
 import com.example.AcmePlex.moviesystem.model.vo.MovieDetailedView;
-import com.example.AcmePlex.moviesystem.model.vo.MovieSimpleView;
-import com.example.AcmePlex.moviesystem.model.vo.Showtime;
+import com.example.AcmePlex.moviesystem.model.Showtime;
 import com.example.AcmePlex.moviesystem.service.MovieService;
 import com.example.AcmePlex.moviesystem.service.ShowtimeService;
 import com.example.AcmePlex.moviesystem.service.TheatreService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -79,4 +79,11 @@ public class MovieSystemController {
     public ResponseEntity<List<Showtime>> getShowtimesByMovieAndTheatre(@PathVariable int movie_id, @PathVariable int theatre_id) {
         return ResponseEntity.ok(showtimeService.getShowtimeList(movie_id, theatre_id));
     }
+
+    @GetMapping("/seats/theatre/{theatreId}/showtime/{showtimeId}")
+    public ResponseEntity<Map<String, Object>> getSeats(@PathVariable int theatreId, @PathVariable int showtimeId) {
+        Map<String, Object> response = showtimeService.getSeats(theatreId, showtimeId);
+        return ResponseEntity.ofNullable(response);
+    }
+
 }
