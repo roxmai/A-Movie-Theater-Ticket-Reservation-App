@@ -1,4 +1,4 @@
-package com.example.acmeplex.config;
+package com.example.acmeplex.usersystem.config;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.*;

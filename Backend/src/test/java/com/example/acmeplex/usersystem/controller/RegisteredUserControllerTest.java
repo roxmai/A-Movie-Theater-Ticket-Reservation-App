@@ -1,8 +1,8 @@
-package com.example.acmeplex.controller;
+package com.example.acmeplex.usersystem.controller;
 
-import com.example.acmeplex.controller.RegisteredUserController;
-import com.example.acmeplex.dto.RegisteredUserDTO;
-import com.example.acmeplex.service.RegisteredUserService;
+import com.example.acmeplex.usersystem.controller.RegisteredUserController;
+import com.example.acmeplex.usersystem.dto.RegisteredUserDTO;
+import com.example.acmeplex.usersystem.service.RegisteredUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,9 +1,9 @@
-package com.example.acmeplex.service.impl;
+package com.example.acmeplex.usersystem.service.impl;
 
-import com.example.acmeplex.dto.RegisteredUserDTO;
-import com.example.acmeplex.model.RegisteredUser;
-import com.example.acmeplex.repository.RegisteredUserRepository;
-import com.example.acmeplex.service.RegisteredUserService;
+import com.example.acmeplex.usersystem.dto.RegisteredUserDTO;
+import com.example.acmeplex.usersystem.model.RegisteredUser;
+import com.example.acmeplex.usersystem.repository.RegisteredUserRepository;
+import com.example.acmeplex.usersystem.service.RegisteredUserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

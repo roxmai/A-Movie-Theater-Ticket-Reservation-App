@@ -1,4 +1,4 @@
-package com.example.acmeplex.config;
+package com.example.acmeplex.usersystem.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

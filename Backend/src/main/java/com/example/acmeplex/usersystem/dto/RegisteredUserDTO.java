@@ -1,21 +1,20 @@
-package com.example.acmeplex.model;
+package com.example.acmeplex.usersystem.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
-@Entity
-@Table(name = "registered_users")
-public class RegisteredUser extends User {
-
+public class RegisteredUserDTO extends UserDTO {
+    
+    @NotBlank(message = "Credit Card Info is mandatory")
     private String creditCardInfo;
+    
     private boolean activeSubscription;
 
     // Default constructor
-    public RegisteredUser() {}
+    public RegisteredUserDTO() {}
 
     // All-args constructor
-    public RegisteredUser(String name, String email, String address, String creditCardInfo, boolean activeSubscription) {
-        super(name, email, address);
+    public RegisteredUserDTO(Long id, String name, String email, String address, String creditCardInfo, boolean activeSubscription) {
+        super(id, name, email, address);
         this.creditCardInfo = creditCardInfo;
         this.activeSubscription = activeSubscription;
     }

@@ -1,4 +1,4 @@
-package com.example.acmeplex.model;
+package com.example.acmeplex.usersystem.model;
 
 import jakarta.persistence.*;
 

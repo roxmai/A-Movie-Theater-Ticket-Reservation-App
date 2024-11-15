@@ -1,7 +1,7 @@
-package com.example.acmeplex.controller;
+package com.example.acmeplex.usersystem.controller;
 
-import com.example.acmeplex.dto.RegisteredUserDTO;
-import com.example.acmeplex.service.RegisteredUserService;
+import com.example.acmeplex.usersystem.dto.RegisteredUserDTO;
+import com.example.acmeplex.usersystem.service.RegisteredUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

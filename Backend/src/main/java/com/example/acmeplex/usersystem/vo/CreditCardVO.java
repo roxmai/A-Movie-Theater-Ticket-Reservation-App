@@ -1,4 +1,4 @@
-package com.example.acmeplex.vo;
+package com.example.acmeplex.usersystem.vo;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

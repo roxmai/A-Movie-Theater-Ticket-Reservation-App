@@ -1,4 +1,4 @@
-package com.example.acmeplex.dto;
+package com.example.acmeplex.usersystem.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

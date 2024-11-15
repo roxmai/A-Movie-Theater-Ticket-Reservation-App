@@ -1,4 +1,4 @@
-package com.example.acmeplex.exception;
+package com.example.acmeplex.usersystem.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

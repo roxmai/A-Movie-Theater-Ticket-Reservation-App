@@ -1,6 +1,6 @@
-package com.example.acmeplex.service;
+package com.example.acmeplex.usersystem.service;
 
-import com.example.acmeplex.dto.UserDTO;
+import com.example.acmeplex.usersystem.dto.UserDTO;
 
 import java.util.List;
 

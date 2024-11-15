@@ -1,9 +1,9 @@
-package com.example.acmeplex.service.impl;
+package com.example.acmeplex.usersystem.service.impl;
 
-import com.example.acmeplex.dto.UserDTO;
-import com.example.acmeplex.model.User;
-import com.example.acmeplex.repository.UserRepository;
-import com.example.acmeplex.service.UserService;
+import com.example.acmeplex.usersystem.dto.UserDTO;
+import com.example.acmeplex.usersystem.model.User;
+import com.example.acmeplex.usersystem.repository.UserRepository;
+import com.example.acmeplex.usersystem.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,6 +1,6 @@
-package com.example.acmeplex.repository;
+package com.example.acmeplex.usersystem.repository;
 
-import com.example.acmeplex.model.RegisteredUser;
+import com.example.acmeplex.usersystem.model.RegisteredUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

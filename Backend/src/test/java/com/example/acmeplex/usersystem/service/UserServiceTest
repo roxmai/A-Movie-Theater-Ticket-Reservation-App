@@ -1,0 +1,134 @@
+package com.example.acmeplex.usersystem.tests.service;
+
+import com.example.acmeplex.usersystem.dto.UserDTO;
+import com.example.acmeplex.usersystem.model.User;
+import com.example.acmeplex.usersystem.repository.UserRepository;
+import com.example.acmeplex.usersystem.service.impl.UserServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.web.client.ResourceAccessException;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+class UserServiceTests {
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private ModelMapper modelMapper;
+
+    @InjectMocks
+    private UserServiceImpl userService;
+
+    private User existingEntity;
+    private UserDTO existingDTO;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        existingEntity = new User() {
+            { setId(1L); setName("Jane Doe"); setEmail("jane.doe@example.com"); setAddress("456 Maple St"); }
+        };
+        existingDTO = new UserDTO(1L, "Jane Doe", "jane.doe@example.com", "456 Maple St");
+
+        when(modelMapper.map(any(User.class), eq(UserDTO.class))).thenReturn(existingDTO);
+        when(modelMapper.map(any(UserDTO.class), eq(User.class))).thenReturn(existingEntity);
+    }
+
+    @Test
+    void testCreateUser_success() {
+        when(userRepository.existsByEmail(existingDTO.getEmail())).thenReturn(false);
+        when(userRepository.save(existingEntity)).thenReturn(existingEntity);
+
+        UserDTO result = userService.createUser(existingDTO);
+
+        assertEquals(existingDTO.getEmail(), result.getEmail());
+    }
+
+    @Test
+    void testCreateUser_duplicateEmail() {
+        when(userRepository.existsByEmail(existingDTO.getEmail())).thenReturn(true);
+
+        assertThrows(DuplicateKeyException.class, () -> {
+            userService.createUser(existingDTO);
+        });
+    }
+
+    @Test
+    void testGetUserById_ifUserExists() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(existingEntity));
+
+        UserDTO result = userService.getUserById(1L);
+
+        assertEquals(existingDTO.getEmail(), result.getEmail());
+    }
+
+    @Test
+    void testGetUserById_ifUserDoesNotExist() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceAccessException.class, () -> {
+            userService.getUserById(1L);
+        });
+    }
+
+    @Test
+    void testGetAllUsers() {
+        List<User> usersList = new ArrayList<>();
+        usersList.add(existingEntity);
+        when(userRepository.findAll()).thenReturn(usersList);
+
+        List<UserDTO> result = userService.getAllUsers();
+
+        assertEquals(1, result.size());
+        assertEquals(existingDTO.getEmail(), result.get(0).getEmail());
+    }
+
+    @Test
+    void testUpdateUser_ifUserExists() {
+        when(userRepository.findById(1L)).thenReturn(Optional.of(existingEntity));
+        when(userRepository.save(existingEntity)).thenReturn(existingEntity);
+
+        UserDTO result = userService.updateUser(1L, existingDTO);
+
+        assertEquals(existingDTO.getName(), result.getName());
+    }
+
+    @Test
+    void testUpdateUser_ifUserDoesNotExist() {
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceAccessException.class, () -> {
+            userService.updateUser(1L, existingDTO);
+        });
+    }
+
+    @Test
+    void testDeleteUser_ifUserExists() {
+        when(userRepository.existsById(1L)).thenReturn(true);
+
+        userService.deleteUser(1L);
+
+        verify(userRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void testDeleteUser_ifUserDoesNotExist() {
+        when(userRepository.existsById(1L)).thenReturn(false);
+
+        assertThrows(ResourceAccessException.class, () -> {
+            userService.deleteUser(1L);
+        });
+    }
+}
