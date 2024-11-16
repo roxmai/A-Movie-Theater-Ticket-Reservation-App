@@ -11,3 +11,8 @@ This is a movie theater ticket reservation app for AcmePlex, allowing users to s
   - No cancellation fees.
 
 This is templated with start.spring.io initializer.
+
+
+```
+gradlew build --refresh-dependencies
+```

@@ -1,4 +1,4 @@
-package com.example.AcmePlex;
+package com.example.acmeplex;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
