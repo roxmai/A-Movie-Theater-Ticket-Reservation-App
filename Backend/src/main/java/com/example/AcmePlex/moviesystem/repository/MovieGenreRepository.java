@@ -61,14 +61,14 @@ public class MovieGenreRepository {
 
     public List<Movie> findAllMovies(int page, int pageSize) {
         int offset = (page - 1) * pageSize;
-        String sql = "SELECT * FROM movie ORDER BY title LIMIT ? OFFSET ?";
+        String sql = "SELECT * FROM movie ORDER BY release_date DESC LIMIT ? OFFSET ?";
 
         return jdbcTemplate.query(sql, movieRowMapper, pageSize, offset);
     }
 
     public List<Movie> findMoviesByGenre(int genreId, int page, int pageSize) {
         int offset = (page - 1) * pageSize;
-        String sql = "SELECT * FROM movie where genre_id = ?  LIMIT ? OFFSET ?";
+        String sql = "SELECT * FROM movie where genre_id = ? ORDER BY release_date DESC  LIMIT ? OFFSET ?";
         return jdbcTemplate.query(sql, movieRowMapper, genreId, pageSize, offset);
     }
 
@@ -80,9 +80,24 @@ public class MovieGenreRepository {
 
     public List<Movie> findMovieBySearch(String searchQuery, int page, int pageSize) {
         int offset = (page - 1) * pageSize;
-        String sql = "SELECT * FROM movie where LOWER(title)  LIKE ? LIMIT ? OFFSET ?";
+        String sql = "SELECT * FROM movie where LOWER(title)  LIKE ? ORDER BY release_date DESC LIMIT ? OFFSET ?";
         String formattedQuery = "%" + searchQuery.toLowerCase() + "%";
         return jdbcTemplate.query(sql, movieRowMapper, formattedQuery, pageSize, offset);
+    }
+
+    public int getMoviesCount() {
+        String sql = "SELECT COUNT(*) FROM movie";
+        return jdbcTemplate.queryForObject(sql, Integer.class);
+    }
+
+    public int getMoviesCountByGenre(int genreId) {
+        String sql = "SELECT COUNT(*) FROM movie WHERE genre_id = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, genreId);
+    }
+
+    public int getMoviesCountBySearch(String searchQuery) {
+        String sql = "SELECT COUNT(*) FROM movie where LOWER(title)  LIKE ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, searchQuery);
     }
 
     public List<String> findMovieSuggestions(String searchQuery) {

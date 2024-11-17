@@ -5,16 +5,12 @@ public class Pagination {
     private int pageSize;
     private int totalItems;
     private int totalPages;
-    private boolean hasNextPage;
-    private boolean hasPreviousPage;
 
     public Pagination(int page, int pageSize, int totalItems) {
-        currentPage = page;
+        this.currentPage = page;
         this.pageSize = pageSize;
         this.totalItems = totalItems;
-        totalPages = (int)Math.ceil((double)totalItems / pageSize);
-        hasNextPage = page != totalPages;
-        hasPreviousPage = page != 1;
+        this.totalPages = Math.max(1, (int)Math.ceil((double)totalItems / pageSize));
     }
 
 
@@ -48,21 +44,5 @@ public class Pagination {
 
     public void setTotalPages(int totalPages) {
         this.totalPages = totalPages;
-    }
-
-    public boolean isHasNextPage() {
-        return hasNextPage;
-    }
-
-    public void setHasNextPage(boolean hasNextPage) {
-        this.hasNextPage = hasNextPage;
-    }
-
-    public boolean isHasPreviousPage() {
-        return hasPreviousPage;
-    }
-
-    public void setHasPreviousPage(boolean hasPreviousPage) {
-        this.hasPreviousPage = hasPreviousPage;
     }
 }

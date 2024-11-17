@@ -42,7 +42,7 @@ public class MovieService {
         Map<String, Object> moviesWithPagination= new HashMap<>();
         List<Movie> movies = movieGenreRepository.findAllMovies(page, pageSize);
         moviesWithPagination.put("movies", movies.stream().map(this::convertToSimple).toList());
-        Pagination pagination = new Pagination(page, pageSize, movies.size());
+        Pagination pagination = new Pagination(page, pageSize, movieGenreRepository.getMoviesCount());
         moviesWithPagination.put("pagination", pagination);
         return moviesWithPagination;
     }
@@ -52,7 +52,7 @@ public class MovieService {
         Map<String, Object> moviesWithPagination= new HashMap<>();
         List<Movie> movies =  movieGenreRepository.findMoviesByGenre(genreId, page, pageSize);
         moviesWithPagination.put("movies", movies.stream().map(this::convertToSimple).toList());
-        Pagination pagination = new Pagination(page, pageSize, movies.size());
+        Pagination pagination = new Pagination(page, pageSize, movieGenreRepository.getMoviesCountByGenre(genreId));
         moviesWithPagination.put("pagination", pagination);
         return moviesWithPagination;
     }
@@ -68,7 +68,7 @@ public class MovieService {
         }
         Map<String, Object> moviesWithPagination = new HashMap<>();
         List<Movie> movies = movieGenreRepository.findMovieBySearch(searchQuery, page, pageSize);
-        Pagination pagination = new Pagination(page, pageSize, movies.size());
+        Pagination pagination = new Pagination(page, pageSize, movieGenreRepository.getMoviesCountBySearch(searchQuery));
         moviesWithPagination.put("movies", movies.stream().map(this::convertToSimple).toList());
         moviesWithPagination.put("pagination", pagination);
         return moviesWithPagination;

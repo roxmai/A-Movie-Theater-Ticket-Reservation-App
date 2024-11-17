@@ -40,21 +40,21 @@ public class MovieSystemController {
 
     @GetMapping("/movies")
     public ResponseEntity<Map<String, Object>> getMovies(@RequestParam(value = "page", defaultValue = "1")int page,
-                                                         @RequestParam(value = "pageSize", defaultValue = "20")int pageSize) {
+                                                         @RequestParam(value = "pageSize", defaultValue = "10")int pageSize) {
         return ResponseEntity.ok(movieService.getAllMovies(page, pageSize));
     }
 
     @GetMapping("/movies/genre/{genre_id}")
     public ResponseEntity<Map<String, Object>> getMoviesByCategory(@PathVariable int genre_id,
-                                                                     @RequestParam("page")int page,
-                                                                     @RequestParam("pageSize")int pageSize) {
+                                                                     @RequestParam(value = "page", defaultValue = "1")int page,
+                                                                     @RequestParam(value = "pageSize", defaultValue = "10")int pageSize) {
         return ResponseEntity.ok(movieService.getMoviesByGenre(genre_id, page, pageSize));
     }
 
     @GetMapping("/movies/search")
     public ResponseEntity<Map<String, Object>> searchMoviesByTitle(@RequestParam("q") String searchQuery,
-                                                                     @RequestParam("page") int page,
-                                                                     @RequestParam("pageSize") int pageSize) {
+                                                                     @RequestParam(value = "page", defaultValue = "1") int page,
+                                                                     @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
         System.out.println("search query: " + searchQuery);
         return ResponseEntity.ok(movieService.getMoviesBySearch(searchQuery, page, pageSize));
     }
