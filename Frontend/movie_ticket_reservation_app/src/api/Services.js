@@ -32,3 +32,24 @@ export const getMoviesBySearch = async (search, page=1, pageSize=DEFAULT_PAGE_SI
   const response = await api.get(`/movies/search`+query);
   return response.data;
 }
+
+export const getMovieDetail = async (movieId) => {
+  const response = await api.get(`/movie/${movieId}`);
+  return  response.data;
+}
+
+export const getTheatres = async (movieId) => {
+  const response = await api.get(`/theatres/movie/${movieId}`)
+  return response.data;
+}
+
+export const getShowtimes = async (movieId, theatreId) => {
+  const response = await api.get(`/showtimes/movie/${movieId}/theatre/${theatreId}`)
+  return response.data;
+}
+
+export const getSeats = async (theatreId, showtimeId) => {
+  const response = await api.get(`/seats/theatre/${theatreId}/showtime/${showtimeId}`)
+  console.log(response.data);
+  return response.data;
+}

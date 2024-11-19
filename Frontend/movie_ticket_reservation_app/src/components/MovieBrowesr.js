@@ -7,7 +7,7 @@ import {Pagination} from '@mui/material';
 import {List, ListItem, ListItemText, ListItemButton} from '@mui/material';
 import {Grid2, Card, CardMedia, CardContent, Typography} from '@mui/material'
 import { getGenres, getMovies, getMoviesByGenre, getMoviesBySearch } from '../api/Services'; 
-
+import { Link, useNavigate } from 'react-router-dom';
 function SearchBar({search, handleValueChange, handleSearch}) {
     const handleKeyDown = async (event) => {
         if(event.key === 'Enter') {
@@ -141,11 +141,13 @@ function MovieGrid({movies}) {
         >
             {movies.map((movie) => (
                 <Grid2 item xs={6} sm={4} md={3} key={movie.id}>
+                    <Link to={"/movie/"+movie.id}>
                     <Card sx={{ 
                         maxWidth: 160, 
                         border: 'none',
                         boxShadow: 'none'
-                        }}>
+                        }}
+                        >
                         <Box sx={{ position: 'relative' }}>
                         <CardMedia
                             component="img"
@@ -160,6 +162,8 @@ function MovieGrid({movies}) {
                         </Typography>
                         </CardContent>
                     </Card>
+                    </Link>
+                    
                 </Grid2>
             ))}
     </Grid2>

@@ -3,25 +3,30 @@ import { Box, Divider, Button, ButtonGroup, Card, CardMedia, IconButton, List, L
 import CheckIcon from '@mui/icons-material/Check';
 import { ChevronLeft } from "@mui/icons-material";
 import { useHorizontalScroll } from "../utils/horizontalScroll";
-function MovieOverview({title, image}) {
+import { getMovieDetail, getTheatres, getShowtimes, getSeats } from "../api/Services";
+import { useParams } from "react-router-dom";
+
+function MovieOverview({movie}) {
     return (
         <Box sx={{display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            alignSelf: 'flex-start'
         }}>
             <Box
             sx={{display: 'flex',
                 flexDirection: 'column',
+                width: 300
             }}
             >
                 <Typography variant="h3">
-                    {title}
+                    {movie?.title}
                 </Typography>
                 <Card>
                     <Box>
                         <CardMedia 
                             component='img'
-                            image={image}
+                            image={movie?.image}
                             sx={{width: 300, height: 380}}
                         />
                     </Box>
@@ -41,24 +46,24 @@ function MovieDetail({movie, handleBuyTickets}) {
             }}
         >
             <Typography variant="h6">
-                Summary
+                Information
             </Typography>
             <Typography variant="body">
-                Genre: {movie.genre} Length: {movie.length} min
+                Genre: {movie?.genre}, Length: {movie?.length} min
             </Typography>
             <Typography variant="body">
-                Release date: {movie.releaseDate}
+                Release date: {movie?.releaseDate}
             </Typography>
             <Typography variant="body">
-                {movie.description}
+                {movie?.description}
             </Typography>
             {
-                !movie.hasShow && 
+                !movie?.hasShowtime && 
                 <Typography variant="body" color="error">
                     This movie has no showtime right now.
                 </Typography>
             }
-            <Button disabled={!movie.hasShow} variant="contained" sx={{width: 200, mt: 4}} onClick={()=>{handleBuyTickets(1)}}>
+            <Button disabled={!movie?.hasShowtime} variant="contained" sx={{width: 200, mt: 4}} onClick={()=>{handleBuyTickets(1)}}>
                 Buy tickets
             </Button>
         </Box>
@@ -66,6 +71,8 @@ function MovieDetail({movie, handleBuyTickets}) {
 }
 
 function TheatreSelector({theatres, selected, setTheatre, handleBuyTickets, handleBack}) {
+    const [selectedId, setSelectedId] = useState(selected);
+
     return (
         <Box
         sx={{display: 'flex',
@@ -84,14 +91,12 @@ function TheatreSelector({theatres, selected, setTheatre, handleBuyTickets, hand
                         theatres.map((theatre)=>
                             <ListItem key={theatre.id} disablePadding
                             >
-                                <ListItemButton sx={{padding: 0}} onClick={()=>{setTheatre(theatre.id)}}>
+                                <ListItemButton sx={{padding: 0}} onClick={()=>{setSelectedId(theatre.id)}}>
                                 <ListItemText 
                                 primary={theatre.name} 
                                 secondary={theatre.location}
                                 />
-                                {
-                                    selected === theatre.id && <CheckIcon color="success"/>
-                                }
+                                <CheckIcon color="success" sx={{visibility: selectedId===theatre.id?'visible':'hidden'}}/>
                                 </ListItemButton>
                             </ListItem>
                         )
@@ -99,7 +104,7 @@ function TheatreSelector({theatres, selected, setTheatre, handleBuyTickets, hand
                 </List>
             </Box>
             <Box sx={{display: 'flex', justifyContent: 'center'}}>
-                <Button disabled={selected===0} variant="contained" onClick={()=>{handleBuyTickets(2);}}>Confirm</Button>
+                <Button disabled={selectedId===0} variant="contained" onClick={()=>{setTheatre(selectedId); handleBuyTickets(2);}}>Confirm</Button>
             </Box>
         </Box>
     );
@@ -110,13 +115,24 @@ function ShowtimeSelector({showtimes, selected, setShowtime, handleBuyTickets, h
     const [selectedDate, setSelectedDate] = useState(null);
     const scrollRef = useHorizontalScroll();
     const [showtimeList, setShowtimeList] = useState([]);
-
+    const [selectedId, setSeletedId] = useState(selected);
     
     useEffect(()=>{
         setSelectedDate(dates[0]);
         setShowtimeList(showtimes[dates[0]])
-        console.log(dates);
     }, [])
+
+    function convertToLocaltime(timestamp) {
+        const date = new Date(timestamp);
+
+        const localTime = date.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false, // Use `true` for 12-hour format
+        });
+      
+        return localTime;
+    }
 
     return (
         <Box
@@ -163,18 +179,18 @@ function ShowtimeSelector({showtimes, selected, setShowtime, handleBuyTickets, h
                         <React.Fragment key={showtime.id}>
                             <ListItem  key={showtime.id}>
                                 <ListItemButton 
-                                onClick={()=>{setShowtime(showtime.id)}}
+                                onClick={()=>{setSeletedId(showtime.id)}}
                                 disabled = {showtime.state==='Full' || showtime.state==='Closed'}
                                 >
                                     <ListItemText 
-                                    primary={showtime.startTime + " - " + showtime.endTime}
+                                    primary={convertToLocaltime(showtime.startTime) + " - " + convertToLocaltime(showtime.endTime)}
                                     secondary={(showtime.tickets-showtime.ticketsSold) + " tickts left"}
                                     />
                                     <Typography variant="body2">
                                         {showtime.state}
                                     </Typography>
                                     {
-                                        selected === showtime.id && <CheckIcon color="success"/>
+                                        selectedId === showtime.id && <CheckIcon color="success"/>
                                     }
                                 </ListItemButton>
                             </ListItem>
@@ -184,19 +200,18 @@ function ShowtimeSelector({showtimes, selected, setShowtime, handleBuyTickets, h
                 </List>
             </Box>
             <Box sx={{display: 'flex', justifyContent: 'center'}}>
-                <Button disabled={selected===0} variant="contained" onClick={()=>{handleBuyTickets(3)}}>Confirm</Button>
+                <Button disabled={selectedId===0} variant="contained" onClick={()=>{setShowtime(selectedId); handleBuyTickets(3)}}>Confirm</Button>
             </Box>
         </Box>
     );
 }
 
-function SeatArea({theatreRows, theatreColumns, seats, selected, setSelected}) {
+function SeatArea({seatsData, selected, setSelected}) {
     const boxSizeX = 20;
     const boxSizeY = 20;
-
-    useEffect(()=>{
-        console.log("SeatArea:", seats)
-    })
+    const seats = seatsData.seats;
+    const theatreRows = seatsData.theatreRows;
+    const theatreColumns = seatsData.theatreColumns;
 
     const seatStyles = (state) => {
         switch (state) {
@@ -213,7 +228,7 @@ function SeatArea({theatreRows, theatreColumns, seats, selected, setSelected}) {
               };
           case "selected":
             return { 
-                border: "2px solid darkgrey",
+                border: "2px solid lightgreen",
                 backgroundColor: "lightgreen",
                 cursor: "pointer"
             };
@@ -258,12 +273,9 @@ function SeatArea({theatreRows, theatreColumns, seats, selected, setSelected}) {
                         if(seat) {
                             if (seat.state==='available'){
                                 seat.state = 'selected'
-                                console.log("Selected: ", selected)
                                 setSelected([...selected, seat.id]);
-                                console.log("Selected: ", selected)
                             } else if(seat.state==='selected') {
                                 seat.state = 'available';
-                                console.log("Selected: ", selected)
                                 setSelected(selected.filter(num => num!==seat.id));   
                             }
                         }
@@ -279,11 +291,8 @@ function SeatArea({theatreRows, theatreColumns, seats, selected, setSelected}) {
       );
 }
 
-function SeatSelector({handleBack, handleBuyTickets, theatreRows, theatreColumns, seats, selected, setSelected}) {
-    useEffect(()=>{
-        console.log(seats);
-        console.log(theatreRows, theatreColumns);
-    })
+function SeatSelector({handleBack, handleBuyTickets, seats, selected, setSelected}) {
+    const [selectedSeats, setSelectedSeats] = useState(selected);
     return (
         <Box
         sx={{display: 'flex',
@@ -296,18 +305,23 @@ function SeatSelector({handleBack, handleBuyTickets, theatreRows, theatreColumns
                 <Box>Select seats</Box>
                 <Box width={24}></Box>
             </Box>
-            <Box>
-                Map
+            <Box sx={{display: 'flex', flexDirection: 'column', 
+                alignItems: 'center', gap: 10, 
+                border:'2px solid grey', borderRadius: '5px',
+                padding: 5, paddingTop: 1
+                }}>
+                <Box sx={{width: '80%', height: '10px', border: '2px solid darkgrey'}}></Box>
                 <SeatArea 
-                theatreRows={theatreRows}
-                theatreColumns={theatreColumns}
-                seats={seats}
-                selected={selected}
-                setSelected={setSelected}
+                seatsData={seats}
+                selected={selectedSeats}
+                setSelected={setSelectedSeats}
                 />
             </Box>
             <Box sx={{display: 'flex', justifyContent: 'center'}}>
-                <Button disabled={selected.length===0} variant="contained">Confirm</Button>
+                <Button disabled={selectedSeats.length===0} 
+                variant="contained"
+                onClick={()=>{setSelected(selectedSeats);console.log(selected)}}
+                >Confirm</Button>
             </Box>
         </Box>
     )
@@ -316,11 +330,10 @@ function SeatSelector({handleBack, handleBuyTickets, theatreRows, theatreColumns
 function BookingStepper({step, movie, handleBuyTickets, handleBack,
                         theatres, selectedTheatre, setTheatre,
                         showtimes, selectedShowtime, setShowtime,
-                        theatreRows, theatreColumns, 
                         seats, selectedSeats, setSelectedSeats}) {
     return (
         <Box sx={{
-            width: 400,
+            width: 500,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'center'
@@ -349,8 +362,6 @@ function BookingStepper({step, movie, handleBuyTickets, handleBack,
             {step===4 &&
             <SeatSelector 
             handleBack={handleBack}
-            theatreRows={theatreRows}
-            theatreColumns={theatreColumns}
             seats={seats} 
             selected={selectedSeats}
             setSelected={setSelectedSeats} />
@@ -371,85 +382,67 @@ function TicketSelector() {
     const [seats, setSeats] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [theatreRows, setTheatreRows]  = useState(0);
-    const [theatreColumns, setTheatreColumns] = useState(0);
+    const {id: movieId} = useParams();
 
     const handleBuyTickets = (currentStep) => {
         setStep(currentStep+1);
-        console.log(step);
     }
 
     const handleBack = (currentStep) => {
         setStep(currentStep-1);
     }
 
-    const handleSetTheatre = (id) => {
+    const handleConfirmTheatre = async (id) => {
         const theTheatre = theatres.filter((theatre)=>theatre.id===id).pop();
         setTheatre(theTheatre);
-        setTheatreRows(theTheatre.rows);
-        setTheatreColumns(theTheatre.columns);
+        try {
+            setLoading(true);
+            const data = await getShowtimes(movieId, theTheatre.id);
+            console.log(data);
+            setShowtimes(data);
+        } catch (err) {
+            setError(err);
+        } finally {
+            setLoading(false);
+        }
     }
 
-    const handleSetShowtime = (id) => {
-        const allShowtimes = Object.values(showtimes).flat();  
-        setShowtime(allShowtimes.find((showtime) => showtime.id === id));
+    const handleConfirmShowtime = async (id) => {
+        const allShowtimes = Object.values(showtimes).flat(); 
+        const theShowtime = allShowtimes.find((showtime)=>showtime.id===id);
+        setShowtime(theShowtime);
+        try {
+            setLoading(true);
+            const data = await getSeats(theatre.id, id);
+            setSeats(data);
+        } catch (err) {
+            setError(err);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    //need to redirect to payment
+    const handleConfirmSeats = async (ids) => {
+        setSelectedSeats(ids);
     }
 
     useEffect(()=>{
-        setMovie({
-            id: 18, 
-            title: "Red One", 
-            image: "http://localhost:8080/images/posters/RedOnePoster.jpg",
-            releaseDate: "2024-11-08",
-            description: "A movie dsafds fasdgagsdg dsag dgasdgsadgasdgasdgasdga ggasgg adgasg gdasgasgsdg adh ahsdhah ahadha adgahh ahrrha ahrheh gadg gas.",
-            length: 121,
-            genre: "Comedy",
-            hasShow: true
-        });
-        setTheatres([
-            {id: 1, name: 'AcmePlex movie theatre', location: 'Calgary'},
-            {id: 2, name: 'AcmePlex royal', location: 'Edmonton'}
-        ]);
+        const fetchMovieDetail = async () => {
+            setLoading(true);
+            try {
+                const data = await getMovieDetail(movieId);
+                const theatresData = await getTheatres(movieId);
+                setMovie(data);
+                setTheatres(theatresData);
+            } catch (err) {
+                setError(err.message)
+            } finally {
+                setLoading(false);
+            }
+        }
+        fetchMovieDetail();
         setStep(1);
-        setShowtimes({
-            "11-17": [
-                {id: 1, startTime: "16:00", endTime: "17:43", tickets: 40, ticketsSold: 40, state: "Full"},
-                {id: 2, startTime: "18:00", endTime: "19:50", tickets: 40, ticketsSold: 38, state: "Closed"},
-                {id: 4, startTime: "20:00", endTime: "22:12", tickets: 40, ticketsSold: 3, state: "open"},
-                {id: 5, startTime: "16:00", endTime: "17:43", tickets: 40, ticketsSold: 40, state: "Full"},
-                {id: 6, startTime: "18:00", endTime: "19:50", tickets: 40, ticketsSold: 38, state: "open"},
-                {id: 7, startTime: "20:00", endTime: "22:12", tickets: 40, ticketsSold: 3, state: "open"},
-            ] ,
-            "11-18": [
-                {id: 8, startTime: "16:00", endTime: "17:43", tickets: 40, ticketsSold: 12, state: "open"},
-                {id: 9, startTime: "18:00", endTime: "19:50", tickets: 40, ticketsSold: 35, state: "open"},
-                {id: 10, startTime: "20:00", endTime: "22:12", tickets: 40, ticketsSold: 3, state: "open"},
-            ] ,
-            "11-19": [
-                {id: 11, startTime: "16:00", endTime: "17:43", tickets: 40, ticketsSold: 12, state: "open"},
-                {id: 12, startTime: "18:00", endTime: "19:50", tickets: 40, ticketsSold: 35, state: "open"},
-                {id: 32, startTime: "20:00", endTime: "22:12", tickets: 40, ticketsSold: 3, state: "open"},
-            ] ,
-            "11-20": [
-                {id: 41, startTime: "16:00", endTime: "17:43", tickets: 40, ticketsSold: 12, state: "open"},
-                {id: 122, startTime: "18:00", endTime: "19:50", tickets: 40, ticketsSold: 35, state: "open"},
-                {id: 412, startTime: "20:00", endTime: "22:12", tickets: 40, ticketsSold: 3, state: "open"}, 
-            ] ,
-            "11-21": [
-                {id: 411, startTime: "16:00", endTime: "17:43", tickets: 40, ticketsSold: 12, state: "open"},
-                {id: 52, startTime: "18:00", endTime: "19:50", tickets: 40, ticketsSold: 35, state: "open"},
-                {id: 12, startTime: "20:00", endTime: "22:12", tickets: 40, ticketsSold: 3, state: "open"},
-            ] ,
-        });
-        setSeats([
-            {id: 1, row: 1, column: 1, theatreRow: 1, theatreColumn: 1, state: "available"},
-            {id: 2, row: 1, column: 2, theatreRow: 1, theatreColumn: 4, state: "available"},
-            {id: 3, row: 2, column: 1, theatreRow: 2, theatreColumn: 1, state: "reserved"},
-            {id: 4, row: 2, column: 2, theatreRow: 2, theatreColumn: 4, state: "available"},
-            {id: 5, row: 3, column: 2, theatreRow: 3, theatreColumn: 1, state: "available"},
-            {id: 6, row: 3, column: 2, theatreRow: 3, theatreColumn: 4, state: "reserved"},
-        ]);
-        setLoading(false);
     }, []);
 
     if(loading) return <p>loading</p>;
@@ -460,8 +453,10 @@ function TicketSelector() {
         sx={{display: 'flex',
             flexDirection: 'row',
             gap: 15,
+            justifyContent: 'center',
+            mt: 15
         }}>
-            <MovieOverview title={movie.title} image={movie.image}/>
+            <MovieOverview movie={movie}/>
             <BookingStepper 
             step={step} 
             movie={movie}
@@ -469,15 +464,13 @@ function TicketSelector() {
             handleBack={handleBack}
             theatres={theatres} 
             selectedTheatre={theatre?theatre.id:0} 
-            setTheatre={handleSetTheatre}
+            setTheatre={handleConfirmTheatre}
             showtimes={showtimes}
             selectedShowtime={showtime?showtime.id:0}
-            setShowtime={handleSetShowtime}
-            theatreRows={theatreRows}
-            theatreColumns={theatreColumns}
+            setShowtime={handleConfirmShowtime}
             seats={seats}
             selectedSeats={selectedSeats}
-            setSelectedSeats={setSelectedSeats}
+            setSelectedSeats={handleConfirmSeats}
             />
         </Box>
     );
