@@ -6,15 +6,15 @@ public class ShowtimeSeatDTO {
     private int column;
     private int theatreRow;
     private int theatreColumn;
-    private boolean available;
+    private String state;
 
-    public ShowtimeSeatDTO(int id, int row, int column, int theatreRow, int theatreColumn, boolean available) {
+    public ShowtimeSeatDTO(int id, int row, int column, int theatreRow, int theatreColumn, String state) {
         this.id = id;
         this.row = row;
         this.column = column;
         this.theatreRow = theatreRow;
         this.theatreColumn = theatreColumn;
-        this.available = available;
+        this.state = state;
     }
 
     public int getId() {
@@ -57,11 +57,11 @@ public class ShowtimeSeatDTO {
         this.theatreColumn = theatreColumn;
     }
 
-    public boolean isAvailable() {
-        return available;
+    public String getState() {
+        return state;
     }
 
-    public void setAvailable(boolean available) {
-        this.available = available;
+    public void setState(String state) {
+        this.state = state;
     }
 }

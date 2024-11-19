@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,7 +64,7 @@ public class TheatreShowtimeSeatRepository {
                     rs.getInt("column"),
                     rs.getInt("theatre_row"),
                     rs.getInt("theatre_column"),
-                    rs.getBoolean("ss.available")
+                    rs.getString("ss.available")
             );
         }
     };
@@ -81,7 +82,7 @@ public class TheatreShowtimeSeatRepository {
 
     public List<Showtime> findShowtimesByMovieAndTheatre(int movie_id, int theatre_id)
     {
-        String sql = "SELECT * from showtime where movie_id = ? AND theatre_id = ?";
+        String sql = "SELECT * from showtime where movie_id = ? AND theatre_id = ? AND DATE(start_time) BETWEEN  CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 14 DAY) ORDER BY start_time";
         return jdbcTemplate.query(sql, showtimeRowMapper, movie_id, theatre_id);
     }
 

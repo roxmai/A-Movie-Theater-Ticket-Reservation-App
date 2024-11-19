@@ -83,6 +83,7 @@ public class MovieService {
             if(!showtimeList.isEmpty()){
                 movieDetailedView.setHasShowtime(true);
             }
+            movieDetailedView.setImage(appProperties.getBaseUrl()+"images/posters/"+movieDetailedView.getImage());
             return Optional.of(movieDetailedView);
         }
         return Optional.empty();

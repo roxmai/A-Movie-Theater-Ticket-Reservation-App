@@ -4,6 +4,7 @@ import com.example.AcmePlex.moviesystem.model.Genre;
 import com.example.AcmePlex.moviesystem.model.Theatre;
 import com.example.AcmePlex.moviesystem.model.vo.MovieDetailedView;
 import com.example.AcmePlex.moviesystem.model.Showtime;
+import com.example.AcmePlex.moviesystem.model.vo.ShowtimeView;
 import com.example.AcmePlex.moviesystem.service.MovieService;
 import com.example.AcmePlex.moviesystem.service.ShowtimeService;
 import com.example.AcmePlex.moviesystem.service.TheatreService;
@@ -64,7 +65,7 @@ public class MovieSystemController {
         return ResponseEntity.ok(movieService.getMovieSuggestionByInput(searchQuery));
     }
 
-    @GetMapping("/movies/{id}")
+    @GetMapping("/movie/{id}")
     public ResponseEntity<MovieDetailedView> getMovieDetailsById(@PathVariable int id) {
         Optional<MovieDetailedView> movieDetailedView = movieService.getMovieById(id);
         return ResponseEntity.of(movieDetailedView);
@@ -75,8 +76,8 @@ public class MovieSystemController {
         return ResponseEntity.ok(theatreService.getTheatresByMovie(movie_id));
     }
 
-    @GetMapping("/showtime/movie/{movie_id}/theatre/{theatre_id}")
-    public ResponseEntity<List<Showtime>> getShowtimesByMovieAndTheatre(@PathVariable int movie_id, @PathVariable int theatre_id) {
+    @GetMapping("/showtimes/movie/{movie_id}/theatre/{theatre_id}")
+    public ResponseEntity<Map<String, List<ShowtimeView>>> getShowtimesByMovieAndTheatre(@PathVariable int movie_id, @PathVariable int theatre_id) {
         return ResponseEntity.ok(showtimeService.getShowtimeList(movie_id, theatre_id));
     }
 
