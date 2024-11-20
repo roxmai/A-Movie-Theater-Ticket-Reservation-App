@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AppBar, Toolbar, IconButton, Button, Menu, MenuItem, Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
-import BookMovie from '../pages/BookMovie';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 
 function NavBar() {
@@ -9,6 +9,7 @@ function NavBar() {
     const [open, setOpen] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false);
     const [userName, setUserName] = useState('');
+    const [anchorEl, setAnchorEl] = useState(null);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -20,9 +21,17 @@ function NavBar() {
 
     const handleLogin = () => {
         // Simulate login action
-        setUserName('John Doe'); // Replace with actual user name
+        setUserName('JX'); // Replace with actual user name
         setLoggedIn(true);
         setOpen(false);
+    };
+
+    const handleMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
     };
 
     return (
@@ -35,7 +44,22 @@ function NavBar() {
                 </Box>
                 <Box sx={{ flexGrow: 0 }}>
                     {loggedIn ? (
-                        <Button color="inherit">{userName}</Button>
+                        <>
+                            <Button
+                                color="inherit"
+                                endIcon={<ArrowDropDownIcon />}
+                                onClick={handleMenuOpen}
+                            >
+                                {userName}
+                            </Button>
+                            <Menu
+                                anchorEl={anchorEl}
+                                open={Boolean(anchorEl)}
+                                onClose={handleMenuClose}
+                            >
+                                <MenuItem onClick={handleMenuClose}>Subscription Renew</MenuItem>
+                            </Menu>
+                        </>
                     ) : (
                         <Button color="inherit" onClick={handleClickOpen}>Login</Button>
                     )}
@@ -67,7 +91,7 @@ function NavBar() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleClose}>Login</Button>
+                    <Button onClick={handleLogin}>Login</Button>
                 </DialogActions>
             </Dialog>
         </AppBar>
