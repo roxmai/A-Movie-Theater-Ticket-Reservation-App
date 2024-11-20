@@ -1,6 +1,8 @@
-package com.example.acmeplex.paymentsystem;
+package com.example.acmeplex.model.paymentsystem;
 
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 public class PaymentSystem {
     private int TicketId;
