@@ -1,14 +1,13 @@
 import React from 'react';
 
+import { Box, Typography, Container } from '@mui/material';
+import MovieBrowser from '../components/MovieBrowser';
+
 function CancelTicket() {
 
     return (
-        <div>
-            <h1>Cancel Ticket</h1>
-            <p>Cancel Ticket is a web page that allows users to cancel their movie tickets.</p>
-        </div>
+        <MovieBrowser />
     );
-
 }
 
 export default CancelTicket;

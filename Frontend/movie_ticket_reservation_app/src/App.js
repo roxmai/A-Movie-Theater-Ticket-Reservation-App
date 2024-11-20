@@ -2,7 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import CancelTicket from './pages/CancelTicket';
-import FirstPage from './pages/FirstPage';
+import BookMovie from './pages/BookMovie';
+import UserRegistration from './pages/UserRegistration';
 
 
 function App() {
@@ -11,7 +12,10 @@ function App() {
       <Router>
           <NavBar />
           <Routes>
-              <Route path="/" element={<FirstPage />} />
+              <Route path="/BookMovie" element={<BookMovie />} />
+              <Route path="/CancelTicket" element={<CancelTicket />} />
+              <Route path="/UserRegistration" element={<UserRegistration />} />
+              
           </Routes>
       </Router>
   );
