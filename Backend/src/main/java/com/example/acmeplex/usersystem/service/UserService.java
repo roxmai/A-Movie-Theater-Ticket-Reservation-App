@@ -1,8 +1,8 @@
 package com.example.acmeplex.usersystem.service;
 
-import com.example.acmeplex.usersystem.dto.UserDTO;
-
 import java.util.List;
+
+import com.example.acmeplex.usersystem.dto.UserDTO;
 
 /**
  * Service interface for managing Users.
@@ -53,4 +53,6 @@ public interface UserService {
      * @throws ResourceNotFoundException if no user is found with the given ID
      */
     void deleteUser(Long id);
+
+    public UserDTO getUserByEmail(String email);
 }

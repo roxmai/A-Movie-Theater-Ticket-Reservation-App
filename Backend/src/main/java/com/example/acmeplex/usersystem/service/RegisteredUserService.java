@@ -1,8 +1,8 @@
 package com.example.acmeplex.usersystem.service;
 
-import com.example.acmeplex.usersystem.dto.RegisteredUserDTO;
-
 import java.util.List;
+
+import com.example.acmeplex.usersystem.dto.RegisteredUserDTO;
 
 /**
  * Service interface for managing Registered Users.
@@ -53,4 +53,6 @@ public interface RegisteredUserService {
      * @throws ResourceNotFoundException if no user is found with the given ID
      */
     void deleteRegisteredUser(Long id);
+
+    public RegisteredUserDTO getRegisteredUserByEmail(String email);
 }

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl implements UserService {
+public abstract class UserServiceImpl implements UserService {
 
     // Logger for tracking events and debugging
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
