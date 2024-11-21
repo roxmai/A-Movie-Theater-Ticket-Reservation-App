@@ -78,7 +78,8 @@ public class MovieSystemController {
 
     @GetMapping("/showtimes/movie/{movie_id}/theatre/{theatre_id}")
     public ResponseEntity<Map<String, List<ShowtimeView>>> getShowtimesByMovieAndTheatre(@PathVariable int movie_id, @PathVariable int theatre_id) {
-        return ResponseEntity.ok(showtimeService.getShowtimeList(movie_id, theatre_id));
+        //need to find out whether user is logged in
+        return ResponseEntity.ok(showtimeService.getShowtimeList(movie_id, theatre_id, false));
     }
 
     @GetMapping("/seats/theatre/{theatreId}/showtime/{showtimeId}")

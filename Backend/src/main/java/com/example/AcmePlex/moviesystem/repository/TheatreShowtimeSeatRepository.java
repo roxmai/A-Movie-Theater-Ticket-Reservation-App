@@ -87,10 +87,12 @@ public class TheatreShowtimeSeatRepository {
         return jdbcTemplate.query(sql, theatreRowMapper, movie_id);
     }
 
-    public List<Showtime> findShowtimesByMovieAndTheatre(int movie_id, int theatre_id)
+    public List<Showtime> findShowtimesByMovieAndTheatre(int movie_id, int theatre_id, boolean userLoggedIn)
     {
-        String sql = "SELECT * from showtime where movie_id = ? AND theatre_id = ? AND DATE(start_time) BETWEEN  CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 14 DAY) ORDER BY start_time";
-        return jdbcTemplate.query(sql, showtimeRowMapper, movie_id, theatre_id);
+        String sql = "SELECT * from showtime where movie_id = ? AND theatre_id = ? AND DATE(start_time) BETWEEN  CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 14 DAY) AND CURRENT_TIME>public_announcement_time ORDER BY start_time";
+        String sqlForRegisteredUser = "SELECT * from showtime where movie_id = ? AND theatre_id = ? AND DATE(start_time) BETWEEN  CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 14 DAY) ORDER BY start_time";
+        if(userLoggedIn) return jdbcTemplate.query(sql, showtimeRowMapper, movie_id, theatre_id);
+        return jdbcTemplate.query(sqlForRegisteredUser, showtimeRowMapper, movie_id, theatre_id);
     }
 
     public Optional<Theatre> findTheatreById(int movieId) {

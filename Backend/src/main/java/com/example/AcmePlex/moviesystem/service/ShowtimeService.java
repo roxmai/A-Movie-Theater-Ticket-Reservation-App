@@ -24,8 +24,8 @@ public class ShowtimeService {
     }
 
 
-    public Map<String, List<ShowtimeView>> getShowtimeList(int movie_id, int theatre_id) {
-        List<Showtime> showtimes = theatreShowtimeSeatRepository.findShowtimesByMovieAndTheatre(movie_id, theatre_id);
+    public Map<String, List<ShowtimeView>> getShowtimeList(int movie_id, int theatre_id, boolean userLoggedIn) {
+        List<Showtime> showtimes = theatreShowtimeSeatRepository.findShowtimesByMovieAndTheatre(movie_id, theatre_id, userLoggedIn);
         List<ShowtimeView> showtimeViews = new ArrayList<>();
         Timestamp now = Timestamp.valueOf(java.time.LocalDateTime.now());
         for (Showtime showtime : showtimes) {
