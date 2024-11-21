@@ -1,6 +1,5 @@
 package com.example.acmeplex.usersystem.controller;
 
-import com.example.acmeplex.usersystem.controller.RegisteredUserController;
 import com.example.acmeplex.usersystem.dto.RegisteredUserDTO;
 import com.example.acmeplex.usersystem.service.RegisteredUserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +11,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
-import jakarta.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 

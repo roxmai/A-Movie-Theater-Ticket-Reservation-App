@@ -3,10 +3,10 @@ package com.example.acmeplex.usersystem.service.impl;
 import com.example.acmeplex.usersystem.dto.RegisteredUserDTO;
 import com.example.acmeplex.usersystem.model.RegisteredUser;
 import com.example.acmeplex.usersystem.repository.RegisteredUserRepository;
+import com.example.acmeplex.usersystem.service.RegisteredUserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
  * Unit tests for RegisteredUserServiceImpl.
  */
 @ExtendWith(MockitoExtension.class)
-public class RegisteredUserServiceImplTest {
+public class RegisteredUserServiceTest {
 
     @Mock
     private RegisteredUserRepository registeredUserRepository;
@@ -33,7 +33,7 @@ public class RegisteredUserServiceImplTest {
     private ModelMapper modelMapper;
 
     @InjectMocks
-    private RegisteredUserServiceImpl registeredUserService;
+    private RegisteredUserService registeredUserService;
 
     private RegisteredUserDTO userDTO;
     private RegisteredUser user;

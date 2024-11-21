@@ -1,7 +1,6 @@
 package com.example.acmeplex.usersystem.controller;
 
 import com.example.acmeplex.usersystem.dto.RegisteredUserDTO;
-import com.example.acmeplex.usersystem.model.RegisteredUser;
 import com.example.acmeplex.usersystem.service.RegisteredUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
