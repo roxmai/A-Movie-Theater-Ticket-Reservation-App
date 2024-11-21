@@ -53,3 +53,8 @@ export const getSeats = async (theatreId, showtimeId) => {
   console.log(response.data);
   return response.data;
 }
+
+export const bookTickets = async (data) => {
+  const response = await api.post(`/book`, data);
+  return response.data;
+}

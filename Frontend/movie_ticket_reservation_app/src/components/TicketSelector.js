@@ -42,7 +42,8 @@ function MovieDetail({movie, handleBuyTickets}) {
             sx={{display: 'flex', 
                 flexDirection: 'column',
                 gap: 2,
-                padding: 6
+                padding: 6,
+                width: 500
             }}
         >
             <Typography variant="h6">
@@ -77,7 +78,8 @@ function TheatreSelector({theatres, selected, setTheatre, handleBuyTickets, hand
         <Box
         sx={{display: 'flex',
             flexDirection: 'column',
-            gap: 2
+            gap: 2,
+            width: 500
         }}
         >
             <Box sx={{display: 'flex', gap: 2, alignItems: 'center', justifyContent: 'space-between'}}>
@@ -138,7 +140,8 @@ function ShowtimeSelector({showtimes, selected, setShowtime, handleBuyTickets, h
         <Box
         sx={{display: 'flex',
             flexDirection: 'column',
-            gap: 2
+            gap: 2,
+            width: 500
         }}
         >
             <Box sx={{display: 'flex', gap: 2, alignItems: 'center', justifyContent: 'space-between'}}>
@@ -207,11 +210,10 @@ function ShowtimeSelector({showtimes, selected, setShowtime, handleBuyTickets, h
 }
 
 function SeatArea({seatsData, selected, setSelected}) {
-    const boxSizeX = 20;
-    const boxSizeY = 20;
     const seats = seatsData.seats;
     const theatreRows = seatsData.theatreRows;
     const theatreColumns = seatsData.theatreColumns;
+    let boxSize = Math.floor((70-theatreColumns)/3);
 
     const seatStyles = (state) => {
         switch (state) {
@@ -237,14 +239,14 @@ function SeatArea({seatsData, selected, setSelected}) {
         }
       };
       return (
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: '2px' }}>
           {/* Render rows */}
           {Array.from({ length: theatreRows }).map((_, rowIndex) => (
             <Box
               key={rowIndex}
               sx={{
                 display: "flex",
-                gap: 2,
+                gap: '2px',
                 justifyContent: "center",
               }}
             >
@@ -259,8 +261,8 @@ function SeatArea({seatsData, selected, setSelected}) {
                     <Box
                       key={seat ? seat.id : `${rowIndex}-${colIndex}`}
                       sx={{
-                        width: boxSizeX,
-                        height: boxSizeY,
+                        width: boxSize,
+                        height: boxSize,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -422,9 +424,28 @@ function TicketSelector() {
         }
     }
 
+    const navigate = useNavigate();
+
+
     //need to redirect to payment
     const handleConfirmSeats = async (ids) => {
         setSelectedSeats(ids);
+        const email = "example@example.com";
+        const requestData = {
+            ids: ids,
+            email: email
+        }
+        try {
+            setLoading(true);
+            const data = await bookTickets(requestData);
+            console.log(data);
+            alert(data);
+            navigate("/BookMovie")
+        } catch (err) {
+            setError(err);
+        } finally {
+            setLoading(false);
+        }
     }
 
     useEffect(()=>{
