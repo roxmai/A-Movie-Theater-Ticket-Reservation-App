@@ -3,8 +3,9 @@ import { Box, Divider, Button, ButtonGroup, Card, CardMedia, IconButton, List, L
 import CheckIcon from '@mui/icons-material/Check';
 import { ChevronLeft } from "@mui/icons-material";
 import { useHorizontalScroll } from "../utils/horizontalScroll";
-import { getMovieDetail, getTheatres, getShowtimes, getSeats } from "../api/Services";
+import { getMovieDetail, getTheatres, getShowtimes, getSeats, bookTickets } from "../api/Services";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function MovieOverview({movie}) {
     return (

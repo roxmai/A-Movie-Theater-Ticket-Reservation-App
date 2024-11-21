@@ -5,7 +5,7 @@ const DEFAULT_PAGE_SIZE = 10;
 const api = axios.create({
     baseURL: "http://localhost:8080", // Replace with your base API URL
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": 'application/json',
     },
   });
 
