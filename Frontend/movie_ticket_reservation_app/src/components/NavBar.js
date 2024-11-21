@@ -21,9 +21,9 @@ function NavBar() {
 
     const handleLogin = () => {
         // Simulate login action
-        setUserName('JX'); // Replace with actual user name
-        setLoggedIn(true);
-        setOpen(false);
+        // setUserName('JX'); // Replace with actual user name
+        // setLoggedIn(true);
+        // setOpen(false);
     };
 
     const handleMenuOpen = (event) => {

@@ -242,7 +242,7 @@ function MovieBrowser() {
             setMovies(data.movies);
             setPagination(data.pagination);
         } catch (err) {
-            setError(err);
+            setError(err.message);
         } finally {
             setLoading(false);
         }
