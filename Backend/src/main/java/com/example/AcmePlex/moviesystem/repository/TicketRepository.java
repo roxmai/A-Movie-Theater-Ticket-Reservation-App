@@ -1,6 +1,6 @@
 package com.example.acmeplex.moviesystem.repository;
 
-import com.example.acmeplex.moviesystem.model.Ticket;
+import com.example.acmeplex.moviesystem.entity.Ticket;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;

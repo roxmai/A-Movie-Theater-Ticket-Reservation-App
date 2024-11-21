@@ -1,4 +1,4 @@
-package com.example.acmeplex.moviesystem.model.dto;
+package com.example.acmeplex.moviesystem.dto;
 
 public class ShowtimeSeatDTO {
     private int id;

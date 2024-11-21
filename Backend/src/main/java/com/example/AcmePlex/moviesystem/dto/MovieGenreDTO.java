@@ -1,30 +1,22 @@
-package com.example.acmeplex.moviesystem.model;
+package com.example.acmeplex.moviesystem.dto;
 
 import java.sql.Date;
 
-public class Movie {
+public class MovieGenreDTO {
     private int id;
-    private int genreId;
+    private String genre;
     private String title;
     private Date releaseDate;
     private String description;
     private String image;
     private int length;
 
-    public Movie() {
+    public MovieGenreDTO() {
     }
 
-    public int getLength() {
-        return length;
-    }
-
-    public void setLength(int length) {
-        this.length = length;
-    }
-
-    public Movie(int id, int genreId, String title, Date releaseDate, String description, String image, int length) {
+    public MovieGenreDTO(int id, String genre, String title, Date releaseDate, String description, String image, int length) {
         this.id = id;
-        this.genreId = genreId;
+        this.genre = genre;
         this.title = title;
         this.releaseDate = releaseDate;
         this.description = description;
@@ -40,12 +32,12 @@ public class Movie {
         this.id = id;
     }
 
-    public int getGenreId() {
-        return genreId;
+    public String getGenre() {
+        return genre;
     }
 
-    public void setGenreId(int genreId) {
-        this.genreId = genreId;
+    public void setGenre(String genre) {
+        this.genre = genre;
     }
 
     public String getTitle() {
@@ -79,5 +71,12 @@ public class Movie {
     public void setImage(String image) {
         this.image = image;
     }
-}
 
+    public int getLength() {
+        return length;
+    }
+
+    public void setLength(int length) {
+        this.length = length;
+    }
+}

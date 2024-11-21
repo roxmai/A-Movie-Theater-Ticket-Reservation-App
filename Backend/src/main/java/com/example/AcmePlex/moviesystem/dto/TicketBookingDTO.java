@@ -1,4 +1,4 @@
-package com.example.acmeplex.moviesystem.model.dto;
+package com.example.acmeplex.moviesystem.dto;
 
 import java.util.List;
 

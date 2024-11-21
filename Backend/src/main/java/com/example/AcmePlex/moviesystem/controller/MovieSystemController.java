@@ -1,10 +1,10 @@
 package com.example.acmeplex.moviesystem.controller;
 
-import com.example.acmeplex.moviesystem.model.Genre;
-import com.example.acmeplex.moviesystem.model.Theatre;
-import com.example.acmeplex.moviesystem.model.dto.TicketBookingDTO;
-import com.example.acmeplex.moviesystem.model.vo.MovieDetailedView;
-import com.example.acmeplex.moviesystem.model.vo.ShowtimeView;
+import com.example.acmeplex.moviesystem.entity.Genre;
+import com.example.acmeplex.moviesystem.entity.Theatre;
+import com.example.acmeplex.moviesystem.dto.TicketBookingDTO;
+import com.example.acmeplex.moviesystem.vo.MovieDetailedView;
+import com.example.acmeplex.moviesystem.vo.ShowtimeView;
 import com.example.acmeplex.moviesystem.service.MovieService;
 import com.example.acmeplex.moviesystem.service.ShowtimeService;
 import com.example.acmeplex.moviesystem.service.TheatreService;
@@ -93,8 +93,12 @@ public class MovieSystemController {
         return ResponseEntity.ok(ticketService.cancelTicketByTicketNumber(ticketNumber));
     }
 
-    @PutMapping("/book")
-    public ResponseEntity<Map<String, String>> bookTickets(@RequestBody TicketBookingDTO ticketBookingDTO) {
-        return ResponseEntity.ok(ticketService.bookTickets(ticketBookingDTO.getIds(), ticketBookingDTO.getEmail()));
+    @PostMapping("/book")
+    public ResponseEntity<String> bookTickets(@RequestBody TicketBookingDTO ticketBookingDTO) {
+        System.out.println(ticketBookingDTO.getEmail());
+        System.out.println(ticketBookingDTO.getIds());
+        ResponseEntity<String> response = ResponseEntity.ok(ticketService.bookTickets(ticketBookingDTO.getIds(), ticketBookingDTO.getEmail()));
+        System.out.println(response);
+        return response;
     }
 }

@@ -1,13 +1,13 @@
 package com.example.acmeplex.moviesystem.service;
 
 import com.example.acmeplex.moviesystem.config.AppProperties;
-import com.example.acmeplex.moviesystem.model.Genre;
-import com.example.acmeplex.moviesystem.model.Movie;
-import com.example.acmeplex.moviesystem.model.dto.MovieGenreDTO;
-import com.example.acmeplex.moviesystem.model.vo.MovieDetailedView;
-import com.example.acmeplex.moviesystem.model.vo.MovieSimpleView;
-import com.example.acmeplex.moviesystem.model.vo.Pagination;
-import com.example.acmeplex.moviesystem.model.Showtime;
+import com.example.acmeplex.moviesystem.entity.Genre;
+import com.example.acmeplex.moviesystem.entity.Movie;
+import com.example.acmeplex.moviesystem.dto.MovieGenreDTO;
+import com.example.acmeplex.moviesystem.vo.MovieDetailedView;
+import com.example.acmeplex.moviesystem.vo.MovieSimpleView;
+import com.example.acmeplex.moviesystem.vo.Pagination;
+import com.example.acmeplex.moviesystem.entity.Showtime;
 import com.example.acmeplex.moviesystem.repository.MovieGenreRepository;
 import com.example.acmeplex.moviesystem.repository.TheatreShowtimeSeatRepository;
 import org.springframework.beans.factory.annotation.Autowired;

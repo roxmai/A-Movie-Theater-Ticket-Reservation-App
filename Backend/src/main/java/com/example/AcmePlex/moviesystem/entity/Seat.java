@@ -1,4 +1,4 @@
-package com.example.acmeplex.moviesystem.model;
+package com.example.acmeplex.moviesystem.entity;
 
 public class Seat {
     private int id;

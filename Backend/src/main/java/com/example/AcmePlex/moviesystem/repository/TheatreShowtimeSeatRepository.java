@@ -1,7 +1,7 @@
 package com.example.acmeplex.moviesystem.repository;
 
-import com.example.acmeplex.moviesystem.model.*;
-import com.example.acmeplex.moviesystem.model.dto.ShowtimeSeatDTO;
+import com.example.acmeplex.moviesystem.entity.*;
+import com.example.acmeplex.moviesystem.dto.ShowtimeSeatDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -109,7 +109,7 @@ public class TheatreShowtimeSeatRepository {
 
     public int updateSeatAvailability(int id, boolean isAvailable) {
         String sql = "UPDATE showtime_seat SET available=? WHERE id = ?";
-        return jdbcTemplate.update(sql, id, isAvailable);
+        return jdbcTemplate.update(sql, isAvailable, id);
     }
 
     public Optional<ShowtimeSeat> findShowtimeSeatById(int id) {

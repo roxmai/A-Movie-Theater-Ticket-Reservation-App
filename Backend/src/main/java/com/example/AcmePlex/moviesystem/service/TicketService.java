@@ -3,9 +3,9 @@ package com.example.acmeplex.moviesystem.service;
 import com.example.acmeplex.moviesystem.exceptions.DataNotFoundException;
 import com.example.acmeplex.moviesystem.exceptions.OperationFailedException;
 import com.example.acmeplex.moviesystem.exceptions.TicketCancellationRefusedException;
-import com.example.acmeplex.moviesystem.model.Showtime;
-import com.example.acmeplex.moviesystem.model.ShowtimeSeat;
-import com.example.acmeplex.moviesystem.model.Ticket;
+import com.example.acmeplex.moviesystem.entity.Showtime;
+import com.example.acmeplex.moviesystem.entity.ShowtimeSeat;
+import com.example.acmeplex.moviesystem.entity.Ticket;
 import com.example.acmeplex.moviesystem.repository.TheatreShowtimeSeatRepository;
 import com.example.acmeplex.moviesystem.repository.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -30,19 +29,18 @@ public class TicketService {
     }
 
     @Transactional
-    public Map<String, String> bookTickets(List<Integer> showtimeSeats, String email) {
-        Map<String, String> response = new HashMap<>();
+    public String bookTickets(List<Integer> showtimeSeats, String email) {
         try {
             for(Integer showtimeSeatId : showtimeSeats) {
+                System.out.println(showtimeSeatId);
                 int result1 = theatreShowtimeSeatRepository.updateSeatAvailability(showtimeSeatId, false);
                 int result2 = ticketRepository.updateTicketReservation(showtimeSeatId, email, Timestamp.valueOf(LocalDateTime.now()));
+
                 if(result1==0 || result2==0) throw new OperationFailedException("Ticket booking");
             }
-            response.put("success", "Tickets booked successfully.");
-            return response;
+            return "success: Tickets booked successfully.";
         } catch (RuntimeException exception) {
-            response.put("error", exception.getMessage());
-            return response;
+            return "error: " + exception.getMessage();
         }
     }
 

@@ -1,5 +1,5 @@
-package com.example.acmeplex.moviesystem.model.vo;
-import com.example.acmeplex.moviesystem.model.dto.MovieGenreDTO;
+package com.example.acmeplex.moviesystem.vo;
+import com.example.acmeplex.moviesystem.dto.MovieGenreDTO;
 
 import java.sql.Date;
 
