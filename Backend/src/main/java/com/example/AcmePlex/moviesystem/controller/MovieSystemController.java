@@ -2,19 +2,16 @@ package com.example.acmeplex.moviesystem.controller;
 
 import com.example.acmeplex.moviesystem.model.Genre;
 import com.example.acmeplex.moviesystem.model.Theatre;
+import com.example.acmeplex.moviesystem.model.dto.TicketBookingDTO;
 import com.example.acmeplex.moviesystem.model.vo.MovieDetailedView;
-import com.example.acmeplex.moviesystem.model.Showtime;
 import com.example.acmeplex.moviesystem.model.vo.ShowtimeView;
 import com.example.acmeplex.moviesystem.service.MovieService;
 import com.example.acmeplex.moviesystem.service.ShowtimeService;
 import com.example.acmeplex.moviesystem.service.TheatreService;
+import com.example.acmeplex.moviesystem.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -27,11 +24,14 @@ public class MovieSystemController {
     private final TheatreService theatreService;
     private final ShowtimeService showtimeService;
 
+    private final TicketService ticketService;
+
     @Autowired
-    public MovieSystemController(MovieService movieService, TheatreService theatreService, ShowtimeService showtimeService) {
+    public MovieSystemController(MovieService movieService, TheatreService theatreService, ShowtimeService showtimeService, TicketService ticketService) {
         this.movieService = movieService;
         this.theatreService = theatreService;
         this.showtimeService = showtimeService;
+        this.ticketService = ticketService;
     }
 
     @GetMapping("/genres")
@@ -87,4 +87,13 @@ public class MovieSystemController {
         return ResponseEntity.ofNullable(response);
     }
 
+    @PutMapping("/cancel/{ticketNumber}")
+    public ResponseEntity<Map<String, String>> cancelTicket(@PathVariable String ticketNumber) {
+        return ResponseEntity.ok(ticketService.cancelTicketByTicketNumber(ticketNumber));
+    }
+
+    @PutMapping("/book")
+    public ResponseEntity<Map<String, String>> bookTickets(@RequestBody TicketBookingDTO ticketBookingDTO) {
+        return ResponseEntity.ok(ticketService.bookTickets(ticketBookingDTO.getIds(), ticketBookingDTO.getEmail()));
+    }
 }
