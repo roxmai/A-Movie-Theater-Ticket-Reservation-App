@@ -3,8 +3,6 @@ package com.example.acmeplex.usersystem.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
-@Entity
-@Table(name = "registered_users")
 public class RegisteredUser extends User {
 
     private String creditCardInfo;
