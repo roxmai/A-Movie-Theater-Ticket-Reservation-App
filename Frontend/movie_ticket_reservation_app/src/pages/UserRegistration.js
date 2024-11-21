@@ -8,6 +8,7 @@ function UserRegistration() {
     const [name, setName] = useState('');
     const [creditCard, setCreditCard] = useState('');
     const [address, setAddress] = useState('');
+    const [dialogOpen, setDialogOpen] = useState(false);
 
     const handleSubmit = () => {
         // Implement the logic to submit the data to the backend
@@ -18,7 +19,13 @@ function UserRegistration() {
             address
         };
         console.log('User Data:', userData);
-        // You can use fetch or axios to send this data to the backend
+        //  axios to send this data to the backend
+
+        setDialogOpen(true);
+    };
+
+    const handleDialogClose = () => {
+        setDialogOpen(false);
     };
 
     return (
@@ -63,10 +70,26 @@ function UserRegistration() {
                     onChange={(e) => setAddress(e.target.value)}
                     sx={{ mb: 2 }}
                 />
+                <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+                Paying $15 membership fee upon registration
+                </Typography>
                 <Button variant="contained" color="primary" onClick={handleSubmit}>
-                    Submit
+                    Register
                 </Button>
             </Box>
+            <Dialog open={dialogOpen} onClose={handleDialogClose}>
+                <DialogTitle>Registration Successful</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Payment successful and account registered.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDialogClose} color="primary">
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
       </Container>
     );
 }
