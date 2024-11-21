@@ -38,5 +38,5 @@ tasks.named('test') {
 }
 
 application {
-    mainClass.set('com.example.AcmePlex.Application')
+    mainClass.set('com.example.acmeplex.AcmePlexApplication')
 }
