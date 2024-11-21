@@ -1,39 +1,36 @@
-package com.example.acmeplex.usersystem.model;
+package com.example.acmeplex.usersystem.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 
-public class User {
-
-    @Id
+public class UserDTO {
+    
     private Long id;
 
+    @NotBlank(message = "Name is mandatory")
     private String name;
+
+    @Email(message = "Email should be valid")
     private String email;
+
     private String address;
 
     // Default constructor
-    public User() {}
+    public UserDTO() {}
 
     // All-args constructor
-    public User(String name, String email, String address) {
+    public UserDTO(Long id, String name, String email, String address) {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.address = address;
     }
 
     // Getters and Setters
-
     public Long getId() {
         return id;
     }
 
-    // Typically, you might not want to set the ID manually if it's auto-generated
     public void setId(Long id) {
         this.id = id;
     }

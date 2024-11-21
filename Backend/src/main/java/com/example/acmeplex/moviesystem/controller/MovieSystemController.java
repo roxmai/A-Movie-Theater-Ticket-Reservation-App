@@ -39,6 +39,7 @@ public class MovieSystemController {
         return ResponseEntity.ok(movieService.getAllGenres());
     }
 
+    @CrossOrigin
     @GetMapping("/movies")
     public ResponseEntity<Map<String, Object>> getMovies(@RequestParam(value = "page", defaultValue = "1")int page,
                                                          @RequestParam(value = "pageSize", defaultValue = "10")int pageSize) {
