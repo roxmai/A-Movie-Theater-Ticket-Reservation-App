@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class RegisteredUserServiceImpl implements RegisteredUserService {
+public abstract class RegisteredUserServiceImpl implements RegisteredUserService {
 
     // Injecting the repository to interact with the database
     @Autowired
