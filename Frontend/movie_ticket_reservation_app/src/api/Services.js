@@ -58,3 +58,13 @@ export const bookTickets = async (data) => {
   const response = await api.post(`/book`, data);
   return response.data;
 }
+
+export const getCreditCards = async () => {
+  const response = await api.get(`/creditcards`);
+  return response.data;
+}
+
+export const getBookings = async () => {
+  const response = await api.get(`/bookings`);
+  return response.data;
+}
