@@ -1,6 +1,6 @@
 package com.example.acmeplex.paymentsystem.entity;
 
-import java.sql.Timestamp;
+
 
 public class Payment {
     private String email;
@@ -8,19 +8,16 @@ public class Payment {
     private boolean status;
     private int id;
     private double amount;
-    private Timestamp lastUpdateTime;
     private String type;
 
     public Payment() {
     }
 
-    public Payment(String email, String method, boolean status, int id, double amount, Timestamp lastUpdateTime, String type) {
+    public Payment(String email, String method, boolean status, int id, double amount, String type) {
         this.email = email;
         this.method = method;
-        this.status = status;
         this.id = id;
         this.amount = amount;
-        this.lastUpdateTime = lastUpdateTime;
         this.type = type;
     }
 
@@ -67,14 +64,6 @@ public class Payment {
 
     public void setAmount(double amount) {
         this.amount = amount;
-    }
-
-    public Timestamp getLastUpdateTime() {
-        return this.lastUpdateTime;
-    }
-
-    public void setLastUpdateTime(Timestamp lastUpdateTime) {
-        this.lastUpdateTime = lastUpdateTime;
     }
 
     public String getType() {

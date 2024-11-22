@@ -1,6 +1,5 @@
 package com.example.acmeplex.paymentsystem.repository;
 
-import java.security.Timestamp;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -32,7 +31,6 @@ public class PaymentRepository {
                     rs.getBoolean("status"),
                     rs.getInt("id"),
                     rs.getDouble("amount"),
-                    rs.getTimestamp("lastUpdateTime"),
                     rs.getString("type")
             );
         }
@@ -47,18 +45,21 @@ public class PaymentRepository {
         return jdbcTemplate.query(sql, paymentRowMapper, email);
     }
 
-    public void setStatus(int id, boolean status) {
-        jdbcTemplate.update("UPDATE payment SET status = ? WHERE id = ?", status, id);
-    }
-
-    public void setLastUpdateTime(int id) {
-        jdbcTemplate.update("UPDATE payment SET lastUpdateTime = CURRENT_TIMESTAMP WHERE id = ?", id);
+    public void setStatus(int paymentid, int ticketid, String status) {
+        jdbcTemplate.update("UPDATE payment_ticket SET status = ? WHERE payment_id = ? AND ticket_id = ?", status, paymentid, ticketid);
     }
 
     public void addPayment(Payment payment) {
-        jdbcTemplate.update("INSERT INTO payment (id, email, method, status, amount, lastUpdateTime, type) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                payment.getId(),payment.getEmail(), payment.getMethod(), payment.getStatus(), payment.getAmount(), payment.getLastUpdateTime(), payment.getType());
+        jdbcTemplate.update("INSERT INTO payment (id, email, method, amount, type) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                payment.getId(),payment.getEmail(), payment.getMethod(), payment.getAmount(), payment.getType());
     }
+
+    public void addPaymentTicket(Payment payment, int ticketId, String status) {
+        jdbcTemplate.update("INSERT INTO payment_ticket (payment_id, ticket_id, status) VALUES (?, ?, ?)",
+                payment.getId(), ticketId, status);
+    }
+
+
 
 
 }
