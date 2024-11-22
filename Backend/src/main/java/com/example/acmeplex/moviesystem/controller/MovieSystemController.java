@@ -3,8 +3,8 @@ package com.example.acmeplex.moviesystem.controller;
 import com.example.acmeplex.moviesystem.entity.Genre;
 import com.example.acmeplex.moviesystem.entity.Theatre;
 import com.example.acmeplex.moviesystem.dto.TicketBookingDTO;
-import com.example.acmeplex.moviesystem.vo.MovieDetailedView;
-import com.example.acmeplex.moviesystem.vo.ShowtimeView;
+import com.example.acmeplex.moviesystem.dto.MovieDetailedDTO;
+import com.example.acmeplex.moviesystem.dto.ShowtimeDTO;
 import com.example.acmeplex.moviesystem.service.MovieService;
 import com.example.acmeplex.moviesystem.service.ShowtimeService;
 import com.example.acmeplex.moviesystem.service.TheatreService;
@@ -67,8 +67,8 @@ public class MovieSystemController {
     }
 
     @GetMapping("/movie/{id}")
-    public ResponseEntity<MovieDetailedView> getMovieDetailsById(@PathVariable int id) {
-        Optional<MovieDetailedView> movieDetailedView = movieService.getMovieById(id);
+    public ResponseEntity<MovieDetailedDTO> getMovieDetailsById(@PathVariable int id) {
+        Optional<MovieDetailedDTO> movieDetailedView = movieService.getMovieById(id);
         return ResponseEntity.of(movieDetailedView);
     }
 
@@ -78,7 +78,7 @@ public class MovieSystemController {
     }
 
     @GetMapping("/showtimes/movie/{movie_id}/theatre/{theatre_id}")
-    public ResponseEntity<Map<String, List<ShowtimeView>>> getShowtimesByMovieAndTheatre(@PathVariable int movie_id, @PathVariable int theatre_id) {
+    public ResponseEntity<Map<String, List<ShowtimeDTO>>> getShowtimesByMovieAndTheatre(@PathVariable int movie_id, @PathVariable int theatre_id) {
         //need to find out whether user is logged in
         return ResponseEntity.ok(showtimeService.getShowtimeList(movie_id, theatre_id, false));
     }

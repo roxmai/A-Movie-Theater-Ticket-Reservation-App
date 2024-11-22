@@ -1,8 +1,8 @@
-package com.example.acmeplex.moviesystem.vo;
+package com.example.acmeplex.moviesystem.dto;
 
 import java.sql.Timestamp;
 
-public class ShowtimeView {
+public class ShowtimeDTO {
     private int id;
     private Timestamp startTime;
     private Timestamp endTime;
@@ -10,7 +10,7 @@ public class ShowtimeView {
     private int ticketsSold;
     private String state;
 
-    public ShowtimeView(int id, Timestamp startTime, Timestamp endTime, int tickets, int ticketsSold) {
+    public ShowtimeDTO(int id, Timestamp startTime, Timestamp endTime, int tickets, int ticketsSold) {
         this.id = id;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -18,7 +18,7 @@ public class ShowtimeView {
         this.ticketsSold = ticketsSold;
     }
 
-    public ShowtimeView() {
+    public ShowtimeDTO() {
     }
 
     public int getId() {

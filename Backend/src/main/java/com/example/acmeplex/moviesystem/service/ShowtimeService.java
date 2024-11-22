@@ -3,7 +3,7 @@ package com.example.acmeplex.moviesystem.service;
 import com.example.acmeplex.moviesystem.entity.Showtime;
 import com.example.acmeplex.moviesystem.entity.Theatre;
 import com.example.acmeplex.moviesystem.dto.ShowtimeSeatDTO;
-import com.example.acmeplex.moviesystem.vo.ShowtimeView;
+import com.example.acmeplex.moviesystem.dto.ShowtimeDTO;
 import com.example.acmeplex.moviesystem.repository.TheatreShowtimeSeatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,45 +24,45 @@ public class ShowtimeService {
     }
 
 
-    public Map<String, List<ShowtimeView>> getShowtimeList(int movie_id, int theatre_id, boolean userLoggedIn) {
+    public Map<String, List<ShowtimeDTO>> getShowtimeList(int movie_id, int theatre_id, boolean userLoggedIn) {
         List<Showtime> showtimes = theatreShowtimeSeatRepository.findShowtimesByMovieAndTheatre(movie_id, theatre_id, userLoggedIn);
-        List<ShowtimeView> showtimeViews = new ArrayList<>();
+        List<ShowtimeDTO> showtimeDTOS = new ArrayList<>();
         Timestamp now = Timestamp.valueOf(java.time.LocalDateTime.now());
         for (Showtime showtime : showtimes) {
-            ShowtimeView showtimeView = new ShowtimeView(showtime.getId(), showtime.getStartTime(), showtime.getEndTime(),
+            ShowtimeDTO showtimeDTO = new ShowtimeDTO(showtime.getId(), showtime.getStartTime(), showtime.getEndTime(),
                     showtime.getTickets(), showtime.getTicketsSold());
             if (showtime.getTickets()==showtime.getTicketsSold()) {
-                showtimeView.setState("Full");
+                showtimeDTO.setState("Full");
             } else if (now.after(showtime.getStartTime()) && now.before(showtime.getEndTime())) {
-                showtimeView.setState("Playing");
+                showtimeDTO.setState("Playing");
             } else if (now.after(showtime.getEndTime())) {
-                showtimeView.setState("Closed");
+                showtimeDTO.setState("Closed");
             } else {
-                showtimeView.setState("Open");
+                showtimeDTO.setState("Open");
             }
-            showtimeViews.add(showtimeView);
+            showtimeDTOS.add(showtimeDTO);
         }
-        Map<String, List<ShowtimeView>> showtimeViewsDividedByDate = new LinkedHashMap<>();
+        Map<String, List<ShowtimeDTO>> showtimeViewsDividedByDate = new LinkedHashMap<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd");
         LocalDate lastDate = null;
 
-        for (ShowtimeView showtimeView: showtimeViews) {
-            LocalDate date = showtimeView.getStartTime().toInstant()
+        for (ShowtimeDTO showtimeDTO : showtimeDTOS) {
+            LocalDate date = showtimeDTO.getStartTime().toInstant()
                     .atZone(ZoneId.systemDefault())
                     .toLocalDate();
             if (lastDate == null) {
                 lastDate = date;
                 String formattedDate = lastDate.format(formatter);
-                showtimeViewsDividedByDate.put(formattedDate, new ArrayList<ShowtimeView>());
-                ((ArrayList<ShowtimeView>) (showtimeViewsDividedByDate.get(formattedDate))).add(showtimeView);
+                showtimeViewsDividedByDate.put(formattedDate, new ArrayList<ShowtimeDTO>());
+                ((ArrayList<ShowtimeDTO>) (showtimeViewsDividedByDate.get(formattedDate))).add(showtimeDTO);
             } else if (!lastDate.equals(date)) {
                 String formattedDate = date.format(formatter);
-                showtimeViewsDividedByDate.put(formattedDate, new ArrayList<ShowtimeView>());
-                ((ArrayList<ShowtimeView>) (showtimeViewsDividedByDate.get(formattedDate))).add(showtimeView);
+                showtimeViewsDividedByDate.put(formattedDate, new ArrayList<ShowtimeDTO>());
+                ((ArrayList<ShowtimeDTO>) (showtimeViewsDividedByDate.get(formattedDate))).add(showtimeDTO);
                 lastDate = date;
             } else {
                 String formattedDate = lastDate.format(formatter);
-                ((ArrayList<ShowtimeView>) (showtimeViewsDividedByDate.get(formattedDate))).add(showtimeView);
+                ((ArrayList<ShowtimeDTO>) (showtimeViewsDividedByDate.get(formattedDate))).add(showtimeDTO);
             }
         }
         return showtimeViewsDividedByDate;

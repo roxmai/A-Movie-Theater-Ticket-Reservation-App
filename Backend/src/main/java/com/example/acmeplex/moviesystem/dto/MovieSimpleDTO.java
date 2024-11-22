@@ -1,22 +1,22 @@
-package com.example.acmeplex.moviesystem.vo;
+package com.example.acmeplex.moviesystem.dto;
 
 import com.example.acmeplex.moviesystem.entity.Movie;
 
-public class MovieSimpleView {
+public class MovieSimpleDTO {
     private int id;
     private String title;
     private String image;
 
-    public MovieSimpleView() {
+    public MovieSimpleDTO() {
     }
 
-    public MovieSimpleView(int id, String title, String image) {
+    public MovieSimpleDTO(int id, String title, String image) {
         this.id = id;
         this.title = title;
         this.image = image;
     }
 
-    public MovieSimpleView(Movie movie) {
+    public MovieSimpleDTO(Movie movie) {
         this.id = movie.getId();
         this.title = movie.getTitle();
     }

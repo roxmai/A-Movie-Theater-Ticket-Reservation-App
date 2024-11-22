@@ -4,8 +4,8 @@ import com.example.acmeplex.moviesystem.config.AppProperties;
 import com.example.acmeplex.moviesystem.entity.Genre;
 import com.example.acmeplex.moviesystem.entity.Movie;
 import com.example.acmeplex.moviesystem.dto.MovieGenreDTO;
-import com.example.acmeplex.moviesystem.vo.MovieDetailedView;
-import com.example.acmeplex.moviesystem.vo.MovieSimpleView;
+import com.example.acmeplex.moviesystem.dto.MovieDetailedDTO;
+import com.example.acmeplex.moviesystem.dto.MovieSimpleDTO;
 import com.example.acmeplex.moviesystem.vo.Pagination;
 import com.example.acmeplex.moviesystem.entity.Showtime;
 import com.example.acmeplex.moviesystem.repository.MovieGenreRepository;
@@ -31,10 +31,10 @@ public class MovieService {
         this.appProperties = appProperties;
     }
 
-    private MovieSimpleView convertToSimple(Movie movie) {
-        MovieSimpleView movieSimpleView = new MovieSimpleView(movie);
-        movieSimpleView.setImage(appProperties.getBaseUrl()+"images/posters/"+movie.getImage());
-        return movieSimpleView;
+    private MovieSimpleDTO convertToSimple(Movie movie) {
+        MovieSimpleDTO movieSimpleDTO = new MovieSimpleDTO(movie);
+        movieSimpleDTO.setImage(appProperties.getBaseUrl()+"images/posters/"+movie.getImage());
+        return movieSimpleDTO;
     }
 
     public Map<String, Object> getAllMovies(int page, int pageSize)
@@ -74,17 +74,17 @@ public class MovieService {
         return moviesWithPagination;
     }
 
-    public Optional<MovieDetailedView> getMovieById(int id) {
+    public Optional<MovieDetailedDTO> getMovieById(int id) {
         Optional<MovieGenreDTO> movie = movieGenreRepository.findMovieDetailsById(id);
-        MovieDetailedView movieDetailedView;
+        MovieDetailedDTO movieDetailedDTO;
         if (movie.isPresent()) {
-            movieDetailedView = new MovieDetailedView(movie.get());
+            movieDetailedDTO = new MovieDetailedDTO(movie.get());
             List<Showtime> showtimeList = theatreShowtimeSeatRepository.findShowtimesByMovie(id);
             if(!showtimeList.isEmpty()){
-                movieDetailedView.setHasShowtime(true);
+                movieDetailedDTO.setHasShowtime(true);
             }
-            movieDetailedView.setImage(appProperties.getBaseUrl()+"images/posters/"+movieDetailedView.getImage());
-            return Optional.of(movieDetailedView);
+            movieDetailedDTO.setImage(appProperties.getBaseUrl()+"images/posters/"+ movieDetailedDTO.getImage());
+            return Optional.of(movieDetailedDTO);
         }
         return Optional.empty();
     }
