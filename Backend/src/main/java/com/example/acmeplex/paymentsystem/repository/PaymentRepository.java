@@ -25,16 +25,19 @@ public class PaymentRepository {
         @Override
         public Payment mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new Payment(
-                    rs.getInt("payment_id"),
+                    rs.getString("email"),
+                    rs.getString("method"),
+                    rs.getBoolean("status"),
+                    rs.getInt("id"),
                     rs.getDouble("amount"),
-                    rs.getString("payment_method"),
-                    rs.getBoolean("payment_status")
+                    rs.getTimestamp("lastUpdateTime"),
+                    rs.getString("type")
             );
         }
     };
 
-    public int getPaymentId() {
-        return jdbcTemplate.queryForObject("SELECT MAX(payment_id) FROM payment", Integer.class);
+    public int getLastPaymentId() {
+        return jdbcTemplate.queryForObject("SELECT MAX(id) FROM payment", Integer.class);
     }
 
 
