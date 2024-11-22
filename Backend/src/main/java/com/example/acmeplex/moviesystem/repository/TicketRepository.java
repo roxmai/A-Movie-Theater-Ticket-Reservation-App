@@ -52,4 +52,8 @@ public class TicketRepository {
         List<Ticket> tickets = jdbcTemplate.query(sql, ticketRowMapper, ticketNumber);
         return tickets.isEmpty() ? Optional.empty() : Optional.of(tickets.get(0));
     }
+    public double getTicketPrice(int id) {
+        String sql = "SELECT price FROM ticket WHERE id=?";
+        return jdbcTemplate.queryForObject(sql, Double.class, id);
+    }
 }
