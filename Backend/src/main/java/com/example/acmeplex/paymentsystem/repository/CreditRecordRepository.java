@@ -39,6 +39,11 @@ public class CreditRecordRepository {
         return jdbcTemplate.query(sql, creditRecordRowMapper, email);
     }
 
+    public List<CreditRecord> getValidCreditRecordByEmail(String email) {
+        String sql = "SELECT * FROM credit_record WHERE usedpoints<creditpoints AND email = ?";
+        return jdbcTemplate.query(sql, creditRecordRowMapper, email);
+    }
+
     public void addCreditRecord(CreditRecord creditRecord) {
         jdbcTemplate.update("INSERT INTO credit_record (id, email, creditPoints, usedPoints, expirationDate) VALUES (?, ?, ?, ?, ?)",
                 creditRecord.getId(), creditRecord.getEmail(), creditRecord.getCreditPoints(), creditRecord.getUsedPoints(), creditRecord.getExpirationDate());
@@ -47,5 +52,6 @@ public class CreditRecordRepository {
     public void updateUsedPoints(int id, double usedPoints) {
         jdbcTemplate.update("UPDATE credit_record SET usedPoints = ? WHERE id = ?", usedPoints, id);
     }
+
     
 }
