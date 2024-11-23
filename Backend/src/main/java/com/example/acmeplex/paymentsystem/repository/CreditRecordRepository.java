@@ -54,7 +54,5 @@ public class CreditRecordRepository {
 
     public void updateUsedPoints(int id, double usedPoints) {
         jdbcTemplate.update("UPDATE credit_record SET usedPoints = ? WHERE id = ?", usedPoints, id);
-    }
-
-    
+    }    
 }

@@ -153,6 +153,9 @@ public class PaymentService {
 
             CreditRecord creditRecord = new CreditRecord(creditId, email, creditPoints, 0, expirationDate);
             creditRecordRepository.addCreditRecord(creditRecord);
+
+            paymentRepository.updatePaymentStatus(ticketNumber, "credited");
+            
             return "Success! Credit points issued: "+String.valueOf(creditPoints);
         } catch (RuntimeException exception) {
             return "error: " + exception.getMessage();
