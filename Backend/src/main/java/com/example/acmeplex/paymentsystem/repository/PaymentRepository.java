@@ -28,7 +28,6 @@ public class PaymentRepository {
             return new Payment(
                     rs.getString("email"),
                     rs.getString("method"),
-                    rs.getBoolean("status"),
                     rs.getInt("id"),
                     rs.getDouble("amount"),
                     rs.getString("type")
@@ -54,9 +53,13 @@ public class PaymentRepository {
                 payment.getId(),payment.getEmail(), payment.getMethod(), payment.getAmount(), payment.getType());
     }
 
-    public void addPaymentTicket(Payment payment, int ticketId, String status) {
-        jdbcTemplate.update("INSERT INTO payment_ticket (payment_id, ticket_id, status) VALUES (?, ?, ?)",
+    public void addPaymentTicket(Payment payment, String ticketId, String status) {
+        jdbcTemplate.update("INSERT INTO payment_ticket (payment_id, ticket_number status) VALUES (?, ?, ?)",
                 payment.getId(), ticketId, status);
+    }
+
+    public void updatePaymentStatus(String ticket_number, String status) {
+        jdbcTemplate.update("UPDATE payment_ticket SET status = ? WHERE ticket_number = ? AND status='paid' ", status, ticket_number);
     }
 
 

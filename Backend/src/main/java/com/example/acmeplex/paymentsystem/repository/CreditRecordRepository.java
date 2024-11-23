@@ -32,7 +32,10 @@ public class CreditRecordRepository {
             );
         }
     };
-
+    
+    public int getLastCreditRecordId() {
+        return jdbcTemplate.queryForObject("SELECT MAX(id) FROM credit_record", Integer.class);
+    }
 
     public List<CreditRecord> getCreditRecordByEmail(String email) {
         String sql = "SELECT * FROM credit_record WHERE email = ?";
@@ -40,7 +43,7 @@ public class CreditRecordRepository {
     }
 
     public List<CreditRecord> getValidCreditRecordByEmail(String email) {
-        String sql = "SELECT * FROM credit_record WHERE usedpoints<creditpoints AND email = ?";
+        String sql = "SELECT * FROM credit_record WHERE usedpoints<creditpoints  AND expirationDate >= CURRENT_DATE AND email = ?";
         return jdbcTemplate.query(sql, creditRecordRowMapper, email);
     }
 

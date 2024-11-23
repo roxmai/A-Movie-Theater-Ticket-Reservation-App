@@ -5,7 +5,6 @@ package com.example.acmeplex.paymentsystem.entity;
 public class Payment {
     private String email;
     private String method;
-    private boolean status;
     private int id;
     private double amount;
     private String type;
@@ -13,7 +12,7 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(String email, String method, boolean status, int id, double amount, String type) {
+    public Payment(String email, String method, int id, double amount, String type) {
         this.email = email;
         this.method = method;
         this.id = id;
@@ -36,18 +35,6 @@ public class Payment {
 
     public void setMethod(String method) {
         this.method = method;
-    }
-
-    public boolean isStatus() {
-        return this.status;
-    }
-
-    public boolean getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
     }
 
     public int getId() {
