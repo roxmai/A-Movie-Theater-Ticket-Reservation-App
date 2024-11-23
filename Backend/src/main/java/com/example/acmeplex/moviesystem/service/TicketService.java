@@ -33,8 +33,16 @@ public class TicketService {
     }
 
     @Transactional
-    public String bookTickets(List<Integer> showtimeSeats, String email) {
+    public Map<String, Object> bookTickets(List<Integer> showtimeSeats, String email) {
+        Map<String, Object> response = new HashMap<>();
         try {
+            // check if showtime seats are available
+            Showtime showtime = theatreShowtimeSeatRepository.findShowtimeById(showtimeSeats.get(0)).orElseThrow(() -> new DataNotFoundException("Showtime"));
+            if (showtimeSeats.size() > showtime.getTickets() - showtime.getTicketsSold()) {
+                throw new OperationFailedException("Ticket booking");
+            }
+
+            // book tickets
             for(Integer showtimeSeatId : showtimeSeats) {
                 System.out.println(showtimeSeatId);
                 int result1 = theatreShowtimeSeatRepository.updateSeatAvailability(showtimeSeatId, false);
@@ -42,9 +50,15 @@ public class TicketService {
 
                 if(result1==0 || result2==0) throw new OperationFailedException("Ticket booking");
             }
-            return "success: Tickets booked successfully.";
+            String ticketForm = showtimeSeats.size()>1?"tickets":"ticket";
+            response.put("success", true);
+            response.put("message", String.format("%d %s booked successfully.", showtimeSeats.size(), ticketForm));
+            return response;
         } catch (RuntimeException exception) {
-            return "error: " + exception.getMessage();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            response.put("error", true);
+            response.put("message", exception.getMessage());
+            return response;
         }
     }
 
@@ -75,7 +89,6 @@ public class TicketService {
                 throw new TicketCancellationRefusedException();
             }
 
-            
             //set seat availability
             result =  theatreShowtimeSeatRepository.updateSeatAvailability(ticket.get().getId(), true);
             if(result==0) throw new OperationFailedException("Set Seat Availability");
