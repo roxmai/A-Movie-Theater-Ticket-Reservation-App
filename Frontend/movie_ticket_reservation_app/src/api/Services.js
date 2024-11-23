@@ -68,3 +68,9 @@ export const getBookings = async () => {
   const response = await api.get(`/bookings`);
   return response.data;
 }
+
+export const cancelTicket = async (ticketNumber) => {
+  const response = await api.put(`/cancel/${ticketNumber}`);
+  console.log(response.data);
+  return response.data;
+}

@@ -6,6 +6,7 @@ import { useHorizontalScroll } from "../utils/horizontalScroll";
 import { getMovieDetail, getTheatres, getShowtimes, getSeats, bookTickets } from "../api/Services";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import LoadingScreen from "./LoadingScreen";
 
 function MovieOverview({movie}) {
     return (
@@ -471,7 +472,7 @@ function TicketSelector() {
         setStep(1);
     }, []);
 
-    if(loading) return <p>loading</p>;
+    if(loading) return <LoadingScreen />
     if(error) return <p>Network error</p>  
 
     return (
