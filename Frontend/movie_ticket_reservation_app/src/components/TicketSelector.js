@@ -184,18 +184,22 @@ function ShowtimeSelector({showtimes, selected, setShowtime, handleBuyTickets, h
                             <ListItem  key={showtime.id}>
                                 <ListItemButton 
                                 onClick={()=>{setSeletedId(showtime.id)}}
-                                disabled = {showtime.state==='Full' || showtime.state==='Closed'}
+                                disabled = {showtime.state==='Full' || showtime.state==='Closed' || showtime.state=='Playing'}
                                 >
                                     <ListItemText 
                                     primary={convertToLocaltime(showtime.startTime) + " - " + convertToLocaltime(showtime.endTime)}
-                                    secondary={(showtime.tickets-showtime.ticketsSold) + " tickts left"}
+                                    secondary={(showtime.tickets-showtime.ticketsSold) + " tickets left"}
                                     />
-                                    <Typography variant="body2">
-                                        {showtime.state}
-                                    </Typography>
+                                    <ListItemText 
+                                        primary={'Showroom ' + showtime?.showroomName}
+                                        secondary={showtime?.preAnnouncement ? "*pre-announcement": ""}
+                                    />
                                     {
                                         selectedId === showtime.id && <CheckIcon color="success"/>
                                     }
+                                    <Typography variant="body2">
+                                        {showtime.state}
+                                    </Typography>                                    
                                 </ListItemButton>
                             </ListItem>
                             {index < showtimeList.length - 1 && <Divider />}
@@ -212,9 +216,9 @@ function ShowtimeSelector({showtimes, selected, setShowtime, handleBuyTickets, h
 
 function SeatArea({seatsData, selected, setSelected}) {
     const seats = seatsData.seats;
-    const theatreRows = seatsData.theatreRows;
-    const theatreColumns = seatsData.theatreColumns;
-    let boxSize = Math.floor((70-theatreColumns)/3);
+    const rows = seatsData.rows;
+    const columns = seatsData.columns;
+    let boxSize = Math.floor((70-columns)/3);
 
     const seatStyles = (state) => {
         switch (state) {
@@ -242,7 +246,7 @@ function SeatArea({seatsData, selected, setSelected}) {
       return (
         <Box sx={{ display: "flex", flexDirection: "column", gap: '2px' }}>
           {/* Render rows */}
-          {Array.from({ length: theatreRows }).map((_, rowIndex) => (
+          {Array.from({ length: rows }).map((_, rowIndex) => (
             <Box
               key={rowIndex}
               sx={{
@@ -252,11 +256,11 @@ function SeatArea({seatsData, selected, setSelected}) {
               }}
             >
               {/* Render columns */}
-              {Array.from({ length: theatreColumns }).map((_, colIndex) => {
+              {Array.from({ length: columns }).map((_, colIndex) => {
                 const seat = seats.find(
                   (s) =>
-                    s.theatreRow === rowIndex + 1 &&
-                    s.theatreColumn === colIndex + 1
+                    s.showroomRow === rowIndex + 1 &&
+                    s.showroomColumn === colIndex + 1
                 );
                 return (
                     <Box
@@ -416,7 +420,7 @@ function TicketSelector() {
         setShowtime(theShowtime);
         try {
             setLoading(true);
-            const data = await getSeats(theatre.id, id);
+            const data = await getSeats(theShowtime.showroomId, id);
             setSeats(data);
         } catch (err) {
             setError(err);

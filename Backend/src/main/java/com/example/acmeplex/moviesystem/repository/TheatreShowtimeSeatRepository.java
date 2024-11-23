@@ -1,5 +1,6 @@
 package com.example.acmeplex.moviesystem.repository;
 
+import com.example.acmeplex.moviesystem.dto.ShowtimeDTO;
 import com.example.acmeplex.moviesystem.entity.*;
 import com.example.acmeplex.moviesystem.dto.ShowtimeSeatDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,7 @@ public class TheatreShowtimeSeatRepository {
             return new Theatre(
                     rs.getInt("id"),
                     rs.getString("name"),
-                    rs.getString("location"),
-                    rs.getInt("rows"),
-                    rs.getInt("columns")
+                    rs.getString("location")
             );
         }
     };
@@ -42,6 +41,7 @@ public class TheatreShowtimeSeatRepository {
                     rs.getInt("id"),
                     rs.getInt("movie_id"),
                     rs.getInt("theatre_id"),
+                    rs.getInt("showroom_id"),
                     rs.getTimestamp("start_time"),
                     rs.getTimestamp("end_time"),
                     rs.getInt("tickets"),
@@ -58,8 +58,8 @@ public class TheatreShowtimeSeatRepository {
                     rs.getInt("ss.id"),
                     rs.getInt("row"),
                     rs.getInt("column"),
-                    rs.getInt("theatre_row"),
-                    rs.getInt("theatre_column"),
+                    rs.getInt("showroom_row"),
+                    rs.getInt("showroom_column"),
                     rs.getString("ss.available")
             );
         }
@@ -76,6 +76,21 @@ public class TheatreShowtimeSeatRepository {
             );
         }
     };
+
+    private final RowMapper<Showroom> showroomRowMapper = new RowMapper<Showroom>() {
+        @Override
+        public Showroom mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new Showroom(
+                    rs.getInt("id"),
+                    rs.getInt("theatre_id"),
+                    rs.getString("name"),
+                    rs.getInt("rows"),
+                    rs.getInt("columns"),
+                    rs.getInt("seats")
+            );
+        }
+    };
+
     public List<Showtime> findShowtimesByMovie(int movie_id)
     {
         String sql = "SELECT * from showtime where movie_id = ?";
@@ -95,14 +110,9 @@ public class TheatreShowtimeSeatRepository {
         return jdbcTemplate.query(sqlForRegisteredUser, showtimeRowMapper, movie_id, theatre_id);
     }
 
-    public Optional<Theatre> findTheatreById(int movieId) {
-        String sql = "SELECT * FROM theatre where id=?";
-        List<Theatre> theatres = jdbcTemplate.query(sql, theatreRowMapper, movieId);
-        return theatres.isEmpty() ? Optional.empty() : Optional.of(theatres.get(0));
-    }
 
     public List<ShowtimeSeatDTO> findSeatsByShowtime(int showtimeId) {
-        String sql = "SELECT ss.id, s.row, s.`column`, s.theatre_row, s.theatre_column, ss.available "
+        String sql = "SELECT ss.id, s.row, s.`column`, s.showroom_row, s.showroom_column, ss.available "
                 + "FROM seat AS s INNER JOIN showtime_seat AS ss ON s.id=ss.seat_id WHERE ss.showtime_id = ? ";
         return jdbcTemplate.query(sql, showtimeSeatDTORowMapper, showtimeId);
     }
@@ -122,5 +132,11 @@ public class TheatreShowtimeSeatRepository {
         String sql = "SELECT * FROM showtime WHERE id=?";
         List<Showtime> showtimes = jdbcTemplate.query(sql, showtimeRowMapper, id);
         return showtimes.isEmpty() ? Optional.empty() : Optional.of(showtimes.get(0));
+    }
+
+    public Optional<Showroom> findShowroomById(int id) {
+        String sql = "SELECT * FROM showroom WHERE id = ?";
+        Showroom showroom = jdbcTemplate.queryForObject(sql, showroomRowMapper, id);
+        return showroom!=null ? Optional.of(showroom) : Optional.empty();
     }
 }
