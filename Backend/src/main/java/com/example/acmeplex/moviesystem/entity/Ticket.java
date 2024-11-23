@@ -11,6 +11,7 @@ public class Ticket {
     private int movieId;
     private int theatreId;
     private int showtimeId;
+    private int showroomId;
     private int seatId;
     private Timestamp reservedTime;
     private Timestamp expireTime;
@@ -18,7 +19,7 @@ public class Ticket {
     public Ticket() {
     }
 
-    public Ticket(int id, String ticketNumber, String holderEmail, BigDecimal price, int movieId, int theatreId, int showtimeId, int seatId, Timestamp reservedTime, Timestamp expireTime) {
+    public Ticket(int id, String ticketNumber, String holderEmail, BigDecimal price, int movieId, int theatreId, int showtimeId, int showroomId, int seatId, Timestamp reservedTime, Timestamp expireTime) {
         this.id = id;
         this.ticketNumber = ticketNumber;
         this.holderEmail = holderEmail;
@@ -26,6 +27,7 @@ public class Ticket {
         this.movieId = movieId;
         this.theatreId = theatreId;
         this.showtimeId = showtimeId;
+        this.showroomId = showroomId;
         this.seatId = seatId;
         this.reservedTime = reservedTime;
         this.expireTime = expireTime;
@@ -85,6 +87,14 @@ public class Ticket {
 
     public void setShowtimeId(int showtimeId) {
         this.showtimeId = showtimeId;
+    }
+
+    public int getShowroomId() {
+        return showroomId;
+    }
+
+    public void setShowroomId(int showroomId) {
+        this.showroomId = showroomId;
     }
 
     public int getSeatId() {

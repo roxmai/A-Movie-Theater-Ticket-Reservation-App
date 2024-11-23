@@ -2,7 +2,7 @@ package com.example.acmeplex.moviesystem.entity;
 
 public class Seat {
     private int id;
-    private int theatreId;
+    private int showroomId;
     private int row;
     private int column;
     private int theatreRow;
@@ -11,9 +11,9 @@ public class Seat {
     public Seat() {
     }
 
-    public Seat(int id, int theatreId, int row, int column, int theatreRow, int theatreColumn) {
+    public Seat(int id, int showroomId, int row, int column, int theatreRow, int theatreColumn) {
         this.id = id;
-        this.theatreId = theatreId;
+        this.showroomId = showroomId;
         this.row = row;
         this.column = column;
         this.theatreRow = theatreRow;
@@ -29,11 +29,11 @@ public class Seat {
     }
 
     public int getTheatreId() {
-        return theatreId;
+        return showroomId;
     }
 
     public void setTheatreId(int theatreId) {
-        this.theatreId = theatreId;
+        this.showroomId = theatreId;
     }
 
     public int getRow() {

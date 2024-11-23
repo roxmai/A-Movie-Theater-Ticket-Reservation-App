@@ -83,10 +83,11 @@ public class MovieSystemController {
         return ResponseEntity.ok(showtimeService.getShowtimeList(movie_id, theatre_id, false));
     }
 
-    @GetMapping("/seats/theatre/{theatreId}/showtime/{showtimeId}")
-    public ResponseEntity<Map<String, Object>> getSeats(@PathVariable int theatreId, @PathVariable int showtimeId) {
-        Map<String, Object> response = showtimeService.getSeats(theatreId, showtimeId);
-        return ResponseEntity.ofNullable(response);
+    @GetMapping("/seats/showroom/{showroomId}/showtime/{showtimeId}")
+    public ResponseEntity<Map<String, Object>> getSeats(@PathVariable int showroomId, @PathVariable int showtimeId) {
+        Map<String, Object> response = showtimeService.getSeats(showroomId, showtimeId);
+        System.out.println(response);
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/cancel/{ticketNumber}")

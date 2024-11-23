@@ -6,6 +6,7 @@ public class Showtime {
     private int id;
     private int movieId;
     private int theatreId;
+    private int showroomId;
     private Timestamp startTime;
     private Timestamp endTime;
     private int tickets;
@@ -15,11 +16,12 @@ public class Showtime {
     public Showtime() {
     }
 
-    public Showtime(int id, int movieId, int theatreId, Timestamp startTime, Timestamp endTime,
+    public Showtime(int id, int movieId, int theatreId, int showroomId, Timestamp startTime, Timestamp endTime,
                     int tickets, int ticketsSold, Timestamp publicAnnouncementTime) {
         this.id = id;
         this.movieId = movieId;
         this.theatreId = theatreId;
+        this.showroomId = showroomId;
         this.startTime = startTime;
         this.endTime = endTime;
         this.tickets = tickets;
@@ -45,6 +47,14 @@ public class Showtime {
 
     public int getTheatreId() {
         return theatreId;
+    }
+
+    public int getShowroomId() {
+        return showroomId;
+    }
+
+    public void setShowroomId(int showroomId) {
+        this.showroomId = showroomId;
     }
 
     public void setTheatreId(int theatreId) {

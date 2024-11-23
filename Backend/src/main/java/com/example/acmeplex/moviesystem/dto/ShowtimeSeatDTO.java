@@ -4,16 +4,16 @@ public class ShowtimeSeatDTO {
     private int id;
     private int row;
     private int column;
-    private int theatreRow;
-    private int theatreColumn;
+    private int showroomRow;
+    private int showroomColumn;
     private String state;
 
-    public ShowtimeSeatDTO(int id, int row, int column, int theatreRow, int theatreColumn, String state) {
+    public ShowtimeSeatDTO(int id, int row, int column, int showroomRow, int showroomColumn, String state) {
         this.id = id;
         this.row = row;
         this.column = column;
-        this.theatreRow = theatreRow;
-        this.theatreColumn = theatreColumn;
+        this.showroomRow = showroomRow;
+        this.showroomColumn = showroomColumn;
         this.state = state;
     }
 
@@ -41,20 +41,20 @@ public class ShowtimeSeatDTO {
         this.column = column;
     }
 
-    public int getTheatreRow() {
-        return theatreRow;
+    public int getShowroomRow() {
+        return showroomRow;
     }
 
     public void setTheatreRow(int theatreRow) {
-        this.theatreRow = theatreRow;
+        this.showroomRow = theatreRow;
     }
 
-    public int getTheatreColumn() {
-        return theatreColumn;
+    public int getShowroomColumn() {
+        return showroomColumn;
     }
 
     public void setTheatreColumn(int theatreColumn) {
-        this.theatreColumn = theatreColumn;
+        this.showroomColumn = theatreColumn;
     }
 
     public String getState() {
@@ -63,5 +63,17 @@ public class ShowtimeSeatDTO {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    @Override
+    public String toString() {
+        return "ShowtimeSeatDTO{" +
+                "id=" + id +
+                ", row=" + row +
+                ", column=" + column +
+                ", showroomRow=" + showroomRow +
+                ", showroomColumn=" + showroomColumn +
+                ", state='" + state + '\'' +
+                '}';
     }
 }
