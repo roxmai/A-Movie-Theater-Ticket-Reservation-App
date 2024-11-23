@@ -48,8 +48,8 @@ export const getShowtimes = async (movieId, theatreId) => {
   return response.data;
 }
 
-export const getSeats = async (theatreId, showtimeId) => {
-  const response = await api.get(`/seats/theatre/${theatreId}/showtime/${showtimeId}`)
+export const getSeats = async (showroomId, showtimeId) => {
+  const response = await api.get(`/seats/showroom/${showroomId}/showtime/${showtimeId}`)
   console.log(response.data);
   return response.data;
 }
