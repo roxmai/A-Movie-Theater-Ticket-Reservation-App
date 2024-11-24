@@ -25,63 +25,88 @@ public class UserRepository {
         @Override
         public User mapRow(ResultSet rs, int rowNum) throws SQLException {
             User user = new User();
-            user.setId(rs.getLong("id"));
-            user.setName(rs.getString("name"));
             user.setEmail(rs.getString("email"));
-            user.setAddress(rs.getString("address"));
             return user;
         }
     };
 
-    // Find a User by email
+    /**
+     * Find a User by email.
+     * 
+     * @param email The email of the user.
+     * @return An Optional containing the User if found, otherwise empty.
+     */
     public Optional<User> findByEmail(String email) {
         String sql = "SELECT * FROM users WHERE email = ?";
         List<User> users = jdbcTemplate.query(sql, userRowMapper, email);
         return users.isEmpty() ? Optional.empty() : Optional.of(users.get(0));
     }
 
-    // Check if a User exists by email
+    /**
+     * Check if a User exists by email.
+     * 
+     * @param email The email to check.
+     * @return True if the user exists, false otherwise.
+     */
     public boolean existsByEmail(String email) {
         String sql = "SELECT COUNT(*) FROM users WHERE email = ?";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, email);
         return count != null && count > 0;
     }
 
-    // Find all Users
+    /**
+     * Find all Users.
+     * 
+     * @return A list of all Users.
+     */
     public List<User> findAll() {
         String sql = "SELECT * FROM users";
         return jdbcTemplate.query(sql, userRowMapper);
     }
 
-    // Find User by ID
-    public Optional<User> findById(Long id) {
-        String sql = "SELECT * FROM users WHERE id = ?";
-        List<User> users = jdbcTemplate.query(sql, userRowMapper, id);
-        return users.isEmpty() ? Optional.empty() : Optional.of(users.get(0));
-    }
-
-    // Save a new User
+    /**
+     * Save a new User.
+     * 
+     * @param user The User to save.
+     * @return The saved User.
+     */
     public User save(User user) {
-        String sql = "INSERT INTO users (name, email, address) VALUES (?, ?, ?)";
-        jdbcTemplate.update(sql, user.getName(), user.getEmail(), user.getAddress());
-        // For simplicity, we'll assume the ID is auto-incremented and not returned here.
-        // In production, use RETURNING clauses or queries to retrieve the inserted ID.
+        String sql = "INSERT INTO users (email) VALUES (?)";
+        jdbcTemplate.update(sql, user.getEmail());
         return user;
     }
 
-    // Update an existing User
-    public void update(User user) {
-        String sql = "UPDATE users SET name = ?, email = ?, address = ? WHERE id = ?";
-        jdbcTemplate.update(sql, user.getName(), user.getEmail(), user.getAddress(), user.getId());
+    /**
+     * Update an existing User's email.
+     * 
+     * Note: Since email is the primary key, updating it might have implications.
+     * Ensure that related entities are handled appropriately.
+     * 
+     * @param oldEmail The current email of the user.
+     * @param newEmail The new email to update to.
+     */
+    public void updateEmail(String oldEmail, String newEmail) {
+        String sql = "UPDATE users SET email = ? WHERE email = ?";
+        jdbcTemplate.update(sql, newEmail, oldEmail);
     }
 
-    // Delete a User by ID
-    public void deleteById(Long id) {
-        String sql = "DELETE FROM users WHERE id = ?";
-        jdbcTemplate.update(sql, id);
+    /**
+     * Delete a User by email.
+     * 
+     * @param email The email of the User to delete.
+     */
+    public void deleteByEmail(String email) {
+        String sql = "DELETE FROM users WHERE email = ?";
+        jdbcTemplate.update(sql, email);
     }
 
-    public boolean existsById(Long id) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    /**
+     * Check if a User exists by email.
+     * 
+     * @param email The email to check.
+     * @return True if the user exists, false otherwise.
+     */
+    public boolean existsById(String email) {
+        return existsByEmail(email);
     }
 }
