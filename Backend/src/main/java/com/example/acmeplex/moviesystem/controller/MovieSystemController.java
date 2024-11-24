@@ -104,10 +104,10 @@ public class MovieSystemController {
     }
 
     @PostMapping("/book")
-    public ResponseEntity<String> bookTickets(@RequestBody TicketBookingDTO ticketBookingDTO) {
+    public ResponseEntity<Map<String, Object>> bookTickets(@RequestBody TicketBookingDTO ticketBookingDTO) {
         System.out.println(ticketBookingDTO.getEmail());
         System.out.println(ticketBookingDTO.getIds());
-        ResponseEntity<String> response = ResponseEntity.ok(ticketService.bookTickets(ticketBookingDTO.getIds(), ticketBookingDTO.getEmail()));
+        ResponseEntity<Map<String, Object>> response = ResponseEntity.ok(ticketService.bookTickets(ticketBookingDTO.getIds(), ticketBookingDTO.getEmail()));
         System.out.println(response);
         return response;
     }

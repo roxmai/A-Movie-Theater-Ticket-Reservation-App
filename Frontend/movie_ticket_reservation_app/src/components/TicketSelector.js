@@ -282,6 +282,7 @@ function SeatArea({seatsData, selected, setSelected}) {
                             if (seat.state==='available'){
                                 seat.state = 'selected'
                                 setSelected([...selected, seat.id]);
+                                console.log(selected);
                             } else if(seat.state==='selected') {
                                 seat.state = 'available';
                                 setSelected(selected.filter(num => num!==seat.id));   
@@ -299,7 +300,7 @@ function SeatArea({seatsData, selected, setSelected}) {
       );
 }
 
-function SeatSelector({handleBack, handleBuyTickets, seats, selected, setSelected}) {
+function SeatSelector({handleBack, seats, selected, setSelected}) {
     const [selectedSeats, setSelectedSeats] = useState(selected);
     return (
         <Box
@@ -328,7 +329,7 @@ function SeatSelector({handleBack, handleBuyTickets, seats, selected, setSelecte
             <Box sx={{display: 'flex', justifyContent: 'center'}}>
                 <Button disabled={selectedSeats.length===0} 
                 variant="contained"
-                onClick={()=>{setSelected(selectedSeats);console.log(selected)}}
+                onClick={()=>{console.log(selectedSeats); setSelected(selectedSeats);}}
                 >Confirm</Button>
             </Box>
         </Box>
@@ -433,7 +434,7 @@ function TicketSelector() {
     const navigate = useNavigate();
 
 
-    //need to redirect to payment
+    // this is temporary, need to redirect to payment
     const handleConfirmSeats = async (ids) => {
         setSelectedSeats(ids);
         const email = "example@example.com";
@@ -445,7 +446,7 @@ function TicketSelector() {
             setLoading(true);
             const data = await bookTickets(requestData);
             console.log(data);
-            alert(data);
+            alert(data.message);
             navigate("/BookMovie")
         } catch (err) {
             setError(err);

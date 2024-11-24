@@ -1,23 +1,26 @@
 package com.example.acmeplex.moviesystem.service;
 
-import com.example.acmeplex.moviesystem.exceptions.DataNotFoundException;
-import com.example.acmeplex.moviesystem.exceptions.OperationFailedException;
-import com.example.acmeplex.moviesystem.exceptions.TicketCancellationRefusedException;
-import com.example.acmeplex.moviesystem.entity.Showtime;
-import com.example.acmeplex.moviesystem.entity.ShowtimeSeat;
-import com.example.acmeplex.moviesystem.entity.Ticket;
-import com.example.acmeplex.moviesystem.repository.TheatreShowtimeSeatRepository;
-import com.example.acmeplex.moviesystem.repository.TicketRepository;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.*;
-
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
+import com.example.acmeplex.moviesystem.entity.Showtime;
+import com.example.acmeplex.moviesystem.entity.ShowtimeSeat;
+import com.example.acmeplex.moviesystem.entity.Ticket;
+import com.example.acmeplex.moviesystem.exceptions.DataNotFoundException;
+import com.example.acmeplex.moviesystem.exceptions.OperationFailedException;
+import com.example.acmeplex.moviesystem.exceptions.TicketCancellationRefusedException;
+import com.example.acmeplex.moviesystem.repository.TheatreShowtimeSeatRepository;
+import com.example.acmeplex.moviesystem.repository.TicketRepository;
 
 
 @Service
@@ -35,9 +38,11 @@ public class TicketService {
     @Transactional
     public Map<String, Object> bookTickets(List<Integer> showtimeSeats, String email) {
         Map<String, Object> response = new HashMap<>();
+        System.out.println(showtimeSeats.size());
         try {
             // check if showtime seats are available
-            Showtime showtime = theatreShowtimeSeatRepository.findShowtimeById(showtimeSeats.get(0)).orElseThrow(() -> new DataNotFoundException("Showtime"));
+            ShowtimeSeat showtimeSeat = theatreShowtimeSeatRepository.findShowtimeSeatById(showtimeSeats.get(0)).orElseThrow(() -> new DataNotFoundException("Showtime Seat"));
+            Showtime showtime = theatreShowtimeSeatRepository.findShowtimeById(showtimeSeat.getShowtimeId()).orElseThrow(() -> new DataNotFoundException("Showtime"));
             if (showtimeSeats.size() > showtime.getTickets() - showtime.getTicketsSold()) {
                 throw new OperationFailedException("Ticket booking");
             }
