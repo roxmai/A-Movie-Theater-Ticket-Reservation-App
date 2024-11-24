@@ -72,7 +72,7 @@ CREATE TABLE `movie`  (
   `release_date` date NOT NULL,
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `image` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `length` int NULL DEFAULT NULL,
+  `length` int NOT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `genre_id`(`genre_id` ASC) USING BTREE,
   CONSTRAINT `movie_ibfk_1` FOREIGN KEY (`genre_id`) REFERENCES `genre` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
@@ -87,8 +87,6 @@ CREATE TABLE `payment`  (
   `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `amount` decimal(10, 2) NOT NULL,
   `method` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `lastUpdateTime` datetime NOT NULL,
   `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
@@ -99,11 +97,12 @@ CREATE TABLE `payment`  (
 DROP TABLE IF EXISTS `payment_ticket`;
 CREATE TABLE `payment_ticket`  (
   `payment_id` int NOT NULL,
-  `ticket_id` int NOT NULL,
-  PRIMARY KEY (`payment_id`, `ticket_id`) USING BTREE,
-  INDEX `ticket_id`(`ticket_id` ASC) USING BTREE,
+  `ticket_number` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`payment_id`, `ticket_number`) USING BTREE,
+  INDEX `ticket_number`(`ticket_number` ASC) USING BTREE,
   CONSTRAINT `payment_ticket_ibfk_1` FOREIGN KEY (`payment_id`) REFERENCES `payment` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `payment_ticket_ibfk_2` FOREIGN KEY (`ticket_id`) REFERENCES `ticket` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `payment_ticket_ibfk_2` FOREIGN KEY (`ticket_number`) REFERENCES `ticket` (`ticket_number`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -221,8 +220,17 @@ CREATE TABLE `ticket`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `registered_user_id`(`holder_email` ASC) USING BTREE,
   INDEX `showroom_id`(`showroom_id` ASC) USING BTREE,
-  CONSTRAINT `ticket_ibfk_1` FOREIGN KEY (`showroom_id`) REFERENCES `showtime` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+  INDEX `movie_id`(`movie_id` ASC) USING BTREE,
+  INDEX `theatre_id`(`theatre_id` ASC) USING BTREE,
+  INDEX `showtime_id`(`showtime_id` ASC) USING BTREE,
+  INDEX `seat_id`(`seat_id` ASC) USING BTREE,
+  INDEX `ticket_number`(`ticket_number` ASC) USING BTREE,
+  CONSTRAINT `ticket_ibfk_1` FOREIGN KEY (`showroom_id`) REFERENCES `showroom` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `ticket_ibfk_2` FOREIGN KEY (`movie_id`) REFERENCES `movie` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `ticket_ibfk_3` FOREIGN KEY (`theatre_id`) REFERENCES `theatre` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `ticket_ibfk_4` FOREIGN KEY (`showtime_id`) REFERENCES `showtime` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `ticket_ibfk_5` FOREIGN KEY (`seat_id`) REFERENCES `seat` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB AUTO_INCREMENT = 508 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for users
@@ -278,8 +286,8 @@ CREATE TRIGGER `after_showtime_insert` AFTER INSERT ON `showtime` FOR EACH ROW B
             NEW.ticket_price, -- Ticket price from showtime
             NEW.movie_id, -- Movie ID from showtime
             NEW.theatre_id, -- Theatre ID from showtime
-            NEW.showroom_id, -- Showroom ID from showroom
             NEW.id, -- Showtime ID
+            NEW.showroom_id, -- Showroom ID from showroom
             seat_id, -- Seat ID
             NULL, -- Reserved time is NULL
             NEW.end_time -- Expire time is the end time of the showtime
@@ -314,6 +322,9 @@ END
 delimiter ;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+
+
 -- Data for genre table
 INSERT INTO `genre` VALUES (1, 'Animation');
 INSERT INTO `genre` VALUES (2, 'Comedy');
