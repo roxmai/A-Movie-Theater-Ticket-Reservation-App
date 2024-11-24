@@ -2,15 +2,29 @@ package com.example.acmeplex.usersystem.vo;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotNull;
 
 /**
- * Value Object representing credit card information.
- * Used for capturing and validating credit card details during transactions.
+ * Value Object representing general payment card information.
+ * Supports both debit and credit cards for transactions.
  */
-public class CreditCardVO {
+public class PaymentCardVO {
 
     /**
-     * The credit card number.
+     * Enum representing the type of payment card.
+     */
+    public enum CardType {
+        DEBIT, CREDIT
+    }
+
+    /**
+     * The type of the payment card (DEBIT or CREDIT).
+     */
+    @NotNull(message = "Card Type is mandatory")
+    private CardType cardType;
+
+    /**
+     * The payment card number.
      * Must be exactly 16 digits.
      */
     @NotBlank(message = "Card Number is mandatory")
@@ -18,7 +32,7 @@ public class CreditCardVO {
     private String cardNumber;
 
     /**
-     * The expiry date of the credit card.
+     * The expiry date of the payment card.
      * Must follow the MM/YY format.
      */
     @NotBlank(message = "Expiry Date is mandatory")
@@ -26,7 +40,7 @@ public class CreditCardVO {
     private String expiryDate;
 
     /**
-     * The CVV code of the credit card.
+     * The CVV code of the payment card.
      * Must be exactly 3 digits.
      * 
      * <strong>Note:</strong> Storing CVV is against PCI DSS compliance.
@@ -41,16 +55,18 @@ public class CreditCardVO {
     /**
      * Default constructor required for frameworks like Spring.
      */
-    public CreditCardVO() {}
+    public PaymentCardVO() {}
 
     /**
      * Parameterized constructor for creating instances with all fields set.
      *
-     * @param cardNumber the credit card number
+     * @param cardType   the type of the payment card (DEBIT or CREDIT)
+     * @param cardNumber the payment card number
      * @param expiryDate the expiry date in MM/YY format
-     * @param cvv the 3-digit CVV code
+     * @param cvv        the 3-digit CVV code
      */
-    public CreditCardVO(String cardNumber, String expiryDate, String cvv) {
+    public PaymentCardVO(CardType cardType, String cardNumber, String expiryDate, String cvv) {
+        this.cardType = cardType;
         this.cardNumber = cardNumber;
         this.expiryDate = expiryDate;
         this.cvv = cvv;
@@ -59,7 +75,25 @@ public class CreditCardVO {
     // Getters and Setters
 
     /**
-     * Retrieves the credit card number.
+     * Retrieves the type of the payment card.
+     *
+     * @return the card type (DEBIT or CREDIT)
+     */
+    public CardType getCardType() {
+        return cardType;
+    }
+
+    /**
+     * Sets the type of the payment card.
+     *
+     * @param cardType the card type to set (DEBIT or CREDIT)
+     */
+    public void setCardType(CardType cardType) {
+        this.cardType = cardType;
+    }
+
+    /**
+     * Retrieves the payment card number.
      *
      * @return the card number
      */
@@ -68,7 +102,7 @@ public class CreditCardVO {
     }
 
     /**
-     * Sets the credit card number.
+     * Sets the payment card number.
      *
      * @param cardNumber the card number to set
      */
@@ -77,7 +111,7 @@ public class CreditCardVO {
     }
 
     /**
-     * Retrieves the expiry date of the credit card.
+     * Retrieves the expiry date of the payment card.
      *
      * @return the expiry date in MM/YY format
      */
@@ -86,7 +120,7 @@ public class CreditCardVO {
     }
 
     /**
-     * Sets the expiry date of the credit card.
+     * Sets the expiry date of the payment card.
      *
      * @param expiryDate the expiry date to set in MM/YY format
      */
@@ -95,7 +129,7 @@ public class CreditCardVO {
     }
 
     /**
-     * Retrieves the CVV code of the credit card.
+     * Retrieves the CVV code of the payment card.
      *
      * @return the 3-digit CVV code
      */
@@ -104,7 +138,7 @@ public class CreditCardVO {
     }
 
     /**
-     * Sets the CVV code of the credit card.
+     * Sets the CVV code of the payment card.
      *
      * @param cvv the 3-digit CVV code to set
      */
@@ -116,15 +150,16 @@ public class CreditCardVO {
 
     @Override
     public String toString() {
-        return "CreditCardVO{" +
-                "cardNumber='" + maskCardNumber(cardNumber) + '\'' +
+        return "PaymentCardVO{" +
+                "cardType=" + cardType +
+                ", cardNumber='" + maskCardNumber(cardNumber) + '\'' +
                 ", expiryDate='" + expiryDate + '\'' +
                 ", cvv='***'" + // Mask CVV for security
                 '}';
     }
 
     /**
-     * Masks the credit card number for security purposes.
+     * Masks the payment card number for security purposes.
      * Shows only the last four digits.
      *
      * @param cardNumber the original card number
