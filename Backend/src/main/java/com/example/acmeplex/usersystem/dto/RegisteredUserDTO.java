@@ -4,35 +4,50 @@ import jakarta.validation.constraints.NotBlank;
 
 public class RegisteredUserDTO extends UserDTO {
     
-    @NotBlank(message = "Credit Card Info is mandatory")
-    private String creditCardInfo;
+    @NotBlank(message = "Name is mandatory")
+    private String name;
     
-    private boolean activeSubscription;
+    @NotBlank(message = "Address is mandatory")
+    private String address;
+    
+    @NotBlank(message = "Password is mandatory")
+    private String password;
+
+    // You can add more fields like subscription details as needed
 
     // Default constructor
     public RegisteredUserDTO() {}
 
     // All-args constructor
-    public RegisteredUserDTO(Long id, String name, String email, String address, String creditCardInfo, boolean activeSubscription) {
-        super(id, name, email, address);
-        this.creditCardInfo = creditCardInfo;
-        this.activeSubscription = activeSubscription;
+    public RegisteredUserDTO(String email, String name, String address, String password) {
+        super(email);
+        this.name = name;
+        this.address = address;
+        this.password = password;
     }
 
     // Getters and Setters
-    public String getCreditCardInfo() {
-        return creditCardInfo;
+    public String getName() {
+        return name;
     }
 
-    public void setCreditCardInfo(String creditCardInfo) {
-        this.creditCardInfo = creditCardInfo;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public boolean isActiveSubscription() {
-        return activeSubscription;
+	public String getAddress() {
+        return address;
     }
 
-    public void setActiveSubscription(boolean activeSubscription) {
-        this.activeSubscription = activeSubscription;
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+	public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

@@ -54,9 +54,8 @@ public class UserService {
      *
      * @param userDTO the DTO containing user details
      * @return the created UserDTO
-     * @throws DuplicateResourceException if a user with the same email already exists
+     * @throws DuplicateKeyException if a user with the same email already exists
      */
-
     @Transactional
     public UserDTO createUser(UserDTO userDTO) {
         logger.info("Attempting to create user with email: {}", userDTO.getEmail());
@@ -73,31 +72,30 @@ public class UserService {
         // Save the entity to the database
         User savedUser = userRepository.save(user);
         
-        logger.info("User created successfully with ID: {}", savedUser.getId());
+        logger.info("User created successfully with email: {}", savedUser.getEmail());
         
         // Convert the saved entity back to DTO
         return convertToDTO(savedUser);
     }
 
     /**
-     * Retrieves a user by their ID.
+     * Retrieves a user by their email.
      *
-     * @param id the ID of the user
+     * @param email the email of the user
      * @return the corresponding UserDTO
-     * @throws ResourceNotFoundException if user is not found
+     * @throws ResourceAccessException if user is not found
      */
-
-    public UserDTO getUserById(Long id) {
-        logger.info("Fetching user with ID: {}", id);
+    public UserDTO getUserByEmail(String email) {
+        logger.info("Fetching user with email: {}", email);
         
         // Fetch the user or throw an exception if not found
-        User user = userRepository.findById(id)
+        User user = userRepository.findByEmail(email)
                           .orElseThrow(() -> {
-                              logger.error("User not found with ID: {}", id);
-                              return new ResourceAccessException("User not found with id: " + id);
+                              logger.error("User not found with email: {}", email);
+                              return new ResourceAccessException("User not found with email: " + email);
                           });
         
-        logger.info("User fetched successfully with ID: {}", id);
+        logger.info("User fetched successfully with email: {}", email);
         
         // Convert the entity to DTO
         return convertToDTO(user);
@@ -108,7 +106,6 @@ public class UserService {
      *
      * @return a list of UserDTOs
      */
-
     public List<UserDTO> getAllUsers() {
         logger.info("Fetching all users");
         
@@ -124,78 +121,24 @@ public class UserService {
     }
 
     /**
-     * Updates an existing user's details.
-     *
-     * @param id the ID of the user to update
-     * @param userDTO the DTO containing updated details
-     * @return the updated UserDTO
-     * @throws ResourceNotFoundException if user is not found
-     * @throws DuplicateResourceException if the updated email is already in use by another user
-     */
-
-    @Transactional
-    public UserDTO updateUser(Long id, UserDTO userDTO) {
-        logger.info("Attempting to update user with ID: {}", id);
-        
-        // Fetch the existing user or throw an exception if not found
-        User existingUser = userRepository.findById(id)
-                                 .orElseThrow(() -> {
-                                     logger.error("User not found with ID: {}", id);
-                                     return new ResourceAccessException("User not found with id: " + id);
-                                 });
-        
-        // If email is being updated, check for duplicates
-        if (!existingUser.getEmail().equals(userDTO.getEmail()) && userRepository.existsByEmail(userDTO.getEmail())) {
-            logger.error("User update failed: Email {} is already in use.", userDTO.getEmail());
-            throw new DuplicateKeyException("Email already in use: " + userDTO.getEmail());
-        }
-
-        // Update the user's details
-        existingUser.setName(userDTO.getName());
-        existingUser.setEmail(userDTO.getEmail());
-        existingUser.setAddress(userDTO.getAddress());
-        
-        // Save the updated user to the database
-        User updatedUser = userRepository.save(existingUser);
-        
-        logger.info("User updated successfully with ID: {}", id);
-        
-        // Convert the updated entity back to DTO
-        return convertToDTO(updatedUser);
-    }
-
-    /**
      * Deletes a user from the system.
      *
-     * @param id the ID of the user to delete
-     * @throws ResourceNotFoundException if user is not found
+     * @param email the email of the user to delete
+     * @throws ResourceAccessException if user is not found
      */
-
     @Transactional
-    public void deleteUser(Long id) {
-        logger.info("Attempting to delete user with ID: {}", id);
+    public void deleteUser(String email) {
+        logger.info("Attempting to delete user with email: {}", email);
         
         // Check if the user exists before attempting deletion
-        if (!userRepository.existsById(id)) {
-            logger.error("User deletion failed: User not found with ID: {}", id);
-            throw new ResourceAccessException("User not found with id: " + id);
+        if (!userRepository.existsByEmail(email)) {
+            logger.error("User deletion failed: User not found with email: {}", email);
+            throw new ResourceAccessException("User not found with email: " + email);
         }
         
-        // Delete the user by ID
-        userRepository.deleteById(id);
+        // Delete the user by email
+        userRepository.deleteByEmail(email);
         
-        logger.info("User deleted successfully with ID: {}", id);
-    }
-
-
-    public UserDTO getUserByEmail(String email) {
-        logger.info("Fetching user with email: {}", email);
-        // Fetch the user by email or throw an exception if not found
-        User user = userRepository.findByEmail(email).orElseThrow(() -> {
-            logger.error("User not found with email: {}", email);
-            return new ResourceAccessException("User not found with email: " + email);});
-        logger.info("User fetched successfully with email: {}", email);
-        // Convert the entity to DTO
-        return convertToDTO(user);
+        logger.info("User deleted successfully with email: {}", email);
     }
 }

@@ -16,7 +16,7 @@ import com.example.acmeplex.moviesystem.repository.TicketRepository;
 import com.example.acmeplex.paymentsystem.entity.CreditRecord;
 import com.example.acmeplex.paymentsystem.entity.Payment;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PaymentService {
@@ -155,7 +155,7 @@ public class PaymentService {
             creditRecordRepository.addCreditRecord(creditRecord);
 
             paymentRepository.updatePaymentStatus(ticketNumber, "credited");
-            
+
             return "Success! Credit points issued: "+String.valueOf(creditPoints);
         } catch (RuntimeException exception) {
             return "error: " + exception.getMessage();
