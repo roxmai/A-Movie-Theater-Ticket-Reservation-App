@@ -1,9 +1,10 @@
 package com.example.acmeplex.moviesystem.service;
 
+import com.example.acmeplex.moviesystem.entity.Showroom;
 import com.example.acmeplex.moviesystem.entity.Showtime;
 import com.example.acmeplex.moviesystem.entity.Theatre;
 import com.example.acmeplex.moviesystem.dto.ShowtimeSeatDTO;
-import com.example.acmeplex.moviesystem.vo.ShowtimeView;
+import com.example.acmeplex.moviesystem.dto.ShowtimeDTO;
 import com.example.acmeplex.moviesystem.repository.TheatreShowtimeSeatRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,61 +25,70 @@ public class ShowtimeService {
     }
 
 
-    public Map<String, List<ShowtimeView>> getShowtimeList(int movie_id, int theatre_id, boolean userLoggedIn) {
+    public Map<String, List<ShowtimeDTO>> getShowtimeList(int movie_id, int theatre_id, boolean userLoggedIn) {
         List<Showtime> showtimes = theatreShowtimeSeatRepository.findShowtimesByMovieAndTheatre(movie_id, theatre_id, userLoggedIn);
-        List<ShowtimeView> showtimeViews = new ArrayList<>();
+        List<ShowtimeDTO> showtimeDTOS = new ArrayList<>();
         Timestamp now = Timestamp.valueOf(java.time.LocalDateTime.now());
         for (Showtime showtime : showtimes) {
-            ShowtimeView showtimeView = new ShowtimeView(showtime.getId(), showtime.getStartTime(), showtime.getEndTime(),
+            ShowtimeDTO showtimeDTO = new ShowtimeDTO(showtime.getId(), showtime.getShowroomId(), showtime.getStartTime(), showtime.getEndTime(),
                     showtime.getTickets(), showtime.getTicketsSold());
+            // set showroom name
+            Optional<Showroom> showroom = theatreShowtimeSeatRepository.findShowroomById(showtime.getShowroomId());
+            showroom.ifPresent(value -> showtimeDTO.setShowroomName(value.getName()));
+            //set state
             if (showtime.getTickets()==showtime.getTicketsSold()) {
-                showtimeView.setState("Full");
+                showtimeDTO.setState("Full");
             } else if (now.after(showtime.getStartTime()) && now.before(showtime.getEndTime())) {
-                showtimeView.setState("Playing");
+                showtimeDTO.setState("Playing");
             } else if (now.after(showtime.getEndTime())) {
-                showtimeView.setState("Closed");
+                showtimeDTO.setState("Closed");
             } else {
-                showtimeView.setState("Open");
+                showtimeDTO.setState("Open");
             }
-            showtimeViews.add(showtimeView);
+            showtimeDTOS.add(showtimeDTO);
+            if(showtime.getPublicAnnouncementTime().after(now)) showtimeDTO.setPreAnnouncement(true);
         }
-        Map<String, List<ShowtimeView>> showtimeViewsDividedByDate = new LinkedHashMap<>();
+
+        //sort by date
+        Map<String, List<ShowtimeDTO>> showtimeViewsDividedByDate = new LinkedHashMap<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd");
         LocalDate lastDate = null;
 
-        for (ShowtimeView showtimeView: showtimeViews) {
-            LocalDate date = showtimeView.getStartTime().toInstant()
+        for (ShowtimeDTO showtimeDTO : showtimeDTOS) {
+            LocalDate date = showtimeDTO.getStartTime().toInstant()
                     .atZone(ZoneId.systemDefault())
                     .toLocalDate();
             if (lastDate == null) {
                 lastDate = date;
                 String formattedDate = lastDate.format(formatter);
-                showtimeViewsDividedByDate.put(formattedDate, new ArrayList<ShowtimeView>());
-                ((ArrayList<ShowtimeView>) (showtimeViewsDividedByDate.get(formattedDate))).add(showtimeView);
+                showtimeViewsDividedByDate.put(formattedDate, new ArrayList<ShowtimeDTO>());
+                ((ArrayList<ShowtimeDTO>) (showtimeViewsDividedByDate.get(formattedDate))).add(showtimeDTO);
             } else if (!lastDate.equals(date)) {
                 String formattedDate = date.format(formatter);
-                showtimeViewsDividedByDate.put(formattedDate, new ArrayList<ShowtimeView>());
-                ((ArrayList<ShowtimeView>) (showtimeViewsDividedByDate.get(formattedDate))).add(showtimeView);
+                showtimeViewsDividedByDate.put(formattedDate, new ArrayList<ShowtimeDTO>());
+                ((ArrayList<ShowtimeDTO>) (showtimeViewsDividedByDate.get(formattedDate))).add(showtimeDTO);
                 lastDate = date;
             } else {
                 String formattedDate = lastDate.format(formatter);
-                ((ArrayList<ShowtimeView>) (showtimeViewsDividedByDate.get(formattedDate))).add(showtimeView);
+                ((ArrayList<ShowtimeDTO>) (showtimeViewsDividedByDate.get(formattedDate))).add(showtimeDTO);
             }
         }
         return showtimeViewsDividedByDate;
     }
 
-    public Map<String, Object> getSeats(int theatre_id, int showtime_id) {
-        Map<String, Object> seatsAndTheatreSize = new HashMap<>();
-        Optional<Theatre> theatre = theatreShowtimeSeatRepository.findTheatreById(theatre_id);
+    public Map<String, Object> getSeats(int showroomId, int showtime_id) {
+        Map<String, Object> seatsAndShowroomSize = new HashMap<>();
+        Optional<Showroom> showroom = theatreShowtimeSeatRepository.findShowroomById(showroomId);
         List<ShowtimeSeatDTO> seats = theatreShowtimeSeatRepository.findSeatsByShowtime(showtime_id);
+        System.out.println(seats);
         for (ShowtimeSeatDTO s: seats) {
             s.setState(s.getState().equals("1")?"available":"reserved");
         }
-        if(theatre.isEmpty()) return null;
-        seatsAndTheatreSize.put("theatreRows", theatre.get().getRows());
-        seatsAndTheatreSize.put("theatreColumns", theatre.get().getColumns());
-        seatsAndTheatreSize.put("seats", seats);
-        return seatsAndTheatreSize;
+        if(showroom.isPresent()) {
+            seatsAndShowroomSize.put("rows", showroom.get().getRows());
+            seatsAndShowroomSize.put("columns", showroom.get().getColumns());
+        }
+        seatsAndShowroomSize.put("seats", seats);
+        return seatsAndShowroomSize;
     }
 }

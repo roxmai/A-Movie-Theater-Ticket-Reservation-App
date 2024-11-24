@@ -30,6 +30,7 @@ public class TicketRepository {
                     rs.getInt("movie_id"),
                     rs.getInt("theatre_id"),
                     rs.getInt("showtime_id"),
+                    rs.getInt("showroom_id"),
                     rs.getInt("seat_id"),
                     rs.getTimestamp("reserved_time"),
                     rs.getTimestamp("expire_time")

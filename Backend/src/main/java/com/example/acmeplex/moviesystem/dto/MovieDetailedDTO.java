@@ -1,9 +1,9 @@
-package com.example.acmeplex.moviesystem.vo;
+package com.example.acmeplex.moviesystem.dto;
 import com.example.acmeplex.moviesystem.dto.MovieGenreDTO;
 
 import java.sql.Date;
 
-public class MovieDetailedView {
+public class MovieDetailedDTO {
     private int id;
     private String genre;
     private String title;
@@ -21,7 +21,7 @@ public class MovieDetailedView {
         this.length = length;
     }
 
-    public MovieDetailedView(MovieGenreDTO movie) {
+    public MovieDetailedDTO(MovieGenreDTO movie) {
         this.id = movie.getId();
         this.title = movie.getTitle();
         this.releaseDate = movie.getReleaseDate();
@@ -32,7 +32,7 @@ public class MovieDetailedView {
         this.genre = movie.getGenre();
     }
 
-    public MovieDetailedView() {
+    public MovieDetailedDTO() {
     }
 
     public int getId() {
