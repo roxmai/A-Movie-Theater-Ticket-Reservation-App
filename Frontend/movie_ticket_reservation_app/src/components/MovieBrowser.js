@@ -8,6 +8,7 @@ import {List, ListItem, ListItemText, ListItemButton} from '@mui/material';
 import {Grid2, Card, CardMedia, CardContent, Typography} from '@mui/material'
 import { getGenres, getMovies, getMoviesByGenre, getMoviesBySearch } from '../api/Services'; 
 import { Link, useNavigate } from 'react-router-dom';
+import LoadingScreen from './LoadingScreen';
 function SearchBar({search, handleValueChange, handleSearch}) {
     const handleKeyDown = async (event) => {
         if(event.key === 'Enter') {
@@ -280,22 +281,6 @@ function MovieBrowser() {
         } finally {
             setLoading(false);
         } 
-    }
-
-    const LoadingScreen = () => {
-        return (
-            <Box sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                mt: 30,
-            }}>
-                <CircularProgress />
-                <Typography variant='body2'>
-                    loading
-                </Typography>
-            </Box>)
     }
     
     const ErrorScreen = ({err}) => {

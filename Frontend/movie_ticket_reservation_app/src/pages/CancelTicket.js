@@ -1,24 +1,39 @@
 import React,{ useState } from 'react';
+import { cancelTicket } from '../api/Services';
 
 import { Box, Typography, Container, TextField, Button,Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
 
 function CancelTicket() {
 
     const [ticketNumber, setTicketNumber] = useState('');
-    const [dialogOpen, setDialogOpen] = useState(false);
-    const [notFoundDialogOpen, setNotFoundDialogOpen] = useState(false);
+    const [successDialogOpen, setSuccessDialogOpen] = useState(false);
+    const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+    const [message, setMessage] = useState('');
 
-    const handleInputChange = (event) => {
-        setTicketNumber(event.target.value);
-    };
-
-    const issueRefund = () => {
+    const issueRefund = async () => {
         // Implement the refund logic here
+        try {
+            const data = await cancelTicket(ticketNumber);
+            if (data?.error) {
+                setErrorDialogOpen(true);
+            } else if (data?.success) {
+                setSuccessDialogOpen(true);
+            }
+            setMessage(data.message)
+        } catch (error) {
+            console.error(error);
+        }
         console.log(`Refund issued for ticket number: ${ticketNumber}`);
+
     };
 
-    const handleDialogClose = () => {
-        setDialogOpen(false);
+    const handleSuccessDialogClose = () => {
+        setSuccessDialogOpen(false);
+    };
+
+    const handleErrorDialogClose = () => {
+        setErrorDialogOpen(false);
     };
 
     return (
@@ -27,40 +42,45 @@ function CancelTicket() {
                 <Typography variant="h2" component="h1" gutterBottom align="center">
                     Cancel Ticket
                 </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 , gap: 1}}>
+                    <InfoIcon color="warning" />
+                    <Typography variant="body1">
+                        Ticket cannot be cancelled within 72 hours before the showtime
+                    </Typography>
+                </Box>
                 <TextField
                     label="Ticket Number"
                     variant="outlined"
                     fullWidth
-                    value={ticketNumber}
-                    onChange={handleInputChange}
-                    sx={{ mb: 2 }}
+                    onChange={(e) => setTicketNumber(e.target.value)}
+                    sx={{ mb: 2, mt: 1 }}
                 />
                 <Button variant="contained" color="primary" onClick={issueRefund}>
                     cancel Ticket
                 </Button>
             </Box>
-            <Dialog open={dialogOpen} onClose={handleDialogClose}>
-                <DialogTitle>Refund Issued</DialogTitle>
+            <Dialog open={successDialogOpen} onClose={handleSuccessDialogClose}>
+                <DialogTitle>Cancellation success</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Refund has been issued for ticket number: {ticketNumber}
+                        {message}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleDialogClose} color="primary">
+                    <Button onClick={handleSuccessDialogClose} color="primary">
                         Close
                     </Button>
                 </DialogActions>
             </Dialog>
-            <Dialog open={notFoundDialogOpen} onClose={handleDialogClose}>
-                <DialogTitle>Ticket Not Found</DialogTitle>
+            <Dialog open={errorDialogOpen} onClose={handleErrorDialogClose}>
+                <DialogTitle>Cancellation failed</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Ticket number: {ticketNumber} was not found.
+                        {message}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleDialogClose} color="primary">
+                    <Button onClick={handleErrorDialogClose} color="primary">
                         Close
                     </Button>
                 </DialogActions>
