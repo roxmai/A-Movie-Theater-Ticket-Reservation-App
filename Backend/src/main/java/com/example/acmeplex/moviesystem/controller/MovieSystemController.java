@@ -1,21 +1,29 @@
 package com.example.acmeplex.moviesystem.controller;
 
-import com.example.acmeplex.moviesystem.entity.Genre;
-import com.example.acmeplex.moviesystem.entity.Theatre;
-import com.example.acmeplex.moviesystem.dto.TicketBookingDTO;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.acmeplex.moviesystem.dto.MovieDetailedDTO;
 import com.example.acmeplex.moviesystem.dto.ShowtimeDTO;
+import com.example.acmeplex.moviesystem.dto.TicketBookingDTO;
+import com.example.acmeplex.moviesystem.entity.Genre;
+import com.example.acmeplex.moviesystem.entity.Theatre;
 import com.example.acmeplex.moviesystem.service.MovieService;
 import com.example.acmeplex.moviesystem.service.ShowtimeService;
 import com.example.acmeplex.moviesystem.service.TheatreService;
 import com.example.acmeplex.moviesystem.service.TicketService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 public class MovieSystemController {
@@ -91,15 +99,15 @@ public class MovieSystemController {
     }
 
     @PutMapping("/cancel/{ticketNumber}")
-    public ResponseEntity<Map<String, String>> cancelTicket(@PathVariable String ticketNumber) {
+    public ResponseEntity<Map<String, Object>> cancelTicket(@PathVariable String ticketNumber) {
         return ResponseEntity.ok(ticketService.cancelTicketByTicketNumber(ticketNumber));
     }
 
     @PostMapping("/book")
-    public ResponseEntity<String> bookTickets(@RequestBody TicketBookingDTO ticketBookingDTO) {
+    public ResponseEntity<Map<String, Object>> bookTickets(@RequestBody TicketBookingDTO ticketBookingDTO) {
         System.out.println(ticketBookingDTO.getEmail());
         System.out.println(ticketBookingDTO.getIds());
-        ResponseEntity<String> response = ResponseEntity.ok(ticketService.bookTickets(ticketBookingDTO.getIds(), ticketBookingDTO.getEmail()));
+        ResponseEntity<Map<String, Object>> response = ResponseEntity.ok(ticketService.bookTickets(ticketBookingDTO.getIds(), ticketBookingDTO.getEmail()));
         System.out.println(response);
         return response;
     }
