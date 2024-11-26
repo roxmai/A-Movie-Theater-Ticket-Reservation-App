@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, Container, TextField, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, RadioGroup, FormControlLabel, Radio } from '@mui/material';
-import { createRegisteredUser } from '../api/Services';
+import { createRegisteredUser, membershipPayment } from '../api/Services';
 
 function UserRegistration() {
     const [email, setEmail] = useState('');
@@ -37,7 +37,9 @@ function UserRegistration() {
 
         try {
             const response = await createRegisteredUser(registrationData);
+            const paymentData = await membershipPayment(email,method);
             console.log(response);
+            console.log(paymentData);
             setDialogOpen(true);
             setConfirmationDialogOpen(false);
         } catch (error) {
@@ -93,7 +95,7 @@ function UserRegistration() {
                     sx={{ mb: 2 }}
                 />
                 <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-                    Paying $15 membership fee upon registration
+                    Paying $20 membership fee upon registration
                 </Typography>
                 <Button variant="contained" color="primary" onClick={handleSubmit}>
                     Register

@@ -71,10 +71,10 @@ public class RegisteredUserService {
 
         // Convert DTO to entity
         RegisteredUser registeredUser = convertToEntity(registeredUserDTO);
-        
+
         // Save the entity to the database
         RegisteredUser savedRegisteredUser = registeredUserRepository.save(registeredUser);
-        
+        System.out.println("llaa"); 
         logger.info("Registered user created successfully with email: {}", savedRegisteredUser.getEmail());
         
         // Convert the saved entity back to DTO

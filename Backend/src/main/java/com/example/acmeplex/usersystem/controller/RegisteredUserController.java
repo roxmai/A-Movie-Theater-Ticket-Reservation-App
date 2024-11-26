@@ -31,9 +31,9 @@ public class RegisteredUserController {
      * @param registeredUserDTO DTO containing user information.
      * @return Created user as a response.
      */
-    @PostMapping
+    @PostMapping("/createregistereduser")
     public ResponseEntity<RegisteredUserDTO> createRegisteredUser(@RequestBody RegisteredUserDTO registeredUserDTO) {
-        System.out.println("Creating registered user");
+
         RegisteredUserDTO createdRegisteredUser = registeredUserService.createRegisteredUser(registeredUserDTO);
         return ResponseEntity.ok(createdRegisteredUser);
     }
