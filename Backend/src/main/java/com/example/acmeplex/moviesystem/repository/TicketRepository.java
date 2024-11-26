@@ -53,14 +53,23 @@ public class TicketRepository {
         List<Ticket> tickets = jdbcTemplate.query(sql, ticketRowMapper, ticketNumber);
         return tickets.isEmpty() ? Optional.empty() : Optional.of(tickets.get(0));
     }
-
-    public String findActiveTicketStatus(String ticketNumber, String status) {
-        String sql = "SELECT status FROM payment_ticket WHERE ticket_number=? AND status!=?";
-        return jdbcTemplate.queryForObject(sql, String.class, ticketNumber, status);
+    public double getTicketPrice(String ticketNumber) {
+        String sql = "SELECT price FROM ticket WHERE ticket_number=?";
+        return jdbcTemplate.queryForObject(sql, Double.class, ticketNumber);
+    }
+    public double getTicketPrice(int id) {
+        String sql = "SELECT price FROM ticket WHERE id=?";
+        return jdbcTemplate.queryForObject(sql, Double.class, id);
     }
 
-    public int updateTicketStatus(String ticketNumber, String status) {
-        String sql = "UPDATE payment_ticket SET status=? WHERE ticket_number=?";
-        return jdbcTemplate.update(sql, status, ticketNumber);
+    public String getTicketNumber(int id) {
+        String sql = "SELECT ticket_number FROM ticket WHERE id=?";
+        return jdbcTemplate.queryForObject(sql, String.class, id);
     }
+
+    public String getEmailByTicketNumber(String ticketNumber) {
+        String sql = "SELECT holder_email FROM ticket WHERE ticket_number=?";
+        return jdbcTemplate.queryForObject(sql, String.class, ticketNumber);
+    }
+
 }

@@ -1,13 +1,22 @@
 package com.example.acmeplex.usersystem.controller;
 
-import com.example.acmeplex.usersystem.dto.RegisteredUserDTO;
-import com.example.acmeplex.usersystem.service.RegisteredUserService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.example.acmeplex.usersystem.dto.RegisteredUserDTO;
+import com.example.acmeplex.usersystem.service.RegisteredUserService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/registered-users")
@@ -22,21 +31,22 @@ public class RegisteredUserController {
      * @param registeredUserDTO DTO containing user information.
      * @return Created user as a response.
      */
-    @PostMapping
-    public ResponseEntity<RegisteredUserDTO> createRegisteredUser(@Valid @RequestBody RegisteredUserDTO registeredUserDTO) {
+    @PostMapping("/createregistereduser")
+    public ResponseEntity<RegisteredUserDTO> createRegisteredUser(@RequestBody RegisteredUserDTO registeredUserDTO) {
+
         RegisteredUserDTO createdRegisteredUser = registeredUserService.createRegisteredUser(registeredUserDTO);
         return ResponseEntity.ok(createdRegisteredUser);
     }
 
     /**
-     * Get registered user by ID.
+     * Get registered user by email.
      *
-     * @param id ID of the user.
+     * @param email Email of the user.
      * @return User details as a response.
      */
-    @GetMapping("/{id}")
-    public ResponseEntity<RegisteredUserDTO> getRegisteredUserById(@PathVariable Long id) {
-        RegisteredUserDTO registeredUser = registeredUserService.getRegisteredUserById(id);
+    @GetMapping("/{email}")
+    public ResponseEntity<RegisteredUserDTO> getRegisteredUserByEmail(@PathVariable String email) {
+        RegisteredUserDTO registeredUser = registeredUserService.getRegisteredUserByEmail(email);
         return ResponseEntity.ok(registeredUser);
     }
 
@@ -52,39 +62,27 @@ public class RegisteredUserController {
     }
 
     /**
-     * Update a registered user by ID.
+     * Update a registered user by email.
      *
-     * @param id                 ID of the user to update.
-     * @param registeredUserDTO  Updated user information.
+     * @param email               Email of the user to update.
+     * @param registeredUserDTO   Updated user information.
      * @return Updated user details.
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<RegisteredUserDTO> updateRegisteredUser(@PathVariable Long id, @Valid @RequestBody RegisteredUserDTO registeredUserDTO) {
-        RegisteredUserDTO updatedRegisteredUser = registeredUserService.updateRegisteredUser(id, registeredUserDTO);
+    @PutMapping("/{email}")
+    public ResponseEntity<RegisteredUserDTO> updateRegisteredUser(@PathVariable String email, @Valid @RequestBody RegisteredUserDTO registeredUserDTO) {
+        RegisteredUserDTO updatedRegisteredUser = registeredUserService.updateRegisteredUser(email, registeredUserDTO);
         return ResponseEntity.ok(updatedRegisteredUser);
     }
 
     /**
-     * Delete a registered user by ID.
+     * Delete a registered user by email.
      *
-     * @param id ID of the user to delete.
+     * @param email Email of the user to delete.
      * @return No content response if deletion is successful.
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRegisteredUser(@PathVariable Long id) {
-        registeredUserService.deleteRegisteredUser(id);
+    @DeleteMapping("/{email}")
+    public ResponseEntity<Void> deleteRegisteredUser(@PathVariable String email) {
+        registeredUserService.deleteRegisteredUser(email);
         return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * Find a registered user by email.
-     *
-     * @param email Email of the registered user.
-     * @return User details as a response.
-     */
-    @GetMapping("/email/{email}")
-    public ResponseEntity<RegisteredUserDTO> getRegisteredUserByEmail(@PathVariable String email) {
-        RegisteredUserDTO registeredUser = registeredUserService.getRegisteredUserByEmail(email);
-        return ResponseEntity.ok(registeredUser);
     }
 }

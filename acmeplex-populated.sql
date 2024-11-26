@@ -6249,3 +6249,15 @@ INSERT INTO `showtime` (`movie_id`, `theatre_id`, `showroom_id`, `start_time`, `
 (8, 4, 13, '2024-11-30 11:00:00', '2024-11-30 13:30:00', 14.99, 180, 0, '2024-11-23 20:00:00'),
 (8, 4, 13, '2024-11-30 14:00:00', '2024-11-30 16:30:00', 13.99, 180, 0, '2024-11-23 20:00:00'),
 (8, 4, 13, '2024-11-30 17:00:00', '2024-11-30 19:30:00', 12.99, 180, 0, '2024-11-23 20:00:00');
+
+LOCK TABLES `credit_record` WRITE;
+/*!40000 ALTER TABLE `credit_record` DISABLE KEYS */;
+INSERT INTO `credit_record` VALUES (1,'jason@jason.com',15.99,1.00,'2025-11-22 00:00:00');
+/*!40000 ALTER TABLE `credit_record` ENABLE KEYS */;
+UNLOCK TABLES;
+
+LOCK TABLES `payment` WRITE;
+/*!40000 ALTER TABLE `payment` DISABLE KEYS */;
+INSERT INTO `payment` VALUES (1,'first@gmail.com',12.00,'credit','example');
+/*!40000 ALTER TABLE `payment` ENABLE KEYS */;
+UNLOCK TABLES;
