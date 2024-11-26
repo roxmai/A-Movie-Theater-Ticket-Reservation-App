@@ -28,15 +28,16 @@ class RegisteredUserControllerTest {
     private RegisteredUserController registeredUserController;
 
     private RegisteredUserDTO userDTO;
+    private final String userEmail = "john.doe@example.com";
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         userDTO = new RegisteredUserDTO();
-        userDTO.setId(1L);
+        userDTO.setEmail(userEmail);
         userDTO.setName("John Doe");
-        userDTO.setEmail("john.doe@example.com");
-        // Initialize other fields as necessary
+        userDTO.setAddress("123 Main St");
+        userDTO.setPassword("password123");
     }
 
     @Test
@@ -47,20 +48,24 @@ class RegisteredUserControllerTest {
 
         assertEquals(200, response.getStatusCodeValue());
         assertNotNull(response.getBody());
-        assertEquals(userDTO.getId(), response.getBody().getId());
+        assertEquals(userDTO.getEmail(), response.getBody().getEmail());
+        assertEquals(userDTO.getName(), response.getBody().getName());
+        assertEquals(userDTO.getAddress(), response.getBody().getAddress());
         verify(registeredUserService, times(1)).createRegisteredUser(any(RegisteredUserDTO.class));
     }
 
     @Test
-    void testGetRegisteredUserById() {
-        when(registeredUserService.getRegisteredUserById(1L)).thenReturn(userDTO);
+    void testGetRegisteredUserByEmail() {
+        when(registeredUserService.getRegisteredUserByEmail(userEmail)).thenReturn(userDTO);
 
-        ResponseEntity<RegisteredUserDTO> response = registeredUserController.getRegisteredUserById(1L);
+        ResponseEntity<RegisteredUserDTO> response = registeredUserController.getRegisteredUserByEmail(userEmail);
 
         assertEquals(200, response.getStatusCodeValue());
         assertNotNull(response.getBody());
-        assertEquals(userDTO.getId(), response.getBody().getId());
-        verify(registeredUserService, times(1)).getRegisteredUserById(1L);
+        assertEquals(userDTO.getEmail(), response.getBody().getEmail());
+        assertEquals(userDTO.getName(), response.getBody().getName());
+        assertEquals(userDTO.getAddress(), response.getBody().getAddress());
+        verify(registeredUserService, times(1)).getRegisteredUserByEmail(userEmail);
     }
 
     @Test
@@ -73,35 +78,44 @@ class RegisteredUserControllerTest {
         assertEquals(200, response.getStatusCodeValue());
         assertNotNull(response.getBody());
         assertFalse(response.getBody().isEmpty());
+        assertEquals(1, response.getBody().size());
+        RegisteredUserDTO returnedUser = response.getBody().get(0);
+        assertEquals(userDTO.getEmail(), returnedUser.getEmail());
+        assertEquals(userDTO.getName(), returnedUser.getName());
+        assertEquals(userDTO.getAddress(), returnedUser.getAddress());
         verify(registeredUserService, times(1)).getAllRegisteredUsers();
     }
 
     @Test
     void testUpdateRegisteredUser() {
         RegisteredUserDTO updatedUserDTO = new RegisteredUserDTO();
-        updatedUserDTO.setId(1L);
+        updatedUserDTO.setEmail(userEmail);
         updatedUserDTO.setName("Jane Doe");
-        updatedUserDTO.setEmail("jane.doe@example.com");
+        updatedUserDTO.setAddress("456 Elm St");
+        updatedUserDTO.setPassword("newpassword456");
         // Initialize other fields as necessary
 
-        when(registeredUserService.updateRegisteredUser(eq(1L), any(RegisteredUserDTO.class))).thenReturn(updatedUserDTO);
+        when(registeredUserService.updateRegisteredUser(eq(userEmail), any(RegisteredUserDTO.class))).thenReturn(updatedUserDTO);
 
-        ResponseEntity<RegisteredUserDTO> response = registeredUserController.updateRegisteredUser(1L, updatedUserDTO);
+        ResponseEntity<RegisteredUserDTO> response = registeredUserController.updateRegisteredUser(userEmail, updatedUserDTO);
 
         assertEquals(200, response.getStatusCodeValue());
         assertNotNull(response.getBody());
+        assertEquals(updatedUserDTO.getEmail(), response.getBody().getEmail());
         assertEquals("Jane Doe", response.getBody().getName());
-        verify(registeredUserService, times(1)).updateRegisteredUser(eq(1L), any(RegisteredUserDTO.class));
+        assertEquals("456 Elm St", response.getBody().getAddress());
+        verify(registeredUserService, times(1)).updateRegisteredUser(eq(userEmail), any(RegisteredUserDTO.class));
     }
 
     @Test
     void testDeleteRegisteredUser() {
-        doNothing().when(registeredUserService).deleteRegisteredUser(1L);
+        doNothing().when(registeredUserService).deleteRegisteredUser(userEmail);
 
-        ResponseEntity<Void> response = registeredUserController.deleteRegisteredUser(1L);
+        ResponseEntity<Void> response = registeredUserController.deleteRegisteredUser(userEmail);
 
         assertEquals(204, response.getStatusCodeValue());
         assertNull(response.getBody());
-        verify(registeredUserService, times(1)).deleteRegisteredUser(1L);
+        verify(registeredUserService, times(1)).deleteRegisteredUser(userEmail);
     }
+
 }

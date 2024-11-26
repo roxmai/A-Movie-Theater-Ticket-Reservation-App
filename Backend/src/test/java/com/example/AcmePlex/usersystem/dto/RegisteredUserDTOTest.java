@@ -21,123 +21,96 @@ class RegisteredUserDTOTest {
         validator = factory.getValidator();
     }
 
-    /**
-     * Test that validation fails when creditCardInfo is null.
-     */
     @Test
-    void whenCreditCardInfoIsNull_thenValidationFails() {
-        RegisteredUserDTO user = new RegisteredUserDTO();
-        user.setCreditCardInfo(null);
-        // Set other mandatory fields
-        user.setName("John Doe");
-        user.setEmail("john.doe@example.com");
-        user.setAddress("123 Main St");
-        user.setActiveSubscription(true);
+    void testRegisteredUserDTOValid() {
+        RegisteredUserDTO userDTO = new RegisteredUserDTO(
+                "john.doe@example.com",
+                "John Doe",
+                "123 Main St",
+                "password123"
+        );
 
-        Set<ConstraintViolation<RegisteredUserDTO>> violations = validator.validate(user);
-        assertFalse(violations.isEmpty(), "Validation should fail when creditCardInfo is null");
-
-        boolean hasCreditCardViolation = violations.stream()
-                .anyMatch(v -> v.getPropertyPath().toString().equals("creditCardInfo") &&
-                        v.getMessage().equals("Credit Card Info is mandatory"));
-        assertTrue(hasCreditCardViolation, "Should have creditCardInfo violation");
+        Set<ConstraintViolation<RegisteredUserDTO>> violations = validator.validate(userDTO);
+        assertTrue(violations.isEmpty(), "DTO should be valid when all fields are properly set.");
     }
 
-    /**
-     * Test that validation fails when creditCardInfo is blank.
-     */
     @Test
-    void whenCreditCardInfoIsBlank_thenValidationFails() {
-        RegisteredUserDTO user = new RegisteredUserDTO();
-        user.setCreditCardInfo("   "); // Blank spaces
-        // Set other mandatory fields
-        user.setName("Jane Doe");
-        user.setEmail("jane.doe@example.com");
-        user.setAddress("456 Elm St");
-        user.setActiveSubscription(false);
+    void testRegisteredUserDTONameNotBlank() {
+        RegisteredUserDTO userDTO = new RegisteredUserDTO(
+                "john.doe@example.com",
+                "", // Invalid name
+                "123 Main St",
+                "password123"
+        );
 
-        Set<ConstraintViolation<RegisteredUserDTO>> violations = validator.validate(user);
-        assertFalse(violations.isEmpty(), "Validation should fail when creditCardInfo is blank");
-
-        boolean hasCreditCardViolation = violations.stream()
-                .anyMatch(v -> v.getPropertyPath().toString().equals("creditCardInfo") &&
-                        v.getMessage().equals("Credit Card Info is mandatory"));
-        assertTrue(hasCreditCardViolation, "Should have creditCardInfo violation");
+        Set<ConstraintViolation<RegisteredUserDTO>> violations = validator.validate(userDTO);
+        assertFalse(violations.isEmpty(), "DTO should be invalid when name is blank.");
+        assertTrue(violations.stream()
+                .anyMatch(v -> v.getPropertyPath().toString().equals("name") && v.getMessage().equals("Name is mandatory")),
+                "Expected validation error for blank name.");
     }
 
-    /**
-     * Test that validation passes when all fields are valid.
-     */
     @Test
-    void whenAllFieldsAreValid_thenNoValidationErrors() {
-        RegisteredUserDTO user = new RegisteredUserDTO();
-        user.setId(1L);
-        user.setName("Alice");
-        user.setEmail("alice@example.com");
-        user.setAddress("789 Oak St");
-        user.setCreditCardInfo("4111111111111111");
-        user.setActiveSubscription(true);
+    void testRegisteredUserDTOAddressNotBlank() {
+        RegisteredUserDTO userDTO = new RegisteredUserDTO(
+                "john.doe@example.com",
+                "John Doe",
+                "", // Invalid address
+                "password123"
+        );
 
-        Set<ConstraintViolation<RegisteredUserDTO>> violations = validator.validate(user);
-        assertTrue(violations.isEmpty(), "Validation should pass when all fields are valid");
+        Set<ConstraintViolation<RegisteredUserDTO>> violations = validator.validate(userDTO);
+        assertFalse(violations.isEmpty(), "DTO should be invalid when address is blank.");
+        assertTrue(violations.stream()
+                .anyMatch(v -> v.getPropertyPath().toString().equals("address") && v.getMessage().equals("Address is mandatory")),
+                "Expected validation error for blank address.");
     }
 
-    /**
-     * Test the getters and setters.
-     */
     @Test
-    void testGettersAndSetters() {
-        RegisteredUserDTO user = new RegisteredUserDTO();
-        user.setId(2L);
-        user.setName("Bob");
-        user.setEmail("bob@example.com");
-        user.setAddress("321 Pine St");
-        user.setCreditCardInfo("5500000000000004");
-        user.setActiveSubscription(false);
+    void testRegisteredUserDTOPasswordNotBlank() {
+        RegisteredUserDTO userDTO = new RegisteredUserDTO(
+                "john.doe@example.com",
+                "John Doe",
+                "123 Main St",
+                "" // Invalid password
+        );
 
-        assertEquals(2L, user.getId());
-        assertEquals("Bob", user.getName());
-        assertEquals("bob@example.com", user.getEmail());
-        assertEquals("321 Pine St", user.getAddress());
-        assertEquals("5500000000000004", user.getCreditCardInfo());
-        assertFalse(user.isActiveSubscription());
+        Set<ConstraintViolation<RegisteredUserDTO>> violations = validator.validate(userDTO);
+        assertFalse(violations.isEmpty(), "DTO should be invalid when password is blank.");
+        assertTrue(violations.stream()
+                .anyMatch(v -> v.getPropertyPath().toString().equals("password") && v.getMessage().equals("Password is mandatory")),
+                "Expected validation error for blank password.");
     }
 
-    /**
-     * Test that null values in non-annotated fields are handled correctly.
-     * Assuming 'address' can be null if not annotated.
-     */
     @Test
-    void whenOptionalFieldsAreNull_thenValidationPasses() {
-        RegisteredUserDTO user = new RegisteredUserDTO();
-        user.setCreditCardInfo("340000000000009");
-        // Set mandatory fields
-        user.setName("Charlie");
-        user.setEmail("charlie@example.com");
-        // Address is optional
-        user.setActiveSubscription(false);
+    void testRegisteredUserDTOEmailNotBlank() {
+        RegisteredUserDTO userDTO = new RegisteredUserDTO(
+                "", // Invalid email
+                "John Doe",
+                "123 Main St",
+                "password123"
+        );
 
-        Set<ConstraintViolation<RegisteredUserDTO>> violations = validator.validate(user);
-        assertTrue(violations.isEmpty(), "Validation should pass when optional fields are null");
+        Set<ConstraintViolation<RegisteredUserDTO>> violations = validator.validate(userDTO);
+        assertFalse(violations.isEmpty(), "DTO should be invalid when email is blank.");
+        assertTrue(violations.stream()
+                .anyMatch(v -> v.getPropertyPath().toString().equals("email") && v.getMessage().equals("must not be blank")),
+                "Expected validation error for blank email.");
     }
 
-    /**
-     * Test that email format is validated if there's a constraint (assuming UserDTO has @Email).
-     */
     @Test
-    void whenEmailIsInvalid_thenValidationFails() {
-        RegisteredUserDTO user = new RegisteredUserDTO();
-        user.setCreditCardInfo("4111111111111111");
-        user.setName("David");
-        user.setEmail("invalid-email"); // Invalid email format
-        user.setAddress("654 Maple St");
-        user.setActiveSubscription(true);
+    void testRegisteredUserDTOEmailNull() {
+        RegisteredUserDTO userDTO = new RegisteredUserDTO(
+                null, // Invalid email
+                "John Doe",
+                "123 Main St",
+                "password123"
+        );
 
-        Set<ConstraintViolation<RegisteredUserDTO>> violations = validator.validate(user);
-        assertFalse(violations.isEmpty(), "Validation should fail when email format is invalid");
-
-        boolean hasEmailViolation = violations.stream()
-                .anyMatch(v -> v.getPropertyPath().toString().equals("email"));
-        assertTrue(hasEmailViolation, "Should have email format violation");
+        Set<ConstraintViolation<RegisteredUserDTO>> violations = validator.validate(userDTO);
+        assertFalse(violations.isEmpty(), "DTO should be invalid when email is null.");
+        assertTrue(violations.stream()
+                .anyMatch(v -> v.getPropertyPath().toString().equals("email") && v.getMessage().equals("must not be blank")),
+                "Expected validation error for null email.");
     }
 }
