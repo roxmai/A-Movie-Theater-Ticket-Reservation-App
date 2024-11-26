@@ -1,15 +1,24 @@
 import React, { useState } from 'react';
+import { AppBar, Toolbar, Typography, Button, Box, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, TextField,DialogActions } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { AppBar, Toolbar, IconButton, Button, Menu, MenuItem, Box, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@mui/material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-
+import { membershipPayment } from '../api/Services';
 
 function NavBar() {
-
+    const [anchorEl, setAnchorEl] = useState(null);
     const [open, setOpen] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false);
-    const [userName, setUserName] = useState('');
-    const [anchorEl, setAnchorEl] = useState(null);
+    const [userName, setUserName] = useState('User');
+
+    const [email, setEmail] = useState(''); 
+
+    const handleMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -20,18 +29,30 @@ function NavBar() {
     };
 
     const handleLogin = () => {
-        // Simulate login action
-        // setUserName('JX'); // Replace with actual user name
-        // setLoggedIn(true);
-        // setOpen(false);
+        // Implement login logic here
+        setLoggedIn(true);
+        setEmail(email);
+        setUserName('OU');
+        setOpen(false);
     };
 
-    const handleMenuOpen = (event) => {
-        setAnchorEl(event.currentTarget);
+    const handleLogout = () => {
+        // Implement logout logic here
+        setLoggedIn(false);
+        setEmail('');
+        handleMenuClose();
     };
 
-    const handleMenuClose = () => {
-        setAnchorEl(null);
+    const handleSubscriptionRenew = async () => {
+        try {
+            const response = await membershipPayment(email, 'credit');
+            console.log('Membership payment successful:', response);
+            alert('Membership renewed successfully.');
+        } catch (error) {
+            console.error('Error renewing membership:', error);
+            alert('Failed to renew membership. Please try again.');
+        }
+        handleMenuClose();
     };
 
     return (
@@ -57,7 +78,8 @@ function NavBar() {
                                 open={Boolean(anchorEl)}
                                 onClose={handleMenuClose}
                             >
-                                <MenuItem onClick={handleMenuClose}>Subscription Renew</MenuItem>
+                                <MenuItem onClick={handleSubscriptionRenew}>Subscription Renew</MenuItem>
+                                <MenuItem onClick={handleLogout}>Logout</MenuItem>
                             </Menu>
                         </>
                     ) : (
@@ -74,7 +96,7 @@ function NavBar() {
                     <TextField
                         autoFocus
                         margin="dense"
-                        id="name"
+                        id="email"
                         label="Email Address"
                         type="email"
                         fullWidth
@@ -90,13 +112,16 @@ function NavBar() {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose}>Cancel</Button>
-                    <Button onClick={handleLogin}>Login</Button>
+                    <Button onClick={handleClose} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleLogin} color="primary">
+                        Login
+                    </Button>
                 </DialogActions>
             </Dialog>
         </AppBar>
     );
-
 }
 
 export default NavBar;
