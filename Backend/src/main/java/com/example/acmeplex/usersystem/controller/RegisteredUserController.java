@@ -1,13 +1,22 @@
 package com.example.acmeplex.usersystem.controller;
 
-import com.example.acmeplex.usersystem.dto.RegisteredUserDTO;
-import com.example.acmeplex.usersystem.service.RegisteredUserService;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.example.acmeplex.usersystem.dto.RegisteredUserDTO;
+import com.example.acmeplex.usersystem.service.RegisteredUserService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/registered-users")
@@ -23,7 +32,8 @@ public class RegisteredUserController {
      * @return Created user as a response.
      */
     @PostMapping
-    public ResponseEntity<RegisteredUserDTO> createRegisteredUser(@Valid @RequestBody RegisteredUserDTO registeredUserDTO) {
+    public ResponseEntity<RegisteredUserDTO> createRegisteredUser(@RequestBody RegisteredUserDTO registeredUserDTO) {
+        System.out.println("Creating registered user");
         RegisteredUserDTO createdRegisteredUser = registeredUserService.createRegisteredUser(registeredUserDTO);
         return ResponseEntity.ok(createdRegisteredUser);
     }

@@ -49,12 +49,12 @@ public class PaymentRepository {
     }
 
     public void addPayment(Payment payment) {
-        jdbcTemplate.update("INSERT INTO payment (id, email, method, amount, type) VALUES (?, ?, ?, ?, ?, ?, ?)",
+        jdbcTemplate.update("INSERT INTO payment (id, email, method, amount, type) VALUES (?, ?, ?, ?, ?)",
                 payment.getId(),payment.getEmail(), payment.getMethod(), payment.getAmount(), payment.getType());
     }
 
     public void addPaymentTicket(Payment payment, String ticketId, String status) {
-        jdbcTemplate.update("INSERT INTO payment_ticket (payment_id, ticket_number status) VALUES (?, ?, ?)",
+        jdbcTemplate.update("INSERT INTO payment_ticket (payment_id, ticket_number, status) VALUES (?, ?, ?)",
                 payment.getId(), ticketId, status);
     }
 

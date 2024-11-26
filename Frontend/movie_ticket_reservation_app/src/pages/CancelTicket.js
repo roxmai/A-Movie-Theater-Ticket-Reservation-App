@@ -1,17 +1,17 @@
 import React,{ useState } from 'react';
-import { cancelTicket } from '../api/Services';
+import { issueRefund, cancelTicket } from '../api/Services';
 
 import { Box, Typography, Container, TextField, Button,Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 
-function CancelTicket() {
+function CancelTicketPage() {
 
     const [ticketNumber, setTicketNumber] = useState('');
     const [successDialogOpen, setSuccessDialogOpen] = useState(false);
     const [errorDialogOpen, setErrorDialogOpen] = useState(false);
     const [message, setMessage] = useState('');
 
-    const issueRefund = async () => {
+    const issue = async () => {
         // Implement the refund logic here
         try {
             const data = await cancelTicket(ticketNumber);
@@ -23,7 +23,7 @@ function CancelTicket() {
             }
             setMessage(data.message)
         } catch (error) {
-            console.error(error);
+            console.error('aa',error);
         }
         console.log(`Refund issued for ticket number: ${ticketNumber}`);
 
@@ -56,7 +56,7 @@ function CancelTicket() {
                     onChange={(e) => setTicketNumber(e.target.value)}
                     sx={{ mb: 2, mt: 1 }}
                 />
-                <Button variant="contained" color="primary" onClick={issueRefund}>
+                <Button variant="contained" color="primary" onClick={issue}>
                     cancel Ticket
                 </Button>
             </Box>
@@ -90,4 +90,4 @@ function CancelTicket() {
     );
 }
 
-export default CancelTicket;
+export default CancelTicketPage;

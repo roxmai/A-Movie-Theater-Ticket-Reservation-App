@@ -83,6 +83,7 @@ export const issueRefund = async (ticketNumber) => {
 
 export const getTotalPrice = async (data) => {
   const response = await api.post(`/totalprice`, data);
+  console.log(response.data);
   return response.data;
 }
 
@@ -93,5 +94,6 @@ export const ticketPayment = async (data) => {
 
 export const createRegisteredUser = async (data) => {
   const response = await api.post(`/api/registered-users`, data);
+  console.log(response.data);
   return response.data;
 }

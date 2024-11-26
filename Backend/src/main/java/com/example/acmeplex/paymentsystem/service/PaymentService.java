@@ -8,17 +8,16 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import com.example.acmeplex.moviesystem.repository.TicketRepository;
+import com.example.acmeplex.paymentsystem.dto.TicketPaymentDTO;
+import com.example.acmeplex.paymentsystem.entity.CreditRecord;
+import com.example.acmeplex.paymentsystem.entity.Payment;
 import com.example.acmeplex.paymentsystem.repository.CreditRecordRepository;
 import com.example.acmeplex.paymentsystem.repository.PaymentRepository;
 import com.example.acmeplex.usersystem.service.RegisteredUserService;
-import com.example.acmeplex.moviesystem.repository.TicketRepository;
-import com.example.acmeplex.paymentsystem.entity.CreditRecord;
-import com.example.acmeplex.paymentsystem.entity.Payment;
-import com.example.acmeplex.paymentsystem.dto.TicketPaymentDTO;
-
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class PaymentService {
@@ -37,13 +36,18 @@ public class PaymentService {
     }
 
     @Transactional
-    public double priceCalculation(List<Integer> showtimeSeats){
+    public String priceCalculation(List<Integer> showtimeSeats){
+        try{
+        System.out.println("Calculating total price");
         double totalPayment = 0;
         for(Integer showtimeSeatId : showtimeSeats) {
             double price = ticketRepository.getTicketPrice(showtimeSeatId);
             totalPayment += price;
         }
-        return totalPayment;
+        return String.valueOf(totalPayment);
+        } catch (RuntimeException exception) {
+        return "error: " + exception.getMessage();
+    }
     }
 
     @Transactional
@@ -55,6 +59,7 @@ public class PaymentService {
             double creditUsed=0;
             List<CreditRecord> creditRecords = sortCreditRecords(ticketPaymentDTO.getEmail());
             for(int i=0; i<creditRecords.size(); i++) {
+                System.out.println("credit");
                 CreditRecord creditRecord = creditRecords.get(i);
                 double creditPoints = creditRecord.getCreditPoints();
                 double usedPoints = creditRecord.getUsedPoints();
@@ -74,13 +79,13 @@ public class PaymentService {
                     break;
                 }
             }
-
+            System.out.println(creditUsed);
             double remainingPayment = totalPayment - creditUsed;
 
             int newPaymentId = paymentRepository.getLastPaymentId() + 1;
             Payment payment = new Payment(ticketPaymentDTO.getEmail(), ticketPaymentDTO.getMethod(), newPaymentId, totalPayment, "ticket");
             paymentRepository.addPayment(payment);
-
+            System.out.println("pay2");
             for(Integer showtimeSeatId : ticketPaymentDTO.getIds()) {
                 String ticketNumber = ticketRepository.getTicketNumber(showtimeSeatId);
                 paymentRepository.addPaymentTicket(payment, ticketNumber , "paid");
@@ -135,7 +140,12 @@ public class PaymentService {
     @Transactional
     public String issueCredit(String ticketNumber){
         try {
+            System.out.println("Issuing credit points");
             String email = ticketRepository.getEmailByTicketNumber(ticketNumber);
+
+            if (email == null) {
+                return "error: Ticket not found";
+            }
 
             double ticketPrice = ticketRepository.getTicketPrice(ticketNumber);
             double creditPoints;
@@ -153,7 +163,7 @@ public class PaymentService {
             cal.setTime(today);
             cal.add(Calendar.YEAR, 1);
             Date expirationDate = cal.getTime();
-
+            System.out.println("Issuing credit points2");
             CreditRecord creditRecord = new CreditRecord(creditId, email, creditPoints, 0, expirationDate);
             creditRecordRepository.addCreditRecord(creditRecord);
 
@@ -174,6 +184,7 @@ public class PaymentService {
                 return cr1.getExpirationDate().compareTo(cr2.getExpirationDate());
             }
         });
+        System.out.println("Credit Records");
         return creditRecords;
     }
 

@@ -43,16 +43,16 @@ public class CreditRecordRepository {
     }
 
     public List<CreditRecord> getValidCreditRecordByEmail(String email) {
-        String sql = "SELECT * FROM credit_record WHERE usedpoints<creditpoints  AND expirationDate >= CURRENT_DATE AND email = ?";
+        String sql = "SELECT * FROM credit_record WHERE used_points<credit_points  AND expiration_date >= CURRENT_DATE AND email = ?";
         return jdbcTemplate.query(sql, creditRecordRowMapper, email);
     }
 
     public void addCreditRecord(CreditRecord creditRecord) {
-        jdbcTemplate.update("INSERT INTO credit_record (id, email, creditPoints, usedPoints, expirationDate) VALUES (?, ?, ?, ?, ?)",
+        jdbcTemplate.update("INSERT INTO credit_record (id, email, credit_points, used_points, expiration_date) VALUES (?, ?, ?, ?, ?)",
                 creditRecord.getId(), creditRecord.getEmail(), creditRecord.getCreditPoints(), creditRecord.getUsedPoints(), creditRecord.getExpirationDate());
     }
 
     public void updateUsedPoints(int id, double usedPoints) {
-        jdbcTemplate.update("UPDATE credit_record SET usedPoints = ? WHERE id = ?", usedPoints, id);
+        jdbcTemplate.update("UPDATE credit_record SET used_points = ? WHERE id = ?", usedPoints, id);
     }    
 }
