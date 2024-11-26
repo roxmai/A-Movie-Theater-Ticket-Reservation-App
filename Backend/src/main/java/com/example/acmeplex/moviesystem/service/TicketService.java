@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.example.acmeplex.moviesystem.exceptions.TicketAlreadyCancelledException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,21 +39,18 @@ public class TicketService {
     @Transactional
     public Map<String, Object> bookTickets(List<Integer> showtimeSeats, String email) {
         Map<String, Object> response = new HashMap<>();
-        System.out.println(showtimeSeats.size());
         try {
             // check if showtime seats are available
             ShowtimeSeat showtimeSeat = theatreShowtimeSeatRepository.findShowtimeSeatById(showtimeSeats.get(0)).orElseThrow(() -> new DataNotFoundException("Showtime Seat"));
             Showtime showtime = theatreShowtimeSeatRepository.findShowtimeById(showtimeSeat.getShowtimeId()).orElseThrow(() -> new DataNotFoundException("Showtime"));
             if (showtimeSeats.size() > showtime.getTickets() - showtime.getTicketsSold()) {
-                throw new OperationFailedException("Ticket booking");
+                throw new OperationFailedException("Tickets booking");
             }
 
             // book tickets
             for(Integer showtimeSeatId : showtimeSeats) {
-                System.out.println(showtimeSeatId);
                 int result1 = theatreShowtimeSeatRepository.updateSeatAvailability(showtimeSeatId, false);
                 int result2 = ticketRepository.updateTicketReservation(showtimeSeatId, email, Timestamp.valueOf(LocalDateTime.now()));
-
                 if(result1==0 || result2==0) throw new OperationFailedException("Ticket booking");
             }
             String ticketForm = showtimeSeats.size()>1?"tickets":"ticket";
@@ -75,8 +73,15 @@ public class TicketService {
             if(ticket.isEmpty()) throw new DataNotFoundException("Ticket");
             if(ticket.get().getHolderEmail() == null) throw new DataNotFoundException("Ticket");
 
+            String status = ticketRepository.findActiveTicketStatus(ticket.get().getTicketNumber(), "refunded");
+            if(status==null)
+                throw new TicketAlreadyCancelledException();
+
+            int result = ticketRepository.updateTicketStatus(ticket.get().getTicketNumber(), "refunded");
+            if (result==0) throw new OperationFailedException("Ticket cancellation");
+
             //update ticket
-            int result = ticketRepository.updateTicketReservationByTicketNumber(ticketNumber, null, null);
+            result = ticketRepository.updateTicketReservationByTicketNumber(ticketNumber, null, null);
             if (result==0) throw new OperationFailedException("Ticket cancellation");
 
             Optional<ShowtimeSeat> showtimeSeat = theatreShowtimeSeatRepository.findShowtimeSeatById(ticket.get().getId());
@@ -94,7 +99,7 @@ public class TicketService {
                 throw new TicketCancellationRefusedException();
             }
 
-            //set seat availability
+            //update seat availability
             result =  theatreShowtimeSeatRepository.updateSeatAvailability(ticket.get().getId(), true);
             if(result==0) throw new OperationFailedException("Set Seat Availability");
 
