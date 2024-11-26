@@ -74,3 +74,24 @@ export const cancelTicket = async (ticketNumber) => {
   console.log(response.data);
   return response.data;
 }
+
+export const issueRefund = async (ticketNumber) => {
+  const response = await api.put(`/issuerefund/${ticketNumber}`);
+  console.log(response.data);
+  return response.data;
+}
+
+export const getTotalPrice = async (data) => {
+  const response = await api.post(`/totalprice`, data);
+  return response.data;
+}
+
+export const ticketPayment = async (data) => {
+  const response = await api.post(`/ticketpayment`, data);
+  return response.data;
+}
+
+export const createRegisteredUser = async (data) => {
+  const response = await api.post(`/api/registered-users`, data);
+  return response.data;
+}

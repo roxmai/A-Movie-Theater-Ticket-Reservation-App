@@ -15,8 +15,10 @@ import com.example.acmeplex.usersystem.service.RegisteredUserService;
 import com.example.acmeplex.moviesystem.repository.TicketRepository;
 import com.example.acmeplex.paymentsystem.entity.CreditRecord;
 import com.example.acmeplex.paymentsystem.entity.Payment;
+import com.example.acmeplex.paymentsystem.dto.TicketPaymentDTO;
 
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 public class PaymentService {
@@ -45,12 +47,13 @@ public class PaymentService {
     }
 
     @Transactional
-    public String processMoviePayment(List<Integer> showtimeSeats, String email, String method){
+    public String processMoviePayment(@RequestBody TicketPaymentDTO ticketPaymentDTO){
         try {
-            double totalPayment = priceCalculation(showtimeSeats);
+            //double totalPayment = priceCalculation(showtimeSeats);
+            double totalPayment = ticketPaymentDTO.getTotalPrice();
 
             double creditUsed=0;
-            List<CreditRecord> creditRecords = sortCreditRecords(email);
+            List<CreditRecord> creditRecords = sortCreditRecords(ticketPaymentDTO.getEmail());
             for(int i=0; i<creditRecords.size(); i++) {
                 CreditRecord creditRecord = creditRecords.get(i);
                 double creditPoints = creditRecord.getCreditPoints();
@@ -75,15 +78,15 @@ public class PaymentService {
             double remainingPayment = totalPayment - creditUsed;
 
             int newPaymentId = paymentRepository.getLastPaymentId() + 1;
-            Payment payment = new Payment(email, method, newPaymentId, totalPayment, "ticket");
+            Payment payment = new Payment(ticketPaymentDTO.getEmail(), ticketPaymentDTO.getMethod(), newPaymentId, totalPayment, "ticket");
             paymentRepository.addPayment(payment);
 
-            for(Integer showtimeSeatId : showtimeSeats) {
+            for(Integer showtimeSeatId : ticketPaymentDTO.getIds()) {
                 String ticketNumber = ticketRepository.getTicketNumber(showtimeSeatId);
                 paymentRepository.addPaymentTicket(payment, ticketNumber , "paid");
             }
 
-            return "Success:"+String.valueOf(totalPayment)+" processed successfully."+String.valueOf(creditUsed)+" credit points used."+String.valueOf(totalPayment-creditUsed)+" remaining payment charged to " + method+ "card. ";        
+            return "Success:"+String.valueOf(totalPayment)+" processed successfully."+String.valueOf(creditUsed)+" credit points used."+String.valueOf(remainingPayment)+" remaining payment charged to " + ticketPaymentDTO.getMethod()+ "card. ";        
         } catch (RuntimeException exception) {
             return "error: " + exception.getMessage();
         }
@@ -120,7 +123,7 @@ public class PaymentService {
             double remainingPayment = totalPayment - creditUsed;
             
             int newPaymentId = paymentRepository.getLastPaymentId() + 1;
-            Payment payment = new Payment(email, method, newPaymentId, totalPayment, "ticket");
+            Payment payment = new Payment(email, method, newPaymentId, totalPayment, "membership");
             paymentRepository.addPayment(payment);
 
             return "Success:"+String.valueOf(totalPayment)+" processed successfully."+String.valueOf(creditUsed)+" credit points used."+String.valueOf(totalPayment-creditUsed)+" remaining payment charged to " + method+ "card. "; 
@@ -174,5 +177,9 @@ public class PaymentService {
         return creditRecords;
     }
 
+    @Transactional
+    public Boolean validTicket(String ticketNumber){
+        return paymentRepository.getPaymentsByEmail(ticketNumber).isEmpty();
+    }
     
 }

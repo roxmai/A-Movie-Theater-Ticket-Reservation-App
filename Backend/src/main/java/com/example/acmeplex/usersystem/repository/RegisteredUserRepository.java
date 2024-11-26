@@ -135,4 +135,3 @@ public class RegisteredUserRepository {
         jdbcTemplate.update(sql, expirationDate, email);
     }
 }
-}

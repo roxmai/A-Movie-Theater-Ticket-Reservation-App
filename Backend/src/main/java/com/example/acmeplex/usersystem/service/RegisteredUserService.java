@@ -9,7 +9,6 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-// Consider using more specific exceptions
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -189,15 +188,15 @@ public class RegisteredUserService {
         logger.info("Registered user deleted successfully with email: {}", email);
     }
 
-    public RegisteredUserDTO getRegisteredUserByEmail(String email) {
-        logger.info("Fetching user with email: {}", email);
-        // Fetch the user by email or throw an exception if not found
-        RegisteredUser user = registeredUserRepository.findByEmail(email).orElseThrow(() -> {
-            logger.error("User not found with email: {}", email);
-            return new ResourceAccessException("User not found with email: " + email);});
-        logger.info("User fetched successfully with email: {}", email);
-        // Convert the entity to DTO
-        return convertToDTO(user);}
+    // public RegisteredUserDTO getRegisteredUserByEmail(String email) {
+    //     logger.info("Fetching user with email: {}", email);
+    //     // Fetch the user by email or throw an exception if not found
+    //     RegisteredUser user = registeredUserRepository.findByEmail(email).orElseThrow(() -> {
+    //         logger.error("User not found with email: {}", email);
+    //         return new ResourceAccessException("User not found with email: " + email);});
+    //     logger.info("User fetched successfully with email: {}", email);
+    //     // Convert the entity to DTO
+    //     return convertToDTO(user);}
 
     public boolean validRegisteredUser(String email) {
         if (registeredUserRepository.existsByEmail(email)) {
@@ -219,4 +218,4 @@ public class RegisteredUserService {
         registeredUserRepository.updateExpirationDate(email, newExpirationDate);
     }
 }
-}
+

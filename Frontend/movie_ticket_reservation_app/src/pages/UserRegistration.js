@@ -6,6 +6,7 @@ function UserRegistration() {
 
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
+    const [password, setPassword] = useState('');
     const [creditCard, setCreditCard] = useState('');
     const [address, setAddress] = useState('');
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -15,6 +16,7 @@ function UserRegistration() {
         const userData = {
             email,
             name,
+            password,
             creditCard,
             address
         };
@@ -50,6 +52,15 @@ function UserRegistration() {
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    sx={{ mb: 2 }}
+                />
+                <TextField
+                    label="Password"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     sx={{ mb: 2 }}
                 />
                 <TextField

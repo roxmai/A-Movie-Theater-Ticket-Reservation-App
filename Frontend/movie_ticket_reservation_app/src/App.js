@@ -5,6 +5,7 @@ import CancelTicket from './pages/CancelTicket';
 import BookMovie from './pages/BookMovie';
 import UserRegistration from './pages/UserRegistration';
 import BuyTickets from './pages/BuyTicket';
+import TicketPaymentPage from './pages/TicketPaymentPage';
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
               <Route path="/CancelTicket" element={<CancelTicket />} />
               <Route path="/UserRegistration" element={<UserRegistration />} />
               <Route path="/movie/:id" element={<BuyTickets />} />
+              <Route path="/Payment" element={<TicketPaymentPage />} />
           </Routes>
       </Router>
   );

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.acmeplex.moviesystem.dto.TicketBookingDTO;
+import com.example.acmeplex.paymentsystem.dto.TicketPaymentDTO;
 import com.example.acmeplex.paymentsystem.service.PaymentService;
 
 public class PaymentController {
@@ -18,8 +19,8 @@ public class PaymentController {
     }
 
     @PostMapping("/ticketpayment")
-    public ResponseEntity<String> ticketPayment(@RequestBody TicketBookingDTO ticketBookingDTO) {
-        return ResponseEntity.ok(paymentService.processMoviePayment(ticketBookingDTO.getIds(),ticketBookingDTO.getEmail(),"credit"));
+    public ResponseEntity<String> ticketPayment(@RequestBody TicketPaymentDTO ticketPaymentDTO) {
+        return ResponseEntity.ok(paymentService.processMoviePayment(ticketPaymentDTO));
     }
 
     @PutMapping("/membershippayment/{email}/{method}")

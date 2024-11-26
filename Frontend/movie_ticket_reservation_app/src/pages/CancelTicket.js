@@ -15,6 +15,7 @@ function CancelTicket() {
         // Implement the refund logic here
         try {
             const data = await cancelTicket(ticketNumber);
+            const dataCredit = await issueRefund(ticketNumber);
             if (data?.error) {
                 setErrorDialogOpen(true);
             } else if (data?.success) {
