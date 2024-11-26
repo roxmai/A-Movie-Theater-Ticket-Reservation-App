@@ -24,8 +24,8 @@ USE `acmeplex`;
 -- ----------------------------
 -- Table structure for credit_card
 -- ----------------------------
-DROP TABLE IF EXISTS `credit_card`;
-CREATE TABLE `credit_card`  (
+DROP TABLE IF EXISTS `card`;
+CREATE TABLE `card`  (
   `id` int NOT NULL AUTO_INCREMENT,
   `registered_user_email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `number` int NOT NULL,
