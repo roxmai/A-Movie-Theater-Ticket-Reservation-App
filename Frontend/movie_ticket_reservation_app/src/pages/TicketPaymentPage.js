@@ -1,21 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, Container, TextField, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, RadioGroup, FormControlLabel, Radio } from '@mui/material';
-import { createRegisteredUser, membershipPayment } from '../api/Services';
+import { useLocation } from 'react-router-dom';
+import { bookTickets, ticketPayment } from '../api/Services';
 
-function UserRegistration() {
+function TicketPaymentPage() {
+    const location=useLocation();
     const [email, setEmail] = useState('');
-    const [name, setName] = useState('');
-    const [password, setPassword] = useState('');
     const [creditCard, setCreditCard] = useState('');
-    const [address, setAddress] = useState('');
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
 
     const [expireMonth, setExpireMonth] = useState('');
     const [expireYear, setExpireYear] = useState('');
     const [cvv, setCvv] = useState('');
-    const [creditcard, setNameOnCard] = useState('');
+    const [cardname, setName] = useState('');
     const [method, setCardType] = useState('credit');
+
+    const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
+
+
+    const { ids, totalPrice} = location.state || { ids: [], totalPrice: 0};
+
+    // useEffect(() => {
+    //     // Fetch the total price from the backend
+    //     const fetchTotalPrice = async () => {
+    //         try {
+    //             const data = await getTotalPrice();
+    //             setTotalPrice(data.totalPrice);
+    //         } catch (error) {
+    //             console.error('Error fetching total price:', error);
+    //         }
+    //     };
+
+    //     fetchTotalPrice();
+    // }, []);
 
     const handleSubmit = () => {
         setConfirmationDialogOpen(true);
@@ -25,25 +42,30 @@ function UserRegistration() {
         setConfirmationDialogOpen(false);
     };
 
-    const handleRegistration = async () => {
-        const registrationData = {
+    const handlePayment = async () => {
+        // Implement the logic to submit the payment data to the backend
+        const paymentData = {
+            ids,
             email,
-            name,
-            password,
-            address,
-            creditcard
+            totalPrice,
+            method
         };
-        console.log('Registration Data:', registrationData);
+        console.log('Payment Data:', paymentData);
+
+        const requestData = {  
+            ids,
+            email
+        };
 
         try {
-            const response = await createRegisteredUser(registrationData);
-            const paymentData = await membershipPayment(email,method);
+            const data = await bookTickets(requestData);
+            const response = await ticketPayment(paymentData);
+            console.log(data);
             console.log(response);
-            console.log(paymentData);
             setDialogOpen(true);
             setConfirmationDialogOpen(false);
         } catch (error) {
-            console.error('Error processing registration:', error);
+            console.error('Error processing payment:', error);
         }
     };
 
@@ -55,7 +77,10 @@ function UserRegistration() {
         <Container>
             <Box sx={{ pt: 0, pl: 3 }}>
                 <Typography variant="h2" component="h1" gutterBottom align="center">
-                    User Registration
+                    Ticket Payment
+                </Typography>
+                <Typography variant="h5" component="h2" gutterBottom align="center">
+                    Total Price: ${totalPrice}
                 </Typography>
                 <TextField
                     label="Email"
@@ -66,45 +91,14 @@ function UserRegistration() {
                     onChange={(e) => setEmail(e.target.value)}
                     sx={{ mb: 2 }}
                 />
-                <TextField
-                    label="Name"
-                    variant="outlined"
-                    fullWidth
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    sx={{ mb: 2 }}
-                />
-                <TextField
-                    label="Password"
-                    variant="outlined"
-                    fullWidth
-                    required
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    sx={{ mb: 2 }}
-                />
-                <TextField
-                    label="Address"
-                    variant="outlined"
-                    fullWidth
-                    required
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    sx={{ mb: 2 }}
-                />
-                <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-                    Paying $20 membership fee upon registration
-                </Typography>
                 <Button variant="contained" color="primary" onClick={handleSubmit}>
-                    Register
+                    Pay Now
                 </Button>
             </Box>
             <Dialog open={confirmationDialogOpen} onClose={handleDialogClose}>
                 <DialogTitle>Enter Payment Details</DialogTitle>
                 <DialogContent>
-                    <RadioGroup
+                <RadioGroup
                         aria-label="cardType"
                         name="cardType"
                         value={method}
@@ -155,8 +149,8 @@ function UserRegistration() {
                         variant="outlined"
                         fullWidth
                         required
-                        value={creditcard}
-                        onChange={(e) => setNameOnCard(e.target.value)}
+                        value={cardname}
+                        onChange={(e) => setName(e.target.value)}
                         sx={{ mb: 2 }}
                     />
                 </DialogContent>
@@ -164,16 +158,16 @@ function UserRegistration() {
                     <Button onClick={handleDialogClose} color="primary">
                         Cancel
                     </Button>
-                    <Button onClick={handleRegistration} color="primary">
+                    <Button onClick={handlePayment} color="primary">
                         Confirm Info
                     </Button>
                 </DialogActions>
             </Dialog>
             <Dialog open={dialogOpen} onClose={handlePaymentDialogClose}>
-                <DialogTitle>Registration Successful</DialogTitle>
+                <DialogTitle>Payment Successful</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Payment successful and account registered.
+                        Your payment has been processed successfully.
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
@@ -186,4 +180,4 @@ function UserRegistration() {
     );
 }
 
-export default UserRegistration;
+export default TicketPaymentPage;

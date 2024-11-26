@@ -26,7 +26,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'joda-time:joda-time:2.13.0'
     runtimeOnly 'mysql:mysql-connector-java:8.0.33'
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -38,5 +37,5 @@ tasks.named('test') {
 }
 
 application {
-    mainClass.set('com.example.AcmePlex.Application')
+    mainClass.set('com.example.acmeplex.AcmePlexApplication')
 }

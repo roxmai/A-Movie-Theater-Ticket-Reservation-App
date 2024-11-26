@@ -3,7 +3,7 @@ import { Box, Divider, Button, ButtonGroup, Card, CardMedia, IconButton, List, L
 import CheckIcon from '@mui/icons-material/Check';
 import { ChevronLeft } from "@mui/icons-material";
 import { useHorizontalScroll } from "../utils/horizontalScroll";
-import { getMovieDetail, getTheatres, getShowtimes, getSeats, bookTickets } from "../api/Services";
+import { getMovieDetail, getTheatres, getShowtimes, getSeats, bookTickets, getTotalPrice } from "../api/Services";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import LoadingScreen from "./LoadingScreen";
@@ -444,10 +444,11 @@ function TicketSelector() {
         }
         try {
             setLoading(true);
-            const data = await bookTickets(requestData);
-            console.log(data);
-            alert(data.message);
-            navigate("/BookMovie")
+            //const data = await bookTickets(requestData);
+            const price = await getTotalPrice(requestData);
+            // console.log(data);
+            // alert(data.message);
+            navigate("/Payment", { state: {ids:ids, totalPrice: price} });
         } catch (err) {
             setError(err);
         } finally {

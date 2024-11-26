@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -118,4 +119,19 @@ public class RegisteredUserRepository {
         jdbcTemplate.update(sql, email);
     }
 
+    public boolean existsById(Long id) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    // Get the expiration date of a RegisteredUser
+    public Date getExpirationDate(String email) {
+        String sql="SELECT subscription_expiration_date FROM registered_users WHERE email=?";
+        return jdbcTemplate.queryForObject(sql, Date.class, email);
+    }
+
+    // Update the expiration date of a RegisteredUser
+    public void updateExpirationDate(String email, Date expirationDate) {
+        String sql="UPDATE registered_users SET subscription_expiration_date=? WHERE email=?";
+        jdbcTemplate.update(sql, expirationDate, email);
+    }
 }
