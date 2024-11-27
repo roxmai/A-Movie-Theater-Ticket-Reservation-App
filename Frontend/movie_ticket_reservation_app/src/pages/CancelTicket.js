@@ -1,5 +1,5 @@
 import React,{ useState } from 'react';
-import { issueRefund, cancelTicket } from '../api/Services';
+import { cancelTicket } from '../api/Services';
 
 import { Box, Typography, Container, TextField, Button,Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
@@ -15,7 +15,6 @@ function CancelTicketPage() {
         // Implement the refund logic here
         try {
             const data = await cancelTicket(ticketNumber);
-            const dataCredit = await issueRefund(ticketNumber);
             if (data?.error) {
                 setErrorDialogOpen(true);
             } else if (data?.success) {

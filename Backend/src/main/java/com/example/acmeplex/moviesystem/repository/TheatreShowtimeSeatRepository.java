@@ -1,5 +1,6 @@
 package com.example.acmeplex.moviesystem.repository;
 
+import com.example.acmeplex.moviesystem.dto.MovieNewsDTO;
 import com.example.acmeplex.moviesystem.dto.ShowtimeDTO;
 import com.example.acmeplex.moviesystem.entity.*;
 import com.example.acmeplex.moviesystem.dto.ShowtimeSeatDTO;
@@ -91,6 +92,20 @@ public class TheatreShowtimeSeatRepository {
         }
     };
 
+    private final RowMapper<MovieNewsDTO> movieNewsDTORowMapper = new RowMapper<MovieNewsDTO>() {
+        @Override
+        public MovieNewsDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new MovieNewsDTO(
+                    rs.getInt("movie.id"),
+                    rs.getString("movie.image"),
+                    rs.getString("movie.title"),
+                    rs.getTimestamp("start_time"),
+                    rs.getTimestamp("end_time"),
+                    rs.getString("theatre.name")
+            );
+        }
+    };
+
     public List<Showtime> findShowtimesByMovie(int movie_id)
     {
         String sql = "SELECT * from showtime where movie_id = ?";
@@ -138,5 +153,13 @@ public class TheatreShowtimeSeatRepository {
         String sql = "SELECT * FROM showroom WHERE id = ?";
         Showroom showroom = jdbcTemplate.queryForObject(sql, showroomRowMapper, id);
         return showroom!=null ? Optional.of(showroom) : Optional.empty();
+    }
+
+    public List<MovieNewsDTO> findShowtimesBeforeAnnouncement() {
+        String sql = "SELECT movie.id, movie.image, movie.title, start_time, end_time, theatre.name FROM showtime " +
+                "INNER JOIN movie ON movie.id=showtime.movie_id " +
+                "INNER JOIN theatre ON theatre.id=showtime.theatre_id " +
+                "WHERE NOW() < showtime.public_announcement_time AND CEIL(showtime.tickets * 0.1) - showtime.tickets_sold > 0 ORDER BY public_announcement_time LIMIT 40";
+        return jdbcTemplate.query(sql, movieNewsDTORowMapper);
     }
 }

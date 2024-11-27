@@ -161,12 +161,13 @@ function ShowtimeSelector({showtimes, selected, setShowtime, handleBuyTickets, h
                 display: "none",
             },
             }}>
-                <ButtonGroup variant="outlined" sx={{flexWrap: "nowrap"}} fullWidth>
+                <ButtonGroup variant="outlined">
                     {
                         dates.map((date, index)=> 
                             <Button key={index}
                             variant={selectedDate===date?"contained":"outlined"}
                             onClick={(event)=>{setShowtimeList(showtimes[date]); setSelectedDate(date)}}
+                            sx={{paddingLeft: 2, paddingRight: 2}}
                             >
                                 {date}
                             </Button>
@@ -190,10 +191,12 @@ function ShowtimeSelector({showtimes, selected, setShowtime, handleBuyTickets, h
                                     <ListItemText 
                                     primary={convertToLocaltime(showtime.startTime) + " - " + convertToLocaltime(showtime.endTime)}
                                     secondary={(showtime.tickets-showtime.ticketsSold) + " tickets left"}
+                                    secondaryTypographyProps={{color: showtime?.preAnnouncement ? 'success': 'text.secondary'}}
                                     />
                                     <ListItemText 
                                         primary={'Showroom ' + showtime?.showroomName}
-                                        secondary={showtime?.preAnnouncement ? "*pre-announcement": ""}
+                                        secondary={showtime?.preAnnouncement ? "early tickets": ""}
+                                        secondaryTypographyProps={{color: 'success'}}
                                     />
                                     {
                                         selectedId === showtime.id && <CheckIcon color="success"/>
@@ -215,11 +218,12 @@ function ShowtimeSelector({showtimes, selected, setShowtime, handleBuyTickets, h
     );
 }
 
-function SeatArea({seatsData, selected, setSelected}) {
+function SeatArea({seatsData, selected, setSelected, selectLimit}) {
     const seats = seatsData.seats;
     const rows = seatsData.rows;
     const columns = seatsData.columns;
     let boxSize = Math.floor((70-columns)/3);
+    const selectMax = 5;
 
     const seatStyles = (state) => {
         switch (state) {
@@ -280,6 +284,10 @@ function SeatArea({seatsData, selected, setSelected}) {
                       onClick={() =>{
                         if(seat) {
                             if (seat.state==='available'){
+                                if(selected.length >= Math.min(selectLimit, selectMax)) {
+                                    alert("You can only select up to " + Math.min(selectLimit, selectMax) + " seats");
+                                    return;
+                                }
                                 seat.state = 'selected'
                                 setSelected([...selected, seat.id]);
                                 console.log(selected);
@@ -300,7 +308,7 @@ function SeatArea({seatsData, selected, setSelected}) {
       );
 }
 
-function SeatSelector({handleBack, seats, selected, setSelected}) {
+function SeatSelector({handleBack, seats, selected, setSelected, selectLimit}) {
     const [selectedSeats, setSelectedSeats] = useState(selected);
     return (
         <Box
@@ -324,6 +332,7 @@ function SeatSelector({handleBack, seats, selected, setSelected}) {
                 seatsData={seats}
                 selected={selectedSeats}
                 setSelected={setSelectedSeats}
+                selectLimit={selectLimit}
                 />
             </Box>
             <Box sx={{display: 'flex', justifyContent: 'center'}}>
@@ -339,7 +348,7 @@ function SeatSelector({handleBack, seats, selected, setSelected}) {
 function BookingStepper({step, movie, handleBuyTickets, handleBack,
                         theatres, selectedTheatre, setTheatre,
                         showtimes, selectedShowtime, setShowtime,
-                        seats, selectedSeats, setSelectedSeats}) {
+                        seats, selectedSeats, setSelectedSeats, selectLimit}) {
     return (
         <Box sx={{
             width: 500,
@@ -373,7 +382,9 @@ function BookingStepper({step, movie, handleBuyTickets, handleBack,
             handleBack={handleBack}
             seats={seats} 
             selected={selectedSeats}
-            setSelected={setSelectedSeats} />
+            setSelected={setSelectedSeats}
+            selectLimit={selectLimit}
+            />
             }
         </Box>
     );
@@ -392,6 +403,7 @@ function TicketSelector() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const {id: movieId} = useParams();
+    const [selectLimit, setSelectLimit] = useState(0);
 
     const handleBuyTickets = (currentStep) => {
         setStep(currentStep+1);
@@ -419,6 +431,7 @@ function TicketSelector() {
     const handleConfirmShowtime = async (id) => {
         const allShowtimes = Object.values(showtimes).flat(); 
         const theShowtime = allShowtimes.find((showtime)=>showtime.id===id);
+        setSelectLimit(theShowtime.tickets - theShowtime.ticketsSold);
         setShowtime(theShowtime);
         try {
             setLoading(true);
@@ -500,6 +513,7 @@ function TicketSelector() {
             seats={seats}
             selectedSeats={selectedSeats}
             setSelectedSeats={handleConfirmSeats}
+            selectLimit={selectLimit}
             />
         </Box>
     );

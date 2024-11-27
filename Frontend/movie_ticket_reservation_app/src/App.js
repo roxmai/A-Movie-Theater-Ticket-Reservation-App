@@ -14,6 +14,7 @@ function App() {
       <Router>
           <NavBar />
           <Routes>
+                <Route path="/" element={<BookMovie />} />
               <Route path="/BookMovie" element={<BookMovie />} />
               <Route path="/CancelTicket" element={<CancelTicketPage />} />
               <Route path="/UserRegistration" element={<UserRegistration />} />
