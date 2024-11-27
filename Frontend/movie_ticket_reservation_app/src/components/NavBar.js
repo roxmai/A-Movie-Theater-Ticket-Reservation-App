@@ -1,16 +1,18 @@
 import React, { useState } from 'react';
-import { AppBar, Toolbar, Typography, Button, Box, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, TextField,DialogActions } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Box, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import { membershipPayment } from '../api/Services';
+import { membershipPayment, login } from '../api/Services';
 
 function NavBar() {
     const [anchorEl, setAnchorEl] = useState(null);
     const [open, setOpen] = useState(false);
     const [loggedIn, setLoggedIn] = useState(false);
     const [userName, setUserName] = useState('User');
-
-    const [email, setEmail] = useState(''); 
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const handleMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -28,16 +30,27 @@ function NavBar() {
         setOpen(false);
     };
 
-    const handleLogin = () => {
-        // Implement login logic here
-        setLoggedIn(true);
-        setEmail(email);
-        setUserName('OU');
-        setOpen(false);
+    const handleErrorDialogClose = () => {
+        setErrorDialogOpen(false);
+    };
+
+    const handleLogin = async () => {
+        const response = await login(email, password);
+
+        if (response?.success) {
+            setLoggedIn(true);
+            setEmail(email);
+            setUserName(response.name);
+            setOpen(false);
+        } else if (response?.expired) {
+            alert(response.error);
+        } else if (response?.wrong) {
+            setErrorMessage(response.message);
+            setErrorDialogOpen(true);
+        }
     };
 
     const handleLogout = () => {
-        // Implement logout logic here
         setLoggedIn(false);
         setEmail('');
         handleMenuClose();
@@ -101,6 +114,8 @@ function NavBar() {
                         type="email"
                         fullWidth
                         variant="standard"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
                     <TextField
                         margin="dense"
@@ -109,6 +124,8 @@ function NavBar() {
                         type="password"
                         fullWidth
                         variant="standard"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
                 </DialogContent>
                 <DialogActions>
@@ -117,6 +134,19 @@ function NavBar() {
                     </Button>
                     <Button onClick={handleLogin} color="primary">
                         Login
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={errorDialogOpen} onClose={handleErrorDialogClose}>
+                <DialogTitle>Error</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        {errorMessage}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleErrorDialogClose} color="primary">
+                        Close
                     </Button>
                 </DialogActions>
             </Dialog>

@@ -104,6 +104,6 @@ export const membershipPayment = async (email, method) => {
 }
 
 export const login = async (email, password) => {
-  const response = await api.post(`/login/${email}/password/${password}`);
+  const response = await api.put(`/login/${email}/password/${password}`);
   return response.data;
 }

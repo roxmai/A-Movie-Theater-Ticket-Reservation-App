@@ -84,4 +84,9 @@ public class RegisteredUserController {
         registeredUserService.deleteRegisteredUser(email);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/login/{email}/password/{password}")
+    public ResponseEntity<Map<String, Object>> login(@PathVariable String email, @PathVariable String password) {
+        return ResponseEntity.ok(registeredUserService.login(email, password));
+    }
 }

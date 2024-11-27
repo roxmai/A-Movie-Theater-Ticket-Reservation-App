@@ -64,6 +64,7 @@ public class RegisteredUserService {
     @Transactional
     public Map<String, Object> createRegisteredUser(RegisteredUserDTO registeredUserDTO) {
         Map<String, Object> response = new HashMap<>();
+        System.out.println(registeredUserDTO.getEmail());
         try{
         logger.info("Attempting to create registered user with email: {}", registeredUserDTO.getEmail());
 
@@ -244,12 +245,28 @@ public class RegisteredUserService {
         registeredUserRepository.updateExpirationDate(email, newExpirationDate);
     }
 
-    public Map<String, Object> login(String email) {
+    public Map<String, Object> login(String email, String password) {
         Map<String, Object> response = new HashMap<>();
         try {
-            Date expirationDate = registeredUserRepository.getExpirationDate(email);
-            response.put("success", true);
-            response.put("expirationDate", expirationDate);
+            if (registeredUserRepository.existsByEmail(email)) {
+                RegisteredUser user = registeredUserRepository.findByEmail(email).get();
+                if (user.getPassword().equals(password)){
+                    if(user.getSubscriptionExpirationDate().compareTo(new Date()) >= 0) {
+                        response.put("success", true);
+                        response.put("name", user.getName());
+                        response.put("message", "successful login");
+                    }else {
+                        response.put("expired", false);
+                        response.put("message", "Subscription expired");
+                    }
+                }else{
+                    response.put("wrong", true);
+                    response.put("message", "Invalid password or email");
+                }
+            }else {
+                    response.put("wrong", true);
+                    response.put("message", "Invalid password");
+                }
             return response;
         } catch (RuntimeException exception) {
             response.put("error", true);
