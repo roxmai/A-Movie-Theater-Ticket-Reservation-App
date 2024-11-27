@@ -48,8 +48,8 @@ public class CreditRecordRepository {
     }
 
     public void addCreditRecord(CreditRecord creditRecord) {
-        jdbcTemplate.update("INSERT INTO credit_record (id, email, credit_points, used_points, expiration_date) VALUES (?, ?, ?, ?, ?)",
-                creditRecord.getId(), creditRecord.getEmail(), creditRecord.getCreditPoints(), creditRecord.getUsedPoints(), creditRecord.getExpirationDate());
+        jdbcTemplate.update("INSERT INTO credit_record (email, credit_points, used_points, expiration_date) VALUES (?, ?, ?, ?)",
+                creditRecord.getEmail(), creditRecord.getCreditPoints(), creditRecord.getUsedPoints(), creditRecord.getExpirationDate());
     }
 
     public void updateUsedPoints(int id, double usedPoints) {

@@ -1,14 +1,15 @@
 package com.example.acmeplex.moviesystem.service;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import com.example.acmeplex.moviesystem.exceptions.TicketAlreadyCancelledException;
+import com.example.acmeplex.paymentsystem.entity.CreditRecord;
+import com.example.acmeplex.paymentsystem.repository.CreditRecordRepository;
+import com.example.acmeplex.paymentsystem.repository.PaymentRepository;
+import com.example.acmeplex.usersystem.service.RegisteredUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,11 +30,17 @@ public class TicketService {
 
     private final TheatreShowtimeSeatRepository theatreShowtimeSeatRepository;
     private final TicketRepository ticketRepository;
+    private final RegisteredUserService registeredUserService;
+    private final CreditRecordRepository creditRecordRepository;
+    private final PaymentRepository paymentRepository;
 
     @Autowired
-    public TicketService(TheatreShowtimeSeatRepository theatreShowtimeSeatRepository, TicketRepository ticketRepository) {
+    public TicketService(TheatreShowtimeSeatRepository theatreShowtimeSeatRepository, TicketRepository ticketRepository, RegisteredUserService registeredUserService, CreditRecordRepository creditRecordRepository, PaymentRepository paymentRepository) {
         this.theatreShowtimeSeatRepository = theatreShowtimeSeatRepository;
         this.ticketRepository = ticketRepository;
+        this.registeredUserService = registeredUserService;
+        this.creditRecordRepository = creditRecordRepository;
+        this.paymentRepository = paymentRepository;
     }
 
     @Transactional
@@ -49,6 +56,7 @@ public class TicketService {
 
             // book tickets
             for(Integer showtimeSeatId : showtimeSeats) {
+                System.out.println(ticketRepository.getTicketNumber(showtimeSeatId));
                 int result1 = theatreShowtimeSeatRepository.updateSeatAvailability(showtimeSeatId, false);
                 int result2 = ticketRepository.updateTicketReservation(showtimeSeatId, email, Timestamp.valueOf(LocalDateTime.now()));
                 if(result1==0 || result2==0) throw new OperationFailedException("Ticket booking");
@@ -73,7 +81,7 @@ public class TicketService {
             if(ticket.isEmpty()) throw new DataNotFoundException("Ticket");
             if(ticket.get().getHolderEmail() == null) throw new DataNotFoundException("Ticket");
 
-            String status = ticketRepository.findActiveTicketStatus(ticket.get().getTicketNumber(), "refunded");
+            String status = ticketRepository.findActiveTicketStatus(ticket.get().getTicketNumber(), "paid");
             if(status==null)
                 throw new TicketAlreadyCancelledException();
 
@@ -103,8 +111,27 @@ public class TicketService {
             result =  theatreShowtimeSeatRepository.updateSeatAvailability(ticket.get().getId(), true);
             if(result==0) throw new OperationFailedException("Set Seat Availability");
 
+            //issue credits
+            BigDecimal creditPoints;
+            if (registeredUserService.validRegisteredUser(ticket.get().getHolderEmail())){
+                creditPoints = ticket.get().getPrice();
+            }
+            else{
+                creditPoints = ticket.get().getPrice().multiply(BigDecimal.valueOf(0.85));
+            }
+
+            calendar.setTime(now);
+            calendar.add(Calendar.YEAR, 1);
+            Date expirationDate = calendar.getTime();
+
+            CreditRecord creditRecord = new CreditRecord(0, ticket.get().getHolderEmail(), creditPoints.doubleValue(), 0, expirationDate);
+            creditRecordRepository.addCreditRecord(creditRecord);
+
+            paymentRepository.updatePaymentStatus(ticketNumber, "credited");
+
             response.put("success", true);
             response.put("message", String.format("Ticket %s cancelled successfully.", ticketNumber));
+            response.put("credits", creditPoints);
             return response;
         } catch (RuntimeException exception) {
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();

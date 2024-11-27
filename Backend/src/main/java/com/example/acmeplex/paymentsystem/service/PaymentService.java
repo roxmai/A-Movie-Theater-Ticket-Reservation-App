@@ -110,11 +110,11 @@ public class PaymentService {
                 double usedPoints = creditRecord.getUsedPoints();
                 double creditAvailable = creditPoints - usedPoints;
                 if (creditAvailable > 0) {
-                    if (creditAvailable >= (totalPayment - creditUsed)) {                        
+                    if (creditAvailable >= (totalPayment - creditUsed)) {
                         creditRecord.setUsedPoints(usedPoints + totalPayment - creditUsed);
                         creditRecordRepository.updateUsedPoints(creditRecord.getId(), creditRecord.getUsedPoints());
                         creditUsed += creditAvailable;
-                    } else {                        
+                    } else {
                         creditRecord.setUsedPoints(creditPoints);
                         creditRecordRepository.updateUsedPoints(creditRecord.getId(), creditRecord.getUsedPoints());
                         creditUsed += creditAvailable;
@@ -126,50 +126,12 @@ public class PaymentService {
             }
 
             double remainingPayment = totalPayment - creditUsed;
-            
+
             int newPaymentId = paymentRepository.getLastPaymentId() + 1;
             Payment payment = new Payment(email, method, newPaymentId, totalPayment, "membership");
             paymentRepository.addPayment(payment);
 
-            return "Success:"+String.valueOf(totalPayment)+" processed successfully."+String.valueOf(creditUsed)+" credit points used."+String.valueOf(totalPayment-creditUsed)+" remaining payment charged to " + method+ "card. "; 
-        } catch (RuntimeException exception) {
-            return "error: " + exception.getMessage();
-        }
-    }
-
-    @Transactional
-    public String issueCredit(String ticketNumber){
-        try {
-            System.out.println("Issuing credit points");
-            String email = ticketRepository.getEmailByTicketNumber(ticketNumber);
-
-            if (email == null) {
-                return "error: Ticket not found";
-            }
-
-            double ticketPrice = ticketRepository.getTicketPrice(ticketNumber);
-            double creditPoints;
-            if (registeredUserService.validRegisteredUser(email)){
-                creditPoints = ticketPrice;
-            }
-            else{
-                creditPoints = ticketPrice*0.85;
-            }
-
-            int creditId= creditRecordRepository.getLastCreditRecordId() + 1;
-
-            Date today= new Date();
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(today);
-            cal.add(Calendar.YEAR, 1);
-            Date expirationDate = cal.getTime();
-            System.out.println("Issuing credit points2");
-            CreditRecord creditRecord = new CreditRecord(creditId, email, creditPoints, 0, expirationDate);
-            creditRecordRepository.addCreditRecord(creditRecord);
-
-            paymentRepository.updatePaymentStatus(ticketNumber, "credited");
-
-            return "Success! Credit points issued: "+String.valueOf(creditPoints);
+            return "Success:"+String.valueOf(totalPayment)+" processed successfully."+String.valueOf(creditUsed)+" credit points used."+String.valueOf(totalPayment-creditUsed)+" remaining payment charged to " + method+ "card. ";
         } catch (RuntimeException exception) {
             return "error: " + exception.getMessage();
         }
