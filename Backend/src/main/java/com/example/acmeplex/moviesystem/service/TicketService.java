@@ -5,6 +5,8 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import com.example.acmeplex.emailsystem.EmailDetails;
+import com.example.acmeplex.emailsystem.EmailService;
 import com.example.acmeplex.moviesystem.exceptions.TicketAlreadyCancelledException;
 import com.example.acmeplex.paymentsystem.entity.CreditRecord;
 import com.example.acmeplex.paymentsystem.repository.CreditRecordRepository;
@@ -33,14 +35,16 @@ public class TicketService {
     private final RegisteredUserService registeredUserService;
     private final CreditRecordRepository creditRecordRepository;
     private final PaymentRepository paymentRepository;
+    private final EmailService emailService;
 
     @Autowired
-    public TicketService(TheatreShowtimeSeatRepository theatreShowtimeSeatRepository, TicketRepository ticketRepository, RegisteredUserService registeredUserService, CreditRecordRepository creditRecordRepository, PaymentRepository paymentRepository) {
+    public TicketService(TheatreShowtimeSeatRepository theatreShowtimeSeatRepository, TicketRepository ticketRepository, RegisteredUserService registeredUserService, CreditRecordRepository creditRecordRepository, PaymentRepository paymentRepository, EmailService emailService) {
         this.theatreShowtimeSeatRepository = theatreShowtimeSeatRepository;
         this.ticketRepository = ticketRepository;
         this.registeredUserService = registeredUserService;
         this.creditRecordRepository = creditRecordRepository;
         this.paymentRepository = paymentRepository;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -128,6 +132,18 @@ public class TicketService {
             creditRecordRepository.addCreditRecord(creditRecord);
 
             paymentRepository.updatePaymentStatus(ticketNumber, "credited");
+
+            //send email
+            EmailDetails emailDetails = new EmailDetails();
+            emailDetails.setRecipient(ticket.get().getHolderEmail());
+            emailDetails.setSubject("Ticket cancelled");
+            String content = String.format("Dear user,\n " +
+                    "Your ticket (%s) has been successfully cancelled.", ticketNumber);
+            emailDetails.setMsgBody(content);
+            result = emailService.sendSimpleEmail(emailDetails);
+            if (result!=0) {
+                response.put("emailSent", true);
+            }
 
             response.put("success", true);
             response.put("message", String.format("Ticket %s cancelled successfully.", ticketNumber));
