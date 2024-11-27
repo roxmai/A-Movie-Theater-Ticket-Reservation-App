@@ -325,6 +325,16 @@ SET FOREIGN_KEY_CHECKS = 1;
 
 
 
+-- Data for user
+INSERT INTO `users` (`email`) VALUES
+('john.doe@example.com'),
+('jane.smith@example.com');
+
+-- Data for registered user
+INSERT INTO `registered_user` (`email`, `name`, `password`, `address`, `subscription_expiration_date`) VALUES
+('john.doe@example.com', 'John Doe', 'securePassword123', '123 Main St, Anytown, USA', '2024-12-31'),
+('jane.smith@example.com', 'Jane Smith', 'anotherSecurePass456', '456 Elm St, Othertown, USA', '2025-06-30');
+
 -- Data for genre table
 INSERT INTO `genre` VALUES (1, 'Animation');
 INSERT INTO `genre` VALUES (2, 'Comedy');

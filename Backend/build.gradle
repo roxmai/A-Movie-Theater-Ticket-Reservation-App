@@ -26,6 +26,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-security' // security
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5' // JWT dependencies
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5' // JWT dependencies
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' // for JSON processing
     runtimeOnly 'mysql:mysql-connector-java:8.0.33'
     runtimeOnly 'com.h2database:h2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
