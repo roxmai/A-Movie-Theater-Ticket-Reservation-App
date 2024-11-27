@@ -26,6 +26,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-mail:3.3.1'
     implementation 'org.springframework.boot:spring-boot-starter-security' // security
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5' // JWT dependencies
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5' // JWT dependencies

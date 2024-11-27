@@ -1,4 +1,4 @@
-import React,{ useState } from 'react';
+import React,{ lazy, useState } from 'react';
 import { cancelTicket } from '../api/Services';
 
 import { Box, Typography, Container, TextField, Button,Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
@@ -9,20 +9,24 @@ function CancelTicketPage() {
     const [ticketNumber, setTicketNumber] = useState('');
     const [successDialogOpen, setSuccessDialogOpen] = useState(false);
     const [errorDialogOpen, setErrorDialogOpen] = useState(false);
-    const [message, setMessage] = useState('');
+    const [response, setResponse] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const issue = async () => {
         // Implement the refund logic here
         try {
+            setLoading(true);
             const data = await cancelTicket(ticketNumber);
             if (data?.error) {
                 setErrorDialogOpen(true);
             } else if (data?.success) {
                 setSuccessDialogOpen(true);
             }
-            setMessage(data.message)
+            setResponse(data)
         } catch (error) {
             console.error('aa',error);
+        } finally {
+            setLoading(false);
         }
         console.log(`Refund issued for ticket number: ${ticketNumber}`);
 
@@ -62,9 +66,12 @@ function CancelTicketPage() {
             <Dialog open={successDialogOpen} onClose={handleSuccessDialogClose}>
                 <DialogTitle>Cancellation success</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                        {message}
+                    {
+                        loading ? <Typography>Processing...</Typography> : <DialogContentText>
+                        {response?.message}
+                        {response?.emailSent && <Typography>An email notification has been sent to you.</Typography>}
                     </DialogContentText>
+                    }
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleSuccessDialogClose} color="primary">
@@ -75,9 +82,11 @@ function CancelTicketPage() {
             <Dialog open={errorDialogOpen} onClose={handleErrorDialogClose}>
                 <DialogTitle>Cancellation failed</DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                        {message}
+                    {
+                        loading ? <Typography>Processing...</Typography> : <DialogContentText>
+                        {response?.message}
                     </DialogContentText>
+                    }
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleErrorDialogClose} color="primary">

@@ -75,24 +75,22 @@ public class WebSecurityConfig {
                 // Movie System Public GET Endpoints
                 .requestMatchers(HttpMethod.GET, "/genres/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/movies/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/movie/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/theatres/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/showtimes/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/seats/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/movies/autocompletion/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/images/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/totalprice/**").permitAll()
+                .requestMatchers(HttpMethod.PUT, "/cancel/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/ticketpayment/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/book/**").permitAll()
                 
                 // Movie System Protected Endpoints
-                .requestMatchers(HttpMethod.POST, "/book/**").authenticated()
-                .requestMatchers(HttpMethod.POST, "/ticketpayment/**").authenticated()
-                .requestMatchers(HttpMethod.PUT, "/cancel/**").authenticated()
                 .requestMatchers(HttpMethod.PUT, "/membershippayment/**").authenticated()
-                .requestMatchers(HttpMethod.PUT, "/issuerefund/**").authenticated()
-                .requestMatchers(HttpMethod.POST, "/totalprice/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/movie-news").authenticated()
                 
                 // Payment Endpoints - Require authentication
-                .requestMatchers("/ticketpayment/**").authenticated()
-                .requestMatchers("/membershippayment/**").authenticated()
-                .requestMatchers("/issuerefund/**").authenticated()
-                .requestMatchers("/totalprice/**").authenticated()
                 
                 // Any other request requires authentication
                 .anyRequest().authenticated();
