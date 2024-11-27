@@ -72,4 +72,14 @@ public class TicketRepository {
         return jdbcTemplate.queryForObject(sql, String.class, ticketNumber);
     }
 
+    public String findActiveTicketStatus(String ticketNumber, String status) {
+        String sql = "SELECT status FROM payment_ticket WHERE ticket_number=? AND status=?";
+        return jdbcTemplate.queryForObject(sql, String.class, ticketNumber, status);
+    }
+
+    public int updateTicketStatus(String ticketNumber, String status) {
+        String sql = "UPDATE payment_ticket SET status=? WHERE ticket_number=?";
+        return jdbcTemplate.update(sql, status, ticketNumber);
+    }
+
 }

@@ -110,11 +110,11 @@ public class PaymentService {
                 double usedPoints = creditRecord.getUsedPoints();
                 double creditAvailable = creditPoints - usedPoints;
                 if (creditAvailable > 0) {
-                    if (creditAvailable >= (totalPayment - creditUsed)) {                        
+                    if (creditAvailable >= (totalPayment - creditUsed)) {
                         creditRecord.setUsedPoints(usedPoints + totalPayment - creditUsed);
                         creditRecordRepository.updateUsedPoints(creditRecord.getId(), creditRecord.getUsedPoints());
                         creditUsed += creditAvailable;
-                    } else {                        
+                    } else {
                         creditRecord.setUsedPoints(creditPoints);
                         creditRecordRepository.updateUsedPoints(creditRecord.getId(), creditRecord.getUsedPoints());
                         creditUsed += creditAvailable;
@@ -126,8 +126,7 @@ public class PaymentService {
             }
 
             double remainingPayment = totalPayment - creditUsed;
-            System.out.println("pay1");
-            
+
             int newPaymentId = paymentRepository.getLastPaymentId() + 1;
             Payment payment = new Payment(email, method, newPaymentId, totalPayment, "membership");
             paymentRepository.addPayment(payment);

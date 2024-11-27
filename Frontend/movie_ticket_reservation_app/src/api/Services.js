@@ -107,3 +107,8 @@ export const login = async (email, password) => {
   const response = await api.put(`/login/${email}/password/${password}`);
   return response.data;
 }
+
+export const getMovieNews = async () => {
+  const response = await api.get(`/movie-news`);
+  return response.data;
+}

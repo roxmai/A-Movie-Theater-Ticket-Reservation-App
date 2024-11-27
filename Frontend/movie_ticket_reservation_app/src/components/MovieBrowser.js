@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {CircularProgress, IconButton, TextField} from '@mui/material';
+import {CircularProgress, Fab, IconButton, TextField} from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search'
 import {InputAdornment} from '@mui/material';
 import {Box, Divider} from '@mui/material'
@@ -7,8 +7,10 @@ import {Pagination} from '@mui/material';
 import {List, ListItem, ListItemText, ListItemButton} from '@mui/material';
 import {Grid2, Card, CardMedia, CardContent, Typography} from '@mui/material'
 import { getGenres, getMovies, getMoviesByGenre, getMoviesBySearch } from '../api/Services'; 
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Link, useNavigate } from 'react-router-dom';
 import LoadingScreen from './LoadingScreen';
+import MovieNews from './MoiveNews';
 function SearchBar({search, handleValueChange, handleSearch}) {
     const handleKeyDown = async (event) => {
         if(event.key === 'Enter') {
@@ -209,6 +211,10 @@ function MovieBrowser() {
     const [error, setError] = useState(null);
     const [selectedGenre, setSelectedGenre] = useState(0);
     const [search, setSearch] = useState("");
+    const [movieNewsDialogOpen, setMovieNewsDialogOpen] = useState(false);
+
+    const handleOpenMovieNewsDialog = () => setMovieNewsDialogOpen(true);
+    const handleCloseMovieNewsDialog = () => setMovieNewsDialogOpen(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -322,6 +328,19 @@ function MovieBrowser() {
             genres={genres} 
             selectedGenre={selectedGenre} 
             handleClick={handleClick}/>
+            <Fab
+                color="primary"
+                aria-label="add"
+                onClick={handleOpenMovieNewsDialog}               
+                sx={{
+                    position: 'fixed',
+                    bottom: 16,
+                    right: 16,
+                }}
+                >
+                <NotificationsIcon />
+            </Fab>
+            <MovieNews open={movieNewsDialogOpen} onClose={handleCloseMovieNewsDialog}/>
         </Box>
     )
 }
