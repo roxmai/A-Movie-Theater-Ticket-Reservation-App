@@ -332,9 +332,9 @@ INSERT INTO `users` (`email`) VALUES
 ('jane.smith@example.com');
 
 -- Data for registered user
-INSERT INTO `registered_user` (`email`, `name`, `password`, `address`, `subscription_expiration_date`) VALUES
-('john.doe@example.com', 'John Doe', 'securePassword123', '123 Main St, Anytown, USA', '2024-12-31'),
-('jane.smith@example.com', 'Jane Smith', 'anotherSecurePass456', '456 Elm St, Othertown, USA', '2025-06-30');
+INSERT INTO `registered_user` (`email`, `name`, `password`, `address`, `subscription_expiration_date`, `card_number`) VALUES
+('john.doe@example.com', 'John Doe', 'securePassword123', '123 Main St, Anytown, USA', '2024-12-31',`1234`),
+('jane.smith@example.com', 'Jane Smith', 'anotherSecurePass456', '456 Elm St, Othertown, USA', '2025-06-30',`5678`);
 
 -- Data for genre table
 INSERT INTO `genre` VALUES (1, 'Animation');
