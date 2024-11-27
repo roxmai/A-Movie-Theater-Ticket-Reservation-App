@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.example.acmeplex.moviesystem.dto.MovieNewsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -27,7 +28,6 @@ import com.example.acmeplex.moviesystem.service.TicketService;
 
 @RestController
 public class MovieSystemController {
-
     private final MovieService movieService;
     private final TheatreService theatreService;
     private final ShowtimeService showtimeService;
@@ -110,5 +110,10 @@ public class MovieSystemController {
         ResponseEntity<Map<String, Object>> response = ResponseEntity.ok(ticketService.bookTickets(ticketBookingDTO.getIds(), ticketBookingDTO.getEmail()));
         System.out.println(response);
         return response;
+    }
+
+    @GetMapping("/movie-news")
+    public ResponseEntity<List<MovieNewsDTO>> getMovieNews() {
+        return ResponseEntity.ok(showtimeService.getMovieNews());
     }
 }

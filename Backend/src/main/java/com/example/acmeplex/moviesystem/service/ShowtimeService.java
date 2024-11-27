@@ -1,8 +1,9 @@
 package com.example.acmeplex.moviesystem.service;
 
+import com.example.acmeplex.moviesystem.config.AppProperties;
+import com.example.acmeplex.moviesystem.dto.MovieNewsDTO;
 import com.example.acmeplex.moviesystem.entity.Showroom;
 import com.example.acmeplex.moviesystem.entity.Showtime;
-import com.example.acmeplex.moviesystem.entity.Theatre;
 import com.example.acmeplex.moviesystem.dto.ShowtimeSeatDTO;
 import com.example.acmeplex.moviesystem.dto.ShowtimeDTO;
 import com.example.acmeplex.moviesystem.repository.TheatreShowtimeSeatRepository;
@@ -18,10 +19,11 @@ import java.util.*;
 @Service
 public class ShowtimeService {
     private final TheatreShowtimeSeatRepository theatreShowtimeSeatRepository;
+    private final AppProperties appProperties;
 
-    @Autowired
-    public ShowtimeService(TheatreShowtimeSeatRepository theatreShowtimeSeatRepository) {
+    public ShowtimeService(TheatreShowtimeSeatRepository theatreShowtimeSeatRepository, AppProperties appProperties) {
         this.theatreShowtimeSeatRepository = theatreShowtimeSeatRepository;
+        this.appProperties = appProperties;
     }
 
 
@@ -35,6 +37,7 @@ public class ShowtimeService {
             // set showroom name
             Optional<Showroom> showroom = theatreShowtimeSeatRepository.findShowroomById(showtime.getShowroomId());
             showroom.ifPresent(value -> showtimeDTO.setShowroomName(value.getName()));
+
             //set state
             if (showtime.getTickets()==showtime.getTicketsSold()) {
                 showtimeDTO.setState("Full");
@@ -46,7 +49,13 @@ public class ShowtimeService {
                 showtimeDTO.setState("Open");
             }
             showtimeDTOS.add(showtimeDTO);
-            if(showtime.getPublicAnnouncementTime().after(now)) showtimeDTO.setPreAnnouncement(true);
+
+            if(showtime.getPublicAnnouncementTime().after(now)) {
+                int availableTickets = (int)Math.ceil(showtimeDTO.getTickets()*0.1);
+                if(showtime.getTicketsSold()==availableTickets) showtimeDTO.setState("Full");
+                showtimeDTO.setPreAnnouncement(true);
+                showtimeDTO.setTickets(availableTickets);
+            }
         }
 
         //sort by date
@@ -90,5 +99,17 @@ public class ShowtimeService {
         }
         seatsAndShowroomSize.put("seats", seats);
         return seatsAndShowroomSize;
+    }
+
+    public List<MovieNewsDTO> getMovieNews() {
+        List<MovieNewsDTO> movieNewsList = theatreShowtimeSeatRepository.findShowtimesBeforeAnnouncement();
+        Collections.shuffle(movieNewsList);
+        if (movieNewsList.size() > 5) {
+            movieNewsList = movieNewsList.subList(0, 5);
+        }
+        for(MovieNewsDTO movieNews : movieNewsList) {
+            movieNews.setImage(appProperties.getBaseUrl()+"images/posters/"+ movieNews.getImage());
+        }
+        return movieNewsList;
     }
 }

@@ -36,10 +36,4 @@ public class PaymentController {
     public ResponseEntity<String> totalTicketPrice(@RequestBody TicketBookingDTO ticketBookingDTO) {
         return ResponseEntity.ok(paymentService.priceCalculation(ticketBookingDTO.getIds()));
     }
-
-    @PutMapping("/issuerefund/{ticketnumber}")
-    public ResponseEntity<String> issueRefund(@PathVariable String ticketnumber) {
-        return ResponseEntity.ok(paymentService.issueCredit(ticketnumber));
-    }
-
 }

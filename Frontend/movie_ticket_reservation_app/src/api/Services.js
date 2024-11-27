@@ -102,3 +102,8 @@ export const membershipPayment = async (email, method) => {
   const response = await api.post(`/membershippayment/${email}/${method}`);
   return response.data;
 }
+
+export const getMovieNews = async () => {
+  const response = await api.get(`/movie-news`);
+  return response.data;
+}

@@ -73,7 +73,7 @@ public class TicketRepository {
     }
 
     public String findActiveTicketStatus(String ticketNumber, String status) {
-        String sql = "SELECT status FROM payment_ticket WHERE ticket_number=? AND status!=?";
+        String sql = "SELECT status FROM payment_ticket WHERE ticket_number=? AND status=?";
         return jdbcTemplate.queryForObject(sql, String.class, ticketNumber, status);
     }
 
