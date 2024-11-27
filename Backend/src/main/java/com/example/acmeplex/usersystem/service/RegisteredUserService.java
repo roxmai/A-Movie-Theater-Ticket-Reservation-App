@@ -2,7 +2,9 @@ package com.example.acmeplex.usersystem.service;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -60,25 +62,49 @@ public class RegisteredUserService {
      * @throws DuplicateKeyException if a user with the same email already exists
      */
     @Transactional
-    public RegisteredUserDTO createRegisteredUser(RegisteredUserDTO registeredUserDTO) {
+    public Map<String, Object> createRegisteredUser(RegisteredUserDTO registeredUserDTO) {
+        Map<String, Object> response = new HashMap<>();
+        try{
         logger.info("Attempting to create registered user with email: {}", registeredUserDTO.getEmail());
 
         // Check if a user with the given email already exists to prevent duplicates
         if (registeredUserRepository.existsByEmail(registeredUserDTO.getEmail())) {
+            String duplicate="Email already in use: " + registeredUserDTO.getEmail();
             logger.error("Registered user creation failed: Email {} is already in use.", registeredUserDTO.getEmail());
-            throw new DuplicateKeyException("Email already in use: " + registeredUserDTO.getEmail());
+            response.put("duplicate", true);
+            response.put("message", duplicate);
+            //throw new DuplicateKeyException("Email already in use: " + registeredUserDTO.getEmail());
+            return response;
         }
 
         // Convert DTO to entity
         RegisteredUser registeredUser = convertToEntity(registeredUserDTO);
 
+        Date today= new Date();
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(today);
+        cal.add(Calendar.YEAR, 1);
+        Date expirationDate = cal.getTime();
+
+        registeredUser.setSubscriptionExpirationDate(expirationDate);
+
         // Save the entity to the database
         RegisteredUser savedRegisteredUser = registeredUserRepository.save(registeredUser);
-        System.out.println("llaa"); 
-        logger.info("Registered user created successfully with email: {}", savedRegisteredUser.getEmail());
-        
+
+        String success="Registered user created successfully with email: {}"+ savedRegisteredUser.getEmail();
+
+        logger.info(success);
+
+        response.put("success", true);
+        response.put("message", success);
+        return response;
+        }catch (RuntimeException exception) {
+            response.put("error", true);
+            response.put("message", exception.getMessage());
+            return response;
+        }
         // Convert the saved entity back to DTO
-        return convertToDTO(savedRegisteredUser);
+
     }
 
     /**
@@ -216,6 +242,20 @@ public class RegisteredUserService {
         Date newExpirationDate = cal.getTime();
 
         registeredUserRepository.updateExpirationDate(email, newExpirationDate);
+    }
+
+    public Map<String, Object> login(String email) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Date expirationDate = registeredUserRepository.getExpirationDate(email);
+            response.put("success", true);
+            response.put("expirationDate", expirationDate);
+            return response;
+        } catch (RuntimeException exception) {
+            response.put("error", true);
+            response.put("message", exception.getMessage());
+            return response;
+        }
     }
 }
 

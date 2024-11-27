@@ -27,7 +27,7 @@ public class PaymentController {
         return ResponseEntity.ok(paymentService.processMoviePayment(ticketPaymentDTO));
     }
 
-    @PutMapping("/membershippayment/{email}/{method}")
+    @PutMapping("/membershippayment/{email}/method/{method}")
     public ResponseEntity<String> membershipPayment(@PathVariable String email, @PathVariable String method) {
         return ResponseEntity.ok(paymentService.processMembershipPayment(email, method));
     }

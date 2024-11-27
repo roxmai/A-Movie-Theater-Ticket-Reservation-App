@@ -101,7 +101,7 @@ public class PaymentService {
     public String processMembershipPayment(String email, String method){
         try {
             double totalPayment = 20;
-
+            System.out.println("pay1");
             double creditUsed=0;
             List<CreditRecord> creditRecords = sortCreditRecords(email);
             for(int i=0; i<creditRecords.size(); i++) {
@@ -126,12 +126,13 @@ public class PaymentService {
             }
 
             double remainingPayment = totalPayment - creditUsed;
+            System.out.println("pay1");
             
             int newPaymentId = paymentRepository.getLastPaymentId() + 1;
             Payment payment = new Payment(email, method, newPaymentId, totalPayment, "membership");
             paymentRepository.addPayment(payment);
 
-            return "Success:"+String.valueOf(totalPayment)+" processed successfully."+String.valueOf(creditUsed)+" credit points used."+String.valueOf(totalPayment-creditUsed)+" remaining payment charged to " + method+ "card. "; 
+            return "Success:"+String.valueOf(totalPayment)+" processed successfully."+String.valueOf(creditUsed)+" credit points used."+String.valueOf(remainingPayment)+" remaining payment charged to " + method+ "card. "; 
         } catch (RuntimeException exception) {
             return "error: " + exception.getMessage();
         }
