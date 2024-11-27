@@ -79,6 +79,7 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/showtimes/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/seats/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/movies/autocompletion/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/images/**").permitAll()
                 
                 // Movie System Protected Endpoints
                 .requestMatchers(HttpMethod.POST, "/book/**").authenticated()
@@ -87,6 +88,7 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.PUT, "/membershippayment/**").authenticated()
                 .requestMatchers(HttpMethod.PUT, "/issuerefund/**").authenticated()
                 .requestMatchers(HttpMethod.POST, "/totalprice/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/movie-news").authenticated()
                 
                 // Payment Endpoints - Require authentication
                 .requestMatchers("/ticketpayment/**").authenticated()
