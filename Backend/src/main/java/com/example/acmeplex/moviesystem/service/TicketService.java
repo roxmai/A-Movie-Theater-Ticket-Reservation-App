@@ -58,13 +58,28 @@ public class TicketService {
                 throw new OperationFailedException("Tickets booking");
             }
 
+            StringBuilder ticketNumberList = new StringBuilder();
             // book tickets
             for(Integer showtimeSeatId : showtimeSeats) {
-                System.out.println(ticketRepository.getTicketNumber(showtimeSeatId));
+                String ticketNumber = ticketRepository.getTicketNumber(showtimeSeatId);
+                ticketNumberList.append(ticketNumber).append("\n");
+                System.out.println(ticketNumber);
                 int result1 = theatreShowtimeSeatRepository.updateSeatAvailability(showtimeSeatId, false);
                 int result2 = ticketRepository.updateTicketReservation(showtimeSeatId, email, Timestamp.valueOf(LocalDateTime.now()));
                 if(result1==0 || result2==0) throw new OperationFailedException("Ticket booking");
             }
+
+            //send email
+            EmailDetails emailDetails = new EmailDetails();
+            emailDetails.setRecipient(email);
+            emailDetails.setSubject("Ticket booking");
+            String content = String.format("Dear user,\n" +
+                    "Thank you for booking tickets! Here are the ticket numbers: \n" +
+                    "%s", ticketNumberList);
+            emailDetails.setMsgBody(content);
+            int result = emailService.sendSimpleEmail(emailDetails);
+            if (result!=0) response.put("emailSent", true);
+
             String ticketForm = showtimeSeats.size()>1?"tickets":"ticket";
             response.put("success", true);
             response.put("message", String.format("%d %s booked successfully.", showtimeSeats.size(), ticketForm));
@@ -137,7 +152,7 @@ public class TicketService {
             EmailDetails emailDetails = new EmailDetails();
             emailDetails.setRecipient(ticket.get().getHolderEmail());
             emailDetails.setSubject("Ticket cancelled");
-            String content = String.format("Dear user,\n " +
+            String content = String.format("Dear user,\n" +
                     "Your ticket (%s) has been successfully cancelled.", ticketNumber);
             emailDetails.setMsgBody(content);
             result = emailService.sendSimpleEmail(emailDetails);
