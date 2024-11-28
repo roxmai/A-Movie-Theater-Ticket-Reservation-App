@@ -114,7 +114,8 @@ CREATE TABLE `registered_user`  (
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `subscription_expiration_date` date NOT NULL,
+  `subscription_expiration_date` datetime NOT NULL,
+  `card_number` varchar(255) NOT NULL,
   PRIMARY KEY (`email`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
@@ -331,9 +332,9 @@ INSERT INTO `users` (`email`) VALUES
 ('jane.smith@example.com');
 
 -- Data for registered user
-INSERT INTO `registered_user` (`email`, `name`, `password`, `address`, `subscription_expiration_date`) VALUES
-('john.doe@example.com', 'John Doe', 'securePassword123', '123 Main St, Anytown, USA', '2024-12-31'),
-('jane.smith@example.com', 'Jane Smith', 'anotherSecurePass456', '456 Elm St, Othertown, USA', '2025-06-30');
+INSERT INTO `registered_user` (`email`, `name`, `password`, `address`, `subscription_expiration_date`, `card_number`) VALUES
+('john.doe@example.com', 'John Doe', 'securePassword123', '123 Main St, Anytown, USA', '2024-12-31','1234'),
+('jane.smith@example.com', 'Jane Smith', 'anotherSecurePass456', '456 Elm St, Othertown, USA', '2025-06-30','5678');
 
 -- Data for genre table
 INSERT INTO `genre` VALUES (1, 'Animation');

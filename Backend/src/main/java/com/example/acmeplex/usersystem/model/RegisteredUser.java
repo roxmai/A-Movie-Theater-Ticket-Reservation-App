@@ -1,9 +1,10 @@
 package com.example.acmeplex.usersystem.model;
 
+import java.util.Date;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import jakarta.persistence.Column;
-import java.util.Date;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
@@ -25,25 +26,23 @@ public class RegisteredUser extends User {
     private Date subscriptionExpirationDate;
 
     // Assuming you still need creditCardInfo and activeSubscription
-    @Column(name = "credit_card_info")
-    private String creditCardInfo;
+    @Column(name = "card_number")
+    private String cardNumber;
 
-    @Column(name = "active_subscription")
-    private boolean activeSubscription;
+
 
     // Default constructor
     public RegisteredUser() {}
 
     // All-args constructor
     public RegisteredUser(String email, String name, String address, String password, Date subscriptionExpirationDate,
-                          String creditCardInfo, boolean activeSubscription) {
+                          String cardNumber) {
         super(email);
         this.name = name;
         this.address = address;
         this.password = password;
         this.subscriptionExpirationDate = subscriptionExpirationDate;
-        this.creditCardInfo = creditCardInfo;
-        this.activeSubscription = activeSubscription;
+        this.cardNumber = cardNumber;
     }
 
     // Getters and Setters
@@ -80,19 +79,11 @@ public class RegisteredUser extends User {
         this.subscriptionExpirationDate = subscriptionExpirationDate;
     }
 
-    public String getCreditCardInfo() {
-        return creditCardInfo;
+    public String getCardNumber() {
+        return this.cardNumber;
     }
 
-    public void setCreditCardInfo(String creditCardInfo) {
-        this.creditCardInfo = creditCardInfo;
-    }
-
-    public boolean isActiveSubscription() {
-        return activeSubscription;
-    }
-
-    public void setActiveSubscription(boolean activeSubscription) {
-        this.activeSubscription = activeSubscription;
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
     }
 }

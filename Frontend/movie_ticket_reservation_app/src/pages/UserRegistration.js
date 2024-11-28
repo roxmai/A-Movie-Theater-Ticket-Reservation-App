@@ -6,7 +6,7 @@ function UserRegistration() {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
-    const [creditCard, setCreditCard] = useState('');
+    const [cardNumber, setCardNumber] = useState('');
     const [address, setAddress] = useState('');
     const [dialogOpen, setDialogOpen] = useState(false);
     const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
@@ -14,8 +14,10 @@ function UserRegistration() {
     const [expireMonth, setExpireMonth] = useState('');
     const [expireYear, setExpireYear] = useState('');
     const [cvv, setCvv] = useState('');
-    const [creditcard, setNameOnCard] = useState('');
+    const [nameOnCard, setNameOnCard] = useState('');
     const [method, setCardType] = useState('credit');
+
+    const [message, setMessage] = useState('');
 
     const handleSubmit = () => {
         setConfirmationDialogOpen(true);
@@ -31,17 +33,24 @@ function UserRegistration() {
             name,
             password,
             address,
-            creditcard
+            cardNumber
         };
         console.log('Registration Data:', registrationData);
 
         try {
             const response = await createRegisteredUser(registrationData);
-            const paymentData = await membershipPayment(email,method);
-            console.log(response);
-            console.log(paymentData);
-            setDialogOpen(true);
-            setConfirmationDialogOpen(false);
+            if (response?.success) {
+                const paymentData = await membershipPayment(email,method);
+                console.log(response);
+                console.log(paymentData);
+                setMessage("Account Registered");
+                setDialogOpen(true);
+                setConfirmationDialogOpen(false);
+
+            } else if (response?.duplicate) {
+                setMessage(response.message)
+                setDialogOpen(true);
+            }
         } catch (error) {
             console.error('Error processing registration:', error);
         }
@@ -119,8 +128,8 @@ function UserRegistration() {
                         variant="outlined"
                         fullWidth
                         required
-                        value={creditCard}
-                        onChange={(e) => setCreditCard(e.target.value)}
+                        value={cardNumber}
+                        onChange={(e) => setCardNumber(e.target.value)}
                         sx={{ mb: 2 }}
                     />
                     <TextField
@@ -155,7 +164,7 @@ function UserRegistration() {
                         variant="outlined"
                         fullWidth
                         required
-                        value={creditcard}
+                        value={nameOnCard}
                         onChange={(e) => setNameOnCard(e.target.value)}
                         sx={{ mb: 2 }}
                     />
@@ -170,10 +179,10 @@ function UserRegistration() {
                 </DialogActions>
             </Dialog>
             <Dialog open={dialogOpen} onClose={handlePaymentDialogClose}>
-                <DialogTitle>Registration Successful</DialogTitle>
+                <DialogTitle>Registration</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        Payment successful and account registered.
+                        {message}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

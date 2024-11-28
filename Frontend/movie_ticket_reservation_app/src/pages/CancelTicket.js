@@ -17,9 +17,11 @@ function CancelTicketPage() {
         try {
             setLoading(true);
             const data = await cancelTicket(ticketNumber);
+            
             if (data?.error) {
                 setErrorDialogOpen(true);
             } else if (data?.success) {
+                //const dataCredit = await issueRefund(ticketNumber);
                 setSuccessDialogOpen(true);
             }
             setResponse(data)

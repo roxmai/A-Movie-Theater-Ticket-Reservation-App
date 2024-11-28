@@ -1,6 +1,7 @@
 package com.example.acmeplex.usersystem.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.acmeplex.usersystem.dto.RegisteredUserDTO;
@@ -19,7 +19,7 @@ import com.example.acmeplex.usersystem.service.RegisteredUserService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/registered-users")
+//@RequestMapping("/api/registered-users")
 public class RegisteredUserController {
 
     @Autowired
@@ -32,10 +32,9 @@ public class RegisteredUserController {
      * @return Created user as a response.
      */
     @PostMapping("/createregistereduser")
-    public ResponseEntity<RegisteredUserDTO> createRegisteredUser(@RequestBody RegisteredUserDTO registeredUserDTO) {
+    public ResponseEntity<Map<String, Object>> createRegisteredUser(@RequestBody RegisteredUserDTO registeredUserDTO) {
 
-        RegisteredUserDTO createdRegisteredUser = registeredUserService.createRegisteredUser(registeredUserDTO);
-        return ResponseEntity.ok(createdRegisteredUser);
+        return ResponseEntity.ok(registeredUserService.createRegisteredUser(registeredUserDTO));
     }
 
     /**
@@ -84,5 +83,10 @@ public class RegisteredUserController {
     public ResponseEntity<Void> deleteRegisteredUser(@PathVariable String email) {
         registeredUserService.deleteRegisteredUser(email);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/login/{email}/password/{password}")
+    public ResponseEntity<Map<String, Object>> login(@PathVariable String email, @PathVariable String password) {
+        return ResponseEntity.ok(registeredUserService.login(email, password));
     }
 }

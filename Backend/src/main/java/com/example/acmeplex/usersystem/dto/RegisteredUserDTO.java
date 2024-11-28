@@ -14,7 +14,7 @@ public class RegisteredUserDTO extends UserDTO {
     private String password;
 
     @NotBlank(message = "Credit Card is mandatory")
-    private String creditCard;
+    private String cardNumber;
 
     // You can add more fields like subscription details as needed
 
@@ -22,12 +22,12 @@ public class RegisteredUserDTO extends UserDTO {
     public RegisteredUserDTO() {}
 
     // All-args constructor
-    public RegisteredUserDTO(String email, String name, String address, String password, String creditCard) {
+    public RegisteredUserDTO(String email, String name, String address, String password, String cardNumber) {
         super(email);
         this.name = name;
         this.address = address;
         this.password = password;
-        this.creditCard = creditCard;
+        this.cardNumber = cardNumber;
     }
 
     // Getters and Setters
@@ -55,13 +55,13 @@ public class RegisteredUserDTO extends UserDTO {
         this.password = password;
     }
 
-
-    public String getCreditCard() {
-        return this.creditCard;
+    public String getCardNumber() {
+        return this.cardNumber;
     }
 
-    public void setCreditCard(String creditCard) {
-        this.creditCard = creditCard;
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
     }
+
 
 }

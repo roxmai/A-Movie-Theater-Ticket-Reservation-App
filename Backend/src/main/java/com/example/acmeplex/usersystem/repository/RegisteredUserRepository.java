@@ -31,8 +31,7 @@ public class RegisteredUserRepository {
             registeredUser.setAddress(rs.getString("address"));
             registeredUser.setPassword(rs.getString("password"));
             registeredUser.setSubscriptionExpirationDate(rs.getDate("subscription_expiration_date"));
-            registeredUser.setCreditCardInfo(rs.getString("credit_card_info"));
-            registeredUser.setActiveSubscription(rs.getBoolean("active_subscription"));
+            registeredUser.setCardNumber(rs.getString("card_number"));
             return registeredUser;
         }
     };
@@ -78,16 +77,18 @@ public class RegisteredUserRepository {
      * @return the Saved RegisteredUser
      */
     public RegisteredUser save(RegisteredUser registeredUser) {
-        String sql = "INSERT INTO registered_user (email, name, address, password, subscription_expiration_date, credit_card_info, active_subscription) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO registered_user (email, name, address, password, subscription_expiration_date, card_number) " +
+                     "VALUES (?, ?, ?, ?, ?, ?)";
+        System.out.println(registeredUser.getSubscriptionExpirationDate());
+        System.out.println(registeredUser.getEmail());
+
         jdbcTemplate.update(sql, 
                 registeredUser.getEmail(), 
                 registeredUser.getName(), 
                 registeredUser.getAddress(),
                 registeredUser.getPassword(), 
-                new java.sql.Date(registeredUser.getSubscriptionExpirationDate().getTime()), 
-                registeredUser.getCreditCardInfo(), 
-                registeredUser.isActiveSubscription());
+                registeredUser.getSubscriptionExpirationDate(), 
+                registeredUser.getCardNumber());
         return registeredUser;
     }
 
@@ -97,16 +98,15 @@ public class RegisteredUserRepository {
      * @param registeredUser the RegisteredUser with updated information
      */
     public void update(RegisteredUser registeredUser) {
-        String sql = "UPDATE registered_user SET name = ?, address = ?, password = ?, subscription_expiration_date = ?, credit_card_info = ?, active_subscription = ? " +
+        String sql = "UPDATE registered_user SET name = ?, address = ?, password = ?, subscription_expiration_date = ?, card_number = ?" +
                      "WHERE email = ?";
         jdbcTemplate.update(sql, 
                 registeredUser.getName(), 
                 registeredUser.getAddress(), 
                 registeredUser.getPassword(),
-                new java.sql.Date(registeredUser.getSubscriptionExpirationDate().getTime()), 
-                registeredUser.getCreditCardInfo(), 
-                registeredUser.isActiveSubscription(),
-                registeredUser.getEmail());
+                registeredUser.getSubscriptionExpirationDate(), 
+                registeredUser.getCardNumber(),
+                registeredUser.getEmail()); 
     }
 
     /**
@@ -117,10 +117,6 @@ public class RegisteredUserRepository {
     public void deleteByEmail(String email) {
         String sql = "DELETE FROM registered_user WHERE email = ?";
         jdbcTemplate.update(sql, email);
-    }
-
-    public boolean existsById(Long id) {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     // Get the expiration date of a RegisteredUser

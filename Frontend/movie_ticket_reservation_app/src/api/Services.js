@@ -93,13 +93,18 @@ export const ticketPayment = async (data) => {
 }
 
 export const createRegisteredUser = async (data) => {
-  const response = await api.post(`/api/registered-users/createregistereduser`, data);
+  const response = await api.post(`createregistereduser`, data);
   console.log(response.data);
   return response.data;
 }
 
 export const membershipPayment = async (email, method) => {
-  const response = await api.post(`/membershippayment/${email}/${method}`);
+  const response = await api.put(`/membershippayment/${email}/method/${method}`);
+  return response.data;
+}
+
+export const login = async (email, password) => {
+  const response = await api.put(`/login/${email}/password/${password}`);
   return response.data;
 }
 
