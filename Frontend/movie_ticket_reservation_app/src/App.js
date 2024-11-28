@@ -6,22 +6,33 @@ import BookMovie from './pages/BookMovie';
 import UserRegistration from './pages/UserRegistration';
 import BuyTickets from './pages/BuyTicket';
 import TicketPaymentPage from './pages/TicketPaymentPage';
-
+import Dashboard from './components/Dashboard';
+import PrivateRoute from './components/PrivateRoute'; // Import PrivateRoute
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
-
   return (
+    <AuthProvider>
       <Router>
-          <NavBar />
-          <Routes>
-                <Route path="/" element={<BookMovie />} />
-              <Route path="/BookMovie" element={<BookMovie />} />
-              <Route path="/CancelTicket" element={<CancelTicketPage />} />
-              <Route path="/UserRegistration" element={<UserRegistration />} />
-              <Route path="/movie/:id" element={<BuyTickets />} />
-              <Route path="/Payment" element={<TicketPaymentPage />} />
-          </Routes>
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<BookMovie />} />
+          <Route path="/BookMovie" element={<BookMovie />} />
+          <Route path="/CancelTicket" element={<CancelTicketPage />} />
+          <Route path="/UserRegistration" element={<UserRegistration />} />
+          <Route path="/movie/:id" element={<BuyTickets />} />
+          <Route path="/Payment" element={<TicketPaymentPage />} />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+        </Routes>
       </Router>
+    </AuthProvider>
   );
 }
 
