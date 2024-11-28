@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, Container, TextField, Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, RadioGroup, FormControlLabel, Radio } from '@mui/material';
-import { createRegisteredUser, membershipPayment } from '../api/Services';
+import { addCard, createRegisteredUser, membershipPayment } from '../api/Services';
 
 function UserRegistration() {
     const [email, setEmail] = useState('');
@@ -10,6 +10,7 @@ function UserRegistration() {
     const [address, setAddress] = useState('');
     const [dialogOpen, setDialogOpen] = useState(false);
     const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
+    const [errorDialogOpen, setErrorDialogOpen] = useState(false);
 
     const [expireMonth, setExpireMonth] = useState('');
     const [expireYear, setExpireYear] = useState('');
@@ -18,13 +19,24 @@ function UserRegistration() {
     const [method, setCardType] = useState('credit');
 
     const [message, setMessage] = useState('');
+    const [error, setError] = useState('');
 
     const handleSubmit = () => {
+        if (!email || !name || !password || !address) {
+            setError('All fields are required.');
+            setErrorDialogOpen(true);
+            return;
+        }
+        setError('');
         setConfirmationDialogOpen(true);
     };
 
     const handleDialogClose = () => {
         setConfirmationDialogOpen(false);
+    };
+
+    const handleErrorDialogClose = () => {
+        setErrorDialogOpen(false);
     };
 
     const handleRegistration = async () => {
@@ -50,7 +62,7 @@ function UserRegistration() {
         try {
             const response = await createRegisteredUser(registrationData);
             if (response?.success) {
-                const paymentResponse = await membershipPayment(email,method);
+                const paymentResponse = await membershipPayment(email, method);
                 const cardResponse = await addCard(cardData);
                 console.log(response);
                 console.log(paymentResponse);
@@ -58,9 +70,8 @@ function UserRegistration() {
                 setMessage("Account Registered");
                 setDialogOpen(true);
                 setConfirmationDialogOpen(false);
-
             } else if (response?.duplicate) {
-                setMessage(response.message)
+                setMessage(response.message);
                 setDialogOpen(true);
             }
         } catch (error) {
@@ -151,7 +162,7 @@ function UserRegistration() {
                         required
                         value={expireMonth}
                         onChange={(e) => setExpireMonth(e.target.value)}
-                        slotProps={{ input: { min: 1, max: 12 } }}
+                        inputProps={{ min: 1, max: 12 }}
                         type="number"
                         sx={{ mb: 2 }}
                     />
@@ -172,6 +183,8 @@ function UserRegistration() {
                         required
                         value={cvv}
                         onChange={(e) => setCvv(e.target.value)}
+                        inputProps={{ maxLength: 3 }}
+                        type="number"
                         sx={{ mb: 2 }}
                     />
                     <TextField
@@ -202,6 +215,19 @@ function UserRegistration() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handlePaymentDialogClose} color="primary">
+                        Close
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={errorDialogOpen} onClose={handleErrorDialogClose}>
+                <DialogTitle>Error</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        {error}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleErrorDialogClose} color="primary">
                         Close
                     </Button>
                 </DialogActions>
