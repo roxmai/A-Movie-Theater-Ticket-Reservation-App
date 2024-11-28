@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.acmeplex.usersystem.dto.CardDTO;
 import com.example.acmeplex.usersystem.dto.RegisteredUserDTO;
 import com.example.acmeplex.usersystem.service.RegisteredUserService;
 
@@ -88,5 +89,10 @@ public class RegisteredUserController {
     @PutMapping("/login/{email}/password/{password}")
     public ResponseEntity<Map<String, Object>> login(@PathVariable String email, @PathVariable String password) {
         return ResponseEntity.ok(registeredUserService.login(email, password));
+    }
+
+    @PostMapping("/addcard")
+    public ResponseEntity<Map<String, Object>> addCard(@RequestBody CardDTO cardInfo) {
+        return ResponseEntity.ok(registeredUserService.addCard(cardInfo));
     }
 }

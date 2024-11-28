@@ -37,12 +37,24 @@ function UserRegistration() {
         };
         console.log('Registration Data:', registrationData);
 
+        const cardData = {
+            email,
+            cardNumber,
+            expireYear,
+            expireMonth,
+            cvv,
+            nameOnCard,
+            method
+        };
+
         try {
             const response = await createRegisteredUser(registrationData);
             if (response?.success) {
-                const paymentData = await membershipPayment(email,method);
+                const paymentResponse = await membershipPayment(email,method);
+                const cardResponse = await addCard(cardData);
                 console.log(response);
-                console.log(paymentData);
+                console.log(paymentResponse);
+                console.log(cardResponse);
                 setMessage("Account Registered");
                 setDialogOpen(true);
                 setConfirmationDialogOpen(false);
@@ -139,6 +151,8 @@ function UserRegistration() {
                         required
                         value={expireMonth}
                         onChange={(e) => setExpireMonth(e.target.value)}
+                        slotProps={{ input: { min: 1, max: 12 } }}
+                        type="number"
                         sx={{ mb: 2 }}
                     />
                     <TextField
@@ -148,6 +162,7 @@ function UserRegistration() {
                         required
                         value={expireYear}
                         onChange={(e) => setExpireYear(e.target.value)}
+                        type="number"
                         sx={{ mb: 2 }}
                     />
                     <TextField

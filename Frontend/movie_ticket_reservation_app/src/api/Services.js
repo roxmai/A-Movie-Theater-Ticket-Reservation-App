@@ -112,3 +112,8 @@ export const getMovieNews = async () => {
   const response = await api.get(`/movie-news`);
   return response.data;
 }
+
+export const addCard = async (data) => {
+  const response = await api.post(`/addcard`, data);
+  return response.data;
+}
