@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.EmailPasswordAuthenticationToken;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -33,8 +33,8 @@ public class AuthController {
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest) {
         
         Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                loginRequest.getUsername(), 
+            new EmailPasswordAuthenticationToken(
+                loginRequest.getEmail(), 
                 loginRequest.getPassword()));
         
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -43,7 +43,7 @@ public class AuthController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         
         return ResponseEntity.ok(new JwtResponse(jwt, 
-                                                 userDetails.getUsername(), 
+                                                 userDetails.getEmail(), 
                                                  userDetails.getAuthorities()));
     }
 }
