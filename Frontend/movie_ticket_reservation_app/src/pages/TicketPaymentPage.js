@@ -20,19 +20,6 @@ function TicketPaymentPage() {
 
     const { ids, totalPrice} = location.state || { ids: [], totalPrice: 0};
 
-    // useEffect(() => {
-    //     // Fetch the total price from the backend
-    //     const fetchTotalPrice = async () => {
-    //         try {
-    //             const data = await getTotalPrice();
-    //             setTotalPrice(data.totalPrice);
-    //         } catch (error) {
-    //             console.error('Error fetching total price:', error);
-    //         }
-    //     };
-
-    //     fetchTotalPrice();
-    // }, []);
 
     const handleSubmit = () => {
         setConfirmationDialogOpen(true);
@@ -124,6 +111,8 @@ function TicketPaymentPage() {
                         required
                         value={expireMonth}
                         onChange={(e) => setExpireMonth(e.target.value)}
+                        slotProps={{ htmlinput: { min: 1, max: 12 } }}
+                        type="number"
                         sx={{ mb: 2 }}
                     />
                     <TextField
@@ -133,6 +122,7 @@ function TicketPaymentPage() {
                         required
                         value={expireYear}
                         onChange={(e) => setExpireYear(e.target.value)}
+                        type="number"
                         sx={{ mb: 2 }}
                     />
                     <TextField
@@ -142,6 +132,8 @@ function TicketPaymentPage() {
                         required
                         value={cvv}
                         onChange={(e) => setCvv(e.target.value)}
+                        slotProps={{ htmlinput: {maxLength:3} }}
+                        type="number"
                         sx={{ mb: 2 }}
                     />
                     <TextField
