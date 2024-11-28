@@ -17,7 +17,7 @@ public class JwtUtils {
     private int jwtExpirationMs;
     
     public String generateJwtToken(Authentication authentication) {
-        String email = authentication.getEmail();
+        String email = authentication.getName();
         
         return Jwts.builder()
                 .setSubject(email)

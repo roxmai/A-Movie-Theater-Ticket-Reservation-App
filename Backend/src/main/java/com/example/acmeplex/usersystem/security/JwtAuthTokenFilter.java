@@ -1,7 +1,7 @@
 package com.example.acmeplex.usersystem.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.EmailPasswordAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,8 +42,8 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
                 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
                 
-                EmailPasswordAuthenticationToken authentication = 
-                    new EmailPasswordAuthenticationToken(
+                UsernamePasswordAuthenticationToken authentication = 
+                    new UsernamePasswordAuthenticationToken(
                         userDetails, 
                         null, 
                         userDetails.getAuthorities());
