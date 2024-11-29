@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import { AuthProvider } from './context/AuthContext'; // Import AuthProvider
 
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -27,13 +28,13 @@ const theme = createTheme({
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      {/* CssBaseline component to kickstart an elegant, consistent, and simple baseline */}
-      <CssBaseline />
-
+    <AuthProvider> {/* Wrap with AuthProvider */}
+      <ThemeProvider theme={theme}>
+        {/* CssBaseline component to kickstart an elegant, consistent, and simple baseline */}
+        <CssBaseline />
         <App />
-
-    </ThemeProvider>
+      </ThemeProvider>
+    </AuthProvider>
   </React.StrictMode>
 );
 
