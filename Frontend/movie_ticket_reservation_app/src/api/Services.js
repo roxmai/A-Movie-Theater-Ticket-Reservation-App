@@ -104,9 +104,10 @@ export const membershipPayment = async (email, method) => {
 }
 
 export const login = async (email, password) => {
-  const response = await api.put(`/login/${email}/password/${password}`);
+  const response = await api.put(`/api/registered-users/login/${email}/password/${password}`); // TODO: Match the route from backend
   return response.data;
 }
+
 
 export const getMovieNews = async () => {
   const response = await api.get(`/movie-news`);

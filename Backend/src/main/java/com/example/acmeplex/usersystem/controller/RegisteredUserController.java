@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.acmeplex.usersystem.dto.CardDTO;
@@ -20,7 +21,7 @@ import com.example.acmeplex.usersystem.service.RegisteredUserService;
 import jakarta.validation.Valid;
 
 @RestController
-//@RequestMapping("/api/registered-users")
+@RequestMapping("/api/registered-users")
 public class RegisteredUserController {
 
     @Autowired
