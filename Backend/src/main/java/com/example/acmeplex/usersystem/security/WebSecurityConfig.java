@@ -67,9 +67,9 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/registered-users/**").permitAll()
                 
                 // Registered User-related GET endpoints - Require authentication
-                .requestMatchers(HttpMethod.GET, "/api/registered-users/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/registered-users/**").authenticated()
                 
-                // All other registration-related endpoints (e.g., PUT for updating) - Require authentication
+                // All other registration-related endpoints (e.g., PUT for updating) - need to allow public access
                 .requestMatchers(HttpMethod.PUT, "/api/registered-users/**").permitAll()
                 
                 // Movie System Public GET Endpoints
