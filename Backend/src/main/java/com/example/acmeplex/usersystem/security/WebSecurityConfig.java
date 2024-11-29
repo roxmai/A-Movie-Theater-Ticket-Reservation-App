@@ -67,10 +67,10 @@ public class WebSecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/registered-users/**").permitAll()
                 
                 // Registered User-related GET endpoints - Require authentication
-                .requestMatchers(HttpMethod.GET, "/api/registered-users/**").authenticated()
+                .requestMatchers(HttpMethod.GET, "/api/registered-users/**").permitAll()
                 
                 // All other registration-related endpoints (e.g., PUT for updating) - Require authentication
-                .requestMatchers(HttpMethod.PUT, "/api/registered-users/**").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/api/registered-users/**").permitAll()
                 
                 // Movie System Public GET Endpoints
                 .requestMatchers(HttpMethod.GET, "/genres/**").permitAll()
